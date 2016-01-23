@@ -113,8 +113,8 @@ public class Java2Swing extends JFrame {
 	}
 
 	private String[] read() throws FileNotFoundException{
-		File file = new File("companies.txt");
-//		File file = new File("copy_companies.txt");
+//		File file = new File("companies.txt");
+		File file = new File("copy_companies.txt");
 		Scanner scan = new Scanner(file);
 		//Makes the temporary list of strings
 		ArrayList<String> temp = new ArrayList<>();
@@ -126,33 +126,32 @@ public class Java2Swing extends JFrame {
 		for(int i = 0; i < temp.size(); i++){
 			arr[i] = temp.get(i);
 		}
+		scan.close();
 		return arr;
 	}
 	
 	private void rewrite(String input, int index) throws FileNotFoundException{
-		File file = new File("companies.txt");
-//		File file = new File("copy_companies.txt");
+//		File file = new File("companies.txt");
+		File file = new File("copy_companies.txt");
 		Scanner scan = new Scanner(file);
 		
-		PrintWriter writer = new PrintWriter("companies.txt");
-//		PrintWriter writer = new PrintWriter("copy_companies.txt");
+//		PrintWriter writer = new PrintWriter("companies.txt");
+		PrintWriter writer = new PrintWriter("copy_companies.txt");
+		
 		//Makes the temporary list of strings
-		ArrayList<String> temp = new ArrayList<>();
-		while(scan.hasNext()){
-			writer.println(temp.add(scan.nextLine()));
+		ArrayList<String> arr = new ArrayList<>();
+		for(int i = 0; i <= index; i++){
+			arr.add(scan.nextLine());
 		}
-		//Makes the official array of strings
-		String[] arr = new String[temp.size()];
-		for(int i = 0; i < index; i++){
-			arr[i] = temp.get(i);
-			writer.println(arr[i]);
+		arr.add(input);
+		while(scan.hasNextLine()){
+			arr.add(scan.nextLine());
 		}
-		arr[index] = input;
-		writer.println(arr[index]);
-		for(int j = index; j < temp.size(); j++){
-			arr[j+1] = temp.get(j);
-			writer.println(arr[j+1]);
+		scan.close();
+		for(int i = 0; i < arr.size(); i++){
+			writer.println(arr.get(i));
 		}
+		
 		list = new JList(read());
 	}
 	
@@ -162,14 +161,16 @@ public class Java2Swing extends JFrame {
 			customDialog.setVisible(true);
 			
 			String s = customDialog.getValidatedText();
-			try{
-				rewrite(text.getText(), list.getSelectedIndex());
-				listPopup.setVisible(false);
-				text.setText(null);
+			if(s != null || s != "\\s"){
+				try{
+					rewrite(s, list.getSelectedIndex());
+					list = new JList(read());
+				}
+				catch(FileNotFoundException e){
+					System.out.println("File Not Found");
+				}
 			}
-			catch(FileNotFoundException e){
-				System.out.println("File Not Found");
-			}
+			
 		}
 	}
 	
@@ -182,14 +183,16 @@ class CustomDialog extends JDialog implements ActionListener, PropertyChangeList
 	JTextField textfield;
 	JOptionPane opPane;
 	String company;
-	String okButton;
-	String cancelButton;
+	String okButton = "Ok";
+	String cancelButton = "Cancel";
 	String text = null;
+	Frame mainFrame;
+//	ImageIcon icon = new ImageIcon("happyFace.gif");
 	
 	
 	
 	public CustomDialog(Frame aFrame, String aWord, Java2Swing parent) {
-		
+		mainFrame = aFrame;
 		setTitle("Enter New Company Name");
 		
 		textfield = new JTextField(10);
@@ -197,8 +200,8 @@ class CustomDialog extends JDialog implements ActionListener, PropertyChangeList
 		Object[] buttons = {cancelButton, okButton};
 		
 		opPane = new JOptionPane();
-//		opPane = new JOptionPane(arr, JOptionPane.QUESTION_MESSAGE,
-//				JOptionPane.YES_NO_OPTION, null, buttons, buttons[0]);
+		opPane = new JOptionPane(arr, JOptionPane.QUESTION_MESSAGE,
+				JOptionPane.YES_NO_OPTION, null, buttons, buttons[0]);
 		setContentPane(opPane);
 		
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -236,8 +239,9 @@ class CustomDialog extends JDialog implements ActionListener, PropertyChangeList
 		String prop = event.getPropertyName();
 
 		if (isVisible() && (event.getSource() == opPane)
-				&& (JOptionPane.VALUE_PROPERTY.equals(prop) || JOptionPane.INPUT_VALUE_PROPERTY
-						.equals(prop))) {
+				&& (JOptionPane.VALUE_PROPERTY.equals(prop)
+				|| JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
+			
 			Object value = opPane.getValue();
 
 			if (value == JOptionPane.UNINITIALIZED_VALUE) {
@@ -252,17 +256,9 @@ class CustomDialog extends JDialog implements ActionListener, PropertyChangeList
 			opPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
 
 			if (okButton.equals(value)) {
-				text = textfield.getText();
-				//String ucText = text.toUpperCase();
-				
-				text = null;
-				textfield.requestFocusInWindow();
-			} 
-			else { // user closed dialog or clicked cancel
-				text = null;
-				this.setVisible(false);
-				textfield.setText(null);
+				//textfield.
 			}
+			this.setVisible(false);
 		}
 		
 	}
