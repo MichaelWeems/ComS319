@@ -14,10 +14,15 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 
-public class Java2Swing extends JFrame {
+public class Java2Swing extends JFrame implements TreeSelectionListener {
 
-	private static Java2Swing frame;
+	protected static Java2Swing frame;
 	private JPanel contentPane;
 	private JFrame listPopup;
 	private JList list;
@@ -25,9 +30,14 @@ public class Java2Swing extends JFrame {
 	CustomDialog customDialog;
 	
 	
-	private JList<String> companies;
+	private JTree tree;
+	private DefaultTreeModel model;
+	private DefaultMutableTreeNode root;
+	CustomDialog treeDialog;
 	
-
+	DefaultMutableTreeNode selected;
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -55,8 +65,13 @@ public class Java2Swing extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		customDialog = new CustomDialog(frame, "geisel", this);
+		// list dialog
+		customDialog = new CustomDialog(frame, "geisel", "Enter new company name", "What is the new company?", this);
 		customDialog.pack();
+		
+		// tree dialog
+		treeDialog = new CustomDialog(frame, "geisel", "Enter new animal name", "What is the new animal?", this);
+		treeDialog.pack();
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
@@ -72,7 +87,10 @@ public class Java2Swing extends JFrame {
 		}
 		listPanel.add(list, BorderLayout.CENTER);
 		
+		
+		// create list/tree/table panes
 		JPanel listPane = new JPanel();
+		
 		tabbedPane.addTab("List", null, listPane, null);
 		listPane.setLayout(new BorderLayout(0, 0));
 		
@@ -95,32 +113,99 @@ public class Java2Swing extends JFrame {
 		catch(FileNotFoundException e){
 			System.out.println("File Not Found!");
 		}
-	
-		scrollPane.setViewportView(list);
 		
-		JPanel treePanel = new JPanel();
-		tabbedPane.addTab("Tree", null, treePanel, null);
+		tree = new JTree(new DefaultMutableTreeNode("Animals"));
+		model = (DefaultTreeModel) tree.getModel();
+		root = (DefaultMutableTreeNode) model.getRoot();
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.addTreeSelectionListener(this);
+		
+		makeTree();
+		
+		// create list/tree/table panes
+		JPanel treePane = new JPanel();
+		
+		tabbedPane.addTab("Tree", null, treePane, null);
+		treePane.setLayout(new BorderLayout(0, 0));
+		
+		JPanel botTreePane = new JPanel();
+		treePane.add(botTreePane, BorderLayout.SOUTH);
+		
+		JButton btnTreeAdd = new JButton("Add");
+		botTreePane.add(btnTreeAdd);
+		btnTreeAdd.addActionListener(new treeAddListener());
+		
+		JButton btnTreeRemove = new JButton("Remove");
+		botTreePane.add(btnTreeRemove);
+		btnTreeRemove.addActionListener(new treeRemoveListener());
+		
+		JScrollPane scrollTreePane = new JScrollPane();
+		treePane.add(scrollTreePane, BorderLayout.CENTER);
+		
+		// set the view for list/tree/table
+		scrollPane.setViewportView(list);
+		scrollTreePane.setViewportView(tree);
 		
 		JPanel tablePanel = new JPanel();
 		tabbedPane.addTab("Table", null, tablePanel, null);
 		
+	}
+	
+	// creates the base tree
+	private DefaultMutableTreeNode makeTree() {
 		
+		// create mammals
+		DefaultMutableTreeNode mammals = new DefaultMutableTreeNode("Mammals");
+		mammals.add(new DefaultMutableTreeNode("Human"));
+		mammals.add(new DefaultMutableTreeNode("Kangaroo"));
+		mammals.add(new DefaultMutableTreeNode("Elephant"));
+		mammals.add(new DefaultMutableTreeNode("Goat"));
+		model.insertNodeInto(mammals, root, root.getChildCount());
 		
+		// create reptiles
+		DefaultMutableTreeNode reptiles = new DefaultMutableTreeNode("Reptiles");
+		reptiles.add(new DefaultMutableTreeNode("Lizard"));
+		reptiles.add(new DefaultMutableTreeNode("Boa"));
+		reptiles.add(new DefaultMutableTreeNode("Iguana"));
+		model.insertNodeInto(reptiles, root, root.getChildCount());
 		
+		// create birds
+		DefaultMutableTreeNode birds = new DefaultMutableTreeNode("Birds");
+		birds.add(new DefaultMutableTreeNode("Duck"));
+		birds.add(new DefaultMutableTreeNode("Pidgeon"));
+		birds.add(new DefaultMutableTreeNode("Turkey"));
+		birds.add(new DefaultMutableTreeNode("Goose"));
+		model.insertNodeInto(birds, root, root.getChildCount());
 		
+		// create insects
+		DefaultMutableTreeNode insects = new DefaultMutableTreeNode("Insects");
+		insects.add(new DefaultMutableTreeNode("Termite"));
+		insects.add(new DefaultMutableTreeNode("Ladybug"));
+		insects.add(new DefaultMutableTreeNode("Fly"));
+		insects.add(new DefaultMutableTreeNode("Ant"));
+		model.insertNodeInto(insects, root, root.getChildCount());
 		
+		// create fish
+		DefaultMutableTreeNode fish = new DefaultMutableTreeNode("Fish");
+		fish.add(new DefaultMutableTreeNode("Sword Fish"));
+		fish.add(new DefaultMutableTreeNode("Shark"));
+		fish.add(new DefaultMutableTreeNode("Eel"));
+		model.insertNodeInto(fish, root, root.getChildCount());
 		
+		return root;
 	}
 
 	private String[] read() throws FileNotFoundException{
-//		File file = new File("companies.txt");
-		File file = new File("copy_companies.txt");
+		File file = new File("companies.txt");
+
 		Scanner scan = new Scanner(file);
+		
 		//Makes the temporary list of strings
 		ArrayList<String> temp = new ArrayList<>();
 		while(scan.hasNext()){
 			temp.add(scan.nextLine());
 		}
+		
 		//Makes the official array of strings
 		String[] arr = new String[temp.size()];
 		for(int i = 0; i < temp.size(); i++){
@@ -131,12 +216,11 @@ public class Java2Swing extends JFrame {
 	}
 	
 	private void rewrite(String input, int index) throws FileNotFoundException{
-//		File file = new File("companies.txt");
-		File file = new File("copy_companies.txt");
+		File file = new File("companies.txt");
+
 		Scanner scan = new Scanner(file);
 		
-//		PrintWriter writer = new PrintWriter("companies.txt");
-		PrintWriter writer = new PrintWriter("copy_companies.txt");
+		PrintWriter writer = new PrintWriter("companies.txt");
 		
 		//Makes the temporary list of strings
 		ArrayList<String> arr = new ArrayList<>();
@@ -174,10 +258,52 @@ public class Java2Swing extends JFrame {
 		}
 	}
 	
+	private class treeAddListener implements ActionListener{
+		public void actionPerformed(ActionEvent event){
+			treeDialog.setLocationRelativeTo(frame);
+			treeDialog.setVisible(true);
+			
+		}
+	}
 	
+	void setAdd() {
+		String s = treeDialog.getValidatedText();
+		if(s != null && s != "\\s"){
+			// get parent node
+			DefaultMutableTreeNode temp = selected;
+			if ( selected != null ) {
+				if ( selected.equals(root))
+					temp = selected;
+				else if ( selected.getParent().getParent().equals(root))
+					temp = (DefaultMutableTreeNode) selected.getParent();
+			}
+			else if (root == null) {
+				model.setRoot(new DefaultMutableTreeNode(s));
+			}
+			model.insertNodeInto( new DefaultMutableTreeNode(s), temp, root.getChildCount());
+		}
+		
+	}
 	
-	
+	private class treeRemoveListener implements ActionListener{
+		public void actionPerformed(ActionEvent event){
+				if (selected.equals(root))
+					model.setRoot(null);
+				else
+					model.removeNodeFromParent(selected);
+			}
+		}
+
+	@Override
+	public void valueChanged(TreeSelectionEvent e) {
+		selected = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+	}
+
 }
+	
+	
+	
+	
 class CustomDialog extends JDialog implements ActionListener, PropertyChangeListener {
 	
 	JTextField textfield;
@@ -191,12 +317,13 @@ class CustomDialog extends JDialog implements ActionListener, PropertyChangeList
 	
 	
 	
-	public CustomDialog(Frame aFrame, String aWord, Java2Swing parent) {
+	public CustomDialog(Frame aFrame, String aWord, String title, String question, Java2Swing parent) {
 		mainFrame = aFrame;
-		setTitle("Enter New Company Name");
+		setTitle(title);
 		
 		textfield = new JTextField(10);
-		Object[] arr = {"What is the new company? ", textfield};
+		
+		Object[] arr = {question, textfield};
 		Object[] buttons = {cancelButton, okButton};
 		
 		opPane = new JOptionPane();
@@ -256,9 +383,10 @@ class CustomDialog extends JDialog implements ActionListener, PropertyChangeList
 			opPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
 
 			if (okButton.equals(value)) {
-				//textfield.
+				company = textfield.getText();
 			}
 			this.setVisible(false);
+			((Java2Swing) mainFrame).setAdd();
 		}
 		
 	}
