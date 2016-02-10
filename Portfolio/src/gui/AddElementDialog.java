@@ -14,7 +14,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-class AddElementDialog extends JDialog implements ActionListener, PropertyChangeListener {
+public class AddElementDialog extends JDialog implements ActionListener, PropertyChangeListener {
 	
 	JTextField textfield;
 	JOptionPane opPane;

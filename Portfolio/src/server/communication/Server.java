@@ -24,7 +24,6 @@ public class Server {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException{
 		
-		Buffer buff = new Buffer();
 		clientArr = new ArrayList<>();
 		chatting = new ArrayList<String>();
 		
@@ -49,6 +48,7 @@ public class Server {
 //		Turn into client instead and uses same socket num
 		catch (IOException e) {
 			e.printStackTrace();
+			//Client.main(args);
 		} 
 	}
 }
@@ -56,7 +56,6 @@ public class Server {
 class ClientHandler extends Thread {
 	private DataInputStream is = null;
 	private PrintStream os = null;
-	private BufferedWriter bw = null;
 	private Socket client = null;
 	private final ClientHandler[] threadArr;
 	private int max;
@@ -78,14 +77,9 @@ class ClientHandler extends Thread {
 	      is = new DataInputStream(client.getInputStream());
 	      os = new PrintStream(client.getOutputStream());
 	      
-	      OutputStreamWriter osw = new OutputStreamWriter(os);
-          bw = new BufferedWriter(osw);
-          
-
-	      
 	      /* Start the conversation. */
 	      while (true) {
-	        String line = is.readLine();
+			String line = is.readLine();
 	        Server.chatting.add(line);
 	        
 	        PrintWriter write = null;
@@ -212,9 +206,5 @@ class Buffer{
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-
 	} // end add
-	
-	
 }

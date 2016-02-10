@@ -1,19 +1,10 @@
 package server.communication;
 
-
-import java.awt.*;
-import java.awt.event.*;
-
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 
 import gui.ClientGUI;
 import gui.Login;
 
-import javax.swing.*;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.*;
 import java.util.*;

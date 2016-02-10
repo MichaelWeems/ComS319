@@ -1,30 +1,24 @@
 package gui;
 
-
-
 import java.awt.*;
 import java.awt.event.*;
 
-import java.beans.*;
 import java.io.*;
-import java.net.Socket;
 import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
-import server.communication.DataModel;
 import server.communication.Client.Connection;
 
 public class ClientGUI extends JFrame implements TreeSelectionListener, Observer {
 
-	protected ClientGUI frame;
+	protected JFrame frame;
 	private JPanel contentPane;
 	private JTabbedPane tabbedPane;
 	private JFrame listPopup;
@@ -54,15 +48,17 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		this.con = con;
 		this.con.addObserver((Observer) this);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		frame = new JFrame();
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
+		frame.setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
 		// make the tabbed pane
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 		
 		createListPane();
