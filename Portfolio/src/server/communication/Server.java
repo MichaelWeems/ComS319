@@ -1,5 +1,6 @@
 package server.communication;
 
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -125,20 +126,34 @@ class ReadHandler extends Thread {
 		    	  System.out.println("Writing document to client");
 		    	  
 		    	  // send document to the client
-		    	  Server.mutex.put(doc.getName(),true);
+//		    	  Server.mutex.put(doc.getName(),true);
 		    	  oos.writeObject(doc);
 		    	  System.out.println("Wrote document to client");
 	    	  }
 	    	  else if (obj instanceof Document){
-	    		  Document doc = (Document) obj;
+	    		  	Document doc = (Document) obj;
 	    		  
-	    		  if ( Server.mutex.get(doc.getName()) == true ){
-		    		  // print out that the file is in use
-		    		  continue;
-		    	  }
-		    		  
-		    		  doc.writeServerFile();
-		    		  Server.mutex.put(doc.getName(),false);
+	    		  	if (doc.preview()) {
+		    		  try {
+			  				Scanner scan = new Scanner(new File(doc.getName()));
+			  				while(scan.hasNextLine())
+			  					doc.getDataModel().addElement(scan.nextLine() + "\r\n");
+			  				
+			  				oos.writeObject(doc);
+		  				
+			  			} catch (FileNotFoundException e1) {
+			  				System.out.println("File Not Found, Unable to Preview");
+			  				e1.printStackTrace();
+			  			}
+	    		  	}
+		    		 else {
+//			    		  if ( Server.mutex.get(doc.getName()) == true ){
+//				    		  // print out that the file is in use
+//				    		  continue;
+//				    	  }
+			    		  doc.writeServerFile();
+			    		  //Server.mutex.put(doc.getName(),false);
+		    		 }
 	    	  }
 	    	  else if (obj instanceof UserPass){
 	    		  UserPass up = (UserPass) obj;

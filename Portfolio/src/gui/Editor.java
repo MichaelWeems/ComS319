@@ -10,25 +10,23 @@ import java.util.Scanner;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import data.storage.Document;
+
 public class Editor extends JFrame {
 
 	private JPanel contentPane;
 	private JTextArea textArea;
 	
-	private String fileName;
+	private Document doc;
+	private ObjectOutputStream oos;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args, final Document doc, final ObjectOutputStream oos) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
-					Editor frame = new Editor("File.txt");
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				Editor frame = new Editor(doc, oos);
 			}
 		});
 	}
@@ -36,8 +34,10 @@ public class Editor extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Editor(String fileName) {
-		this.fileName = fileName;
+	public Editor(Document doc, ObjectOutputStream oos) {
+		this.doc = doc;
+		this.oos = oos;
+		
 //		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(400, 100, 500, 600);
 		contentPane = new JPanel();
@@ -79,32 +79,24 @@ public class Editor extends JFrame {
 	private String txtForPreview(){
 		String txt = "";
 		
-		try {
-			Scanner scan = new Scanner(new File(fileName));
-			while(scan.hasNextLine()){
-				txt += scan.nextLine() + "\n";
-			}
-			scan.close();
-			
-		} catch (FileNotFoundException e) {
-			System.out.println("File 'File.txt' Not Found");
-			e.printStackTrace();
-		}
+		for (String s : doc.getDataModel().getArr())
+			txt += s + "\r\n";
 		
 		return txt;
 	}
 	
 	private class syncListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
+			doc.getDataModel().clear();
+			Scanner scan = new Scanner(textArea.getText());
+			while(scan.hasNextLine()){
+				doc.getDataModel().addElement(scan.nextLine());
+			}
+			scan.close();
+			
 			try {
-				PrintWriter write = new PrintWriter(new File("File.txt"));
-				Scanner scan = new Scanner(textArea.getText());
-				while(scan.hasNextLine()){
-					write.println(scan.nextLine());
-				}
-				write.close();
-			} catch (FileNotFoundException e1) {
-				System.out.println("File Not Found, Unable to Sync");
+				oos.writeObject(doc);
+			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		}

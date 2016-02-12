@@ -6,14 +6,18 @@ import data.storage.DataModel;
 import data.storage.Document;
 import data.storage.UserPass;
 import gui.ClientGUI;
+import gui.Editor;
 import gui.Login;
 import server.communication.Client.Connection;
 
+import java.awt.Font;
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
 public class Client {
+	
+	private static ClientGUI ui = null;
 	
 	public static class Connection extends Observable {
 		private Socket socket;
@@ -55,12 +59,19 @@ public class Client {
 								
 								if (obj instanceof Document){
 									Document doc = (Document)obj;
-							    	System.out.println(doc.getName());
-									System.out.println("Displaying Document...");
-									PrintWriter w = new PrintWriter("output.txt", "UTF-8");
-									for ( String s : doc.getDataModel().getArr())
-										w.println(s);
-									w.close();
+									
+									if (doc.preview()){
+										String txt = "";
+										for ( String s : doc.getDataModel().getArr())
+											txt += s;
+										
+										ui.prevTxt().setText(txt);
+						  				ui.prevTxt().setFont(new Font("Arial", Font.PLAIN, 10));
+									}
+									else {
+										System.out.println("Displaying Document..." + doc.getName());
+										Editor editFrame = new Editor(doc, oos);
+									}
 								}
 //								else if (obj instanceof Boolean) {
 //									Boolean accepted = (Boolean) obj;
@@ -142,7 +153,6 @@ public class Client {
         }
 	}
 	
-
 	/**
 	 * Launch the application.
 	 */
@@ -160,13 +170,12 @@ public class Client {
             System.exit(0);
         }
         
-        ClientGUI ui = new ClientGUI(con);
+        ui = new ClientGUI(con);
         JFrame frame = ui.getFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(100, 100, 400, 350);
 		
 	}
-
 }
 
 //class ServerHandler extends Thread {

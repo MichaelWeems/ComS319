@@ -23,14 +23,17 @@ public class Document implements Serializable{
 	private File doc;
 	private String filename = "";
 	
+	private boolean preview;
+	
 	// Empty Constructor
 	public Document() {
 		
 		dataModel = new DataModel();
-		filename = "temp";
+		filename = "temp.txt";
+		preview = false;
 		
 		try {
-		     doc = new File(filename + ".txt");
+		     doc = new File(filename);
 		      if (doc.createNewFile()){
 		        System.out.println("File is created!");
 		      }else{
@@ -46,9 +49,10 @@ public class Document implements Serializable{
 		
 		dataModel = new DataModel();
 		this.filename = filename;
+		preview = false;
 		
 		try {
-		      doc = new File(filename + ".txt");
+		      doc = new File(filename);
 		      if (!doc.exists()) {
 		    	  
 		      //if (doc.createNewFile()){
@@ -73,15 +77,22 @@ public class Document implements Serializable{
 		}
 	}
 	
+	// Client Constructor
+	public Document(String filename, boolean client) {
+		dataModel = new DataModel();
+		this.filename = filename;
+		preview = client;
+	}
+	
 	// copy the file into our datamodel
 	public void readServerFile(){
-		dataModel.readInFile(filename + ".txt");
+		dataModel.readInFile(filename);
 	}
 	
 	public void writeServerFile(){
 		
 		List<String> lines = dataModel.getArr();
-		Path file = Paths.get(filename + ".txt");
+		Path file = Paths.get(filename);
 		try {
 			Files.write(file, lines, Charset.forName("UTF-8"));
 		} catch (IOException e) {
@@ -114,6 +125,14 @@ public class Document implements Serializable{
 	
 	public DataModel getDataModel(){
 		return dataModel;
+	}
+	
+	public void setToPreview(){
+		preview = true;
+	}
+	
+	public boolean preview(){
+		return preview;
 	}
 	
 	

@@ -37,8 +37,6 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 	
 	DefaultMutableTreeNode selected;
 	
-	private ObjectInputStream ois = null;
-
 	// connection information
 	private Connection con;
 	private String name = null;
@@ -141,9 +139,11 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 	
 	private class openListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-//			String fileName = tree.getName();
-			String fileName = "chat.txt";
-			Editor editFrame = new Editor(fileName);
+			try {
+				con.getOOS().writeObject(textField.getText());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	
@@ -151,21 +151,15 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		public void actionPerformed(ActionEvent e){
 			//Only if a file is selected
 			String txt = "";
-			String fileName = "chat.txt";
 //			String fileName = tree.getName();
+			String filename = "jazz";
+			Document doc = new Document(filename, true);
+			doc.setToPreview();
 			try {
-				Scanner scan = new Scanner(new File(fileName));
-				while(scan.hasNextLine()){
-					txt += scan.nextLine() + "\n";
-				}
-				prevTxt.setText(txt);
-				prevTxt.setFont(new Font("Arial", Font.PLAIN, 10));
-				
-			} catch (FileNotFoundException e1) {
-				System.out.println("File Not Found, Unable to Preview");
+				con.getOOS().writeObject(doc);
+			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			
 		}
 	}
 	
@@ -174,7 +168,6 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 	public JFrame getFrame(){
 		return frame;
 	}
-
 	
 	public Connection getCon() {
 		return con;
@@ -182,92 +175,6 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 	
 	public void setName(String name){
 		this.name = name;
-	}
-	
-	// sets up the list pane
-	private void createListPane(){
-		// list dialog
-		listDialog = new AddElementDialog(frame, "geisel", "Enter new company name", "What is the new company?", this);
-		listDialog.pack();
-		
-		
-		JPanel listPanel = new JPanel();
-		
-		try{
-			list = new JList(read());
-		}
-		catch(FileNotFoundException e){
-			System.out.println("File Not Found!");
-		}
-		listPanel.add(list, BorderLayout.CENTER);
-		
-		// create list/tree/table panes
-		JPanel listPane = new JPanel();
-		
-		tabbedPane.addTab("List", null, listPane, null);
-		listPane.setLayout(new BorderLayout(0, 0));
-		
-		JPanel botPane = new JPanel();
-		listPane.add(botPane, BorderLayout.SOUTH);
-		
-		JButton btnAdd = new JButton("Add");
-		botPane.add(btnAdd);
-		btnAdd.addActionListener(new listAddListener());
-		
-		JButton btnRemove = new JButton("Remove");
-		botPane.add(btnRemove);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		listPane.add(scrollPane, BorderLayout.CENTER);
-		
-		try{
-			list = new JList(read());
-		}
-		catch(FileNotFoundException e){
-			System.out.println("File Not Found!");
-		}
-		
-		scrollPane.setViewportView(list);
-				
-	}
-	
-	// sets up the tree pane
-	private void createTreePane(){
-		// tree dialog
-		treeDialog = new AddElementDialog(frame, "geisel", "Enter new animal name", "What is the new animal?", this);
-		treeDialog.pack();
-		
-		tree = new JTree(new DefaultMutableTreeNode("Animals"));
-		model = (DefaultTreeModel) tree.getModel();
-		root = (DefaultMutableTreeNode) model.getRoot();
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		tree.addTreeSelectionListener(this);
-		
-		// creates the contents of the tree
-		makeTree();
-		
-		// create list/tree/table panes
-		JPanel treePane = new JPanel();
-		
-		tabbedPane.addTab("Tree", null, treePane, null);
-		treePane.setLayout(new BorderLayout(0, 0));
-		
-		JPanel botTreePane = new JPanel();
-		treePane.add(botTreePane, BorderLayout.SOUTH);
-		
-		JButton btnTreeAdd = new JButton("Add");
-		botTreePane.add(btnTreeAdd);
-		btnTreeAdd.addActionListener(new treeAddListener());
-		
-		JButton btnTreeRemove = new JButton("Remove");
-		botTreePane.add(btnTreeRemove);
-		btnTreeRemove.addActionListener(new treeRemoveListener());
-		
-		JScrollPane scrollTreePane = new JScrollPane();
-		treePane.add(scrollTreePane, BorderLayout.CENTER);
-		
-		scrollTreePane.setViewportView(tree);
-		
 	}
 	
 	// creates the base tree
@@ -313,77 +220,7 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		
 		return root;
 	}
-		
-	// sets up the table pane
-	private void createTablePane(){
-		JPanel tablePanel = new JPanel();
-		tabbedPane.addTab("Table", null, tablePanel, null);
-	}
 	
-	
-
-	private String[] read() throws FileNotFoundException{
-		File file = new File("companies.txt");
-
-		Scanner scan = new Scanner(file);
-		
-		//Makes the temporary list of strings
-		ArrayList<String> temp = new ArrayList<>();
-		while(scan.hasNext()){
-			temp.add(scan.nextLine());
-		}
-		
-		//Makes the official array of strings
-		String[] arr = new String[temp.size()];
-		for(int i = 0; i < temp.size(); i++){
-			arr[i] = temp.get(i);
-		}
-		scan.close();
-		return arr;
-	}
-	
-	private void rewrite(String input, int index) throws FileNotFoundException{
-		File file = new File("companies.txt");
-
-		Scanner scan = new Scanner(file);
-		
-		PrintWriter writer = new PrintWriter("companies.txt");
-		
-		//Makes the temporary list of strings
-		ArrayList<String> arr = new ArrayList<>();
-		for(int i = 0; i <= index; i++){
-			arr.add(scan.nextLine());
-		}
-		arr.add(input);
-		while(scan.hasNextLine()){
-			arr.add(scan.nextLine());
-		}
-		scan.close();
-		for(int i = 0; i < arr.size(); i++){
-			writer.println(arr.get(i));
-		}
-		
-		list = new JList(read());
-	}
-	
-	private class listAddListener implements ActionListener{
-		public void actionPerformed(ActionEvent event){
-			listDialog.setLocationRelativeTo(frame);
-			listDialog.setVisible(true);
-			
-			String s = listDialog.getValidatedText();
-			if(s != null || s != "\\s"){
-				try{
-					rewrite(s, list.getSelectedIndex());
-					list = new JList(read());
-				}
-				catch(FileNotFoundException e){
-					System.out.println("File Not Found");
-				}
-			}
-			
-		}
-	}
 	
 	private class treeAddListener implements ActionListener{
 		public void actionPerformed(ActionEvent event){
@@ -391,6 +228,15 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 			treeDialog.setVisible(true);
 			
 		}
+	}
+	
+	private class treeRemoveListener implements ActionListener{
+		public void actionPerformed(ActionEvent event){
+				if (selected.equals(root))
+					model.setRoot(null);
+				else
+					model.removeNodeFromParent(selected);
+			}
 	}
 	
 	void setAdd() {
@@ -415,19 +261,14 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 	public void accessDoc(String filename) {
 		con.send(filename);
 	}
-	
-	private class treeRemoveListener implements ActionListener{
-		public void actionPerformed(ActionEvent event){
-				if (selected.equals(root))
-					model.setRoot(null);
-				else
-					model.removeNodeFromParent(selected);
-			}
-		}
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		selected = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+	}
+	
+	public JTextArea prevTxt(){
+		return prevTxt;
 	}
 	
 }

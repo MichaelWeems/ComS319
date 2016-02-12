@@ -64,4 +64,8 @@ public class DataModel extends AbstractListModel<String>{
 		return arr;
 	}
 	
+	public void clear(){
+		arr = new ArrayList<String>();
+	}
+	
 }
