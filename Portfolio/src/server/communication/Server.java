@@ -21,12 +21,14 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import data.storage.Document;
+import data.storage.UserPass;
 
 public class Server {
 	static ArrayList<Socket> clientArr;
 	static ReadHandler[] rthreadArr = new ReadHandler[15];
 //	static WriteHandler[] wthreadArr = new WriteHandler[15];
 	static HashMap<String,Boolean> mutex = null;
+	static HashMap<String,String> userpass = null;
 	
 	private static ServerSocket server = null;
 	private static Socket client = null;
@@ -37,6 +39,9 @@ public class Server {
 		clientArr = new ArrayList<>();
 		chatting = new ArrayList<String>();
 		mutex = new HashMap<String,Boolean>();
+		userpass = new HashMap<String,String>();
+		userpass.put("Zach", "wild");
+		userpass.put("Mike", "weems");
 		
 		//Server end
 		try {
@@ -134,6 +139,14 @@ class ReadHandler extends Thread {
 		    		  
 		    		  doc.writeServerFile();
 		    		  Server.mutex.put(doc.getName(),false);
+	    	  }
+	    	  else if (obj instanceof UserPass){
+	    		  UserPass up = (UserPass) obj;
+	    		  
+	    		  if (Server.userpass.get(up.getUser()).equals(up.getPass()))
+	    			  oos.writeObject((Boolean) true);
+	    		  else 
+	    			  oos.writeObject((Boolean) false);
 	    	  }
 	    	  
 	    	  int count = 0;

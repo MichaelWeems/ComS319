@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import data.storage.DataModel;
 import data.storage.Document;
+import data.storage.UserPass;
 import gui.ClientGUI;
 import gui.Login;
 import server.communication.Client.Connection;
@@ -20,6 +21,8 @@ public class Client {
         //private OutputStreamWriter osw;
 
 		private ObjectOutputStream oos;
+		private ObjectInputStream ois;
+		private boolean acceptedLogin = false;
 		
         
 
@@ -38,7 +41,7 @@ public class Client {
                     	oos = new ObjectOutputStream(socket.getOutputStream());
                     	oos.flush();
                         		
-                    	ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                    	ois = new ObjectInputStream(socket.getInputStream());
                     	
 //                        BufferedReader reader = new BufferedReader(
 //                                new InputStreamReader(socket.getInputStream()));
@@ -59,6 +62,17 @@ public class Client {
 										w.println(s);
 									w.close();
 								}
+//								else if (obj instanceof Boolean) {
+//									Boolean accepted = (Boolean) obj;
+//									if (accepted == true) {
+//										
+//									} else {
+//										JOptionPane.showMessageDialog(optionPane, "Username or Password is invalid.");
+//									}
+//								}
+//								else if ( obj instanceof Node ) {
+//									
+//								}
                     		}
 						} catch (ClassNotFoundException e) {
 							e.printStackTrace();
@@ -84,6 +98,28 @@ public class Client {
             }
         }
         
+        /** Send a line of text */
+        public void send(UserPass up) {
+        	try {
+        		oos.writeObject((Object)up);
+//                outputStream.write((text + CRLF).getBytes());
+//                outputStream.flush();
+            } catch (IOException ex) {
+                notifyObservers(ex);
+            }
+        }
+        
+        /** Send a line of text */
+        public void send(Document doc) {
+        	try {
+        		oos.writeObject((Object)doc);
+//                outputStream.write((text + CRLF).getBytes());
+//                outputStream.flush();
+            } catch (IOException ex) {
+                notifyObservers(ex);
+            }
+        }
+        
         /** Close the socket */
         public void close() {
             try {
@@ -96,7 +132,14 @@ public class Client {
         public Socket getSocket() {
         	return socket;
         }
+        
+        public ObjectOutputStream getOOS(){
+        	return oos;
+        }
 		
+        public ObjectInputStream getOIS(){
+        	return ois;
+        }
 	}
 	
 

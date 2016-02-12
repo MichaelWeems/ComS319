@@ -15,6 +15,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import data.storage.Document;
+import data.storage.UserPass;
 import server.communication.Client.Connection;
 
 
@@ -74,6 +75,7 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		Login login = new Login(this);
 		login.setVisible(true);
 		name = login.getLoginName();
+		
 		if(name == null){
 			System.out.println("Good Bye!");
 			System.exit(0);

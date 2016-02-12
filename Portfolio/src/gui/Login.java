@@ -6,6 +6,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 
 import javax.swing.JDialog;
@@ -13,6 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import data.storage.Document;
+import data.storage.UserPass;
 
 public class Login extends JDialog implements ActionListener, PropertyChangeListener {
 	private HashMap hashmap;
@@ -35,11 +42,9 @@ public class Login extends JDialog implements ActionListener, PropertyChangeList
 		super(gui.getFrame(), true);
 		this.setBounds(100, 100, 350, 200);
 		this.gui = gui;
+		//this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
 
 		setTitle("Login");
-		hashmap = new HashMap();
-		hashmap.put("Zach", "wild");
-		hashmap.put("Mike", "weems");
 
 		JLabel username = new JLabel("Username");
 		JLabel password = new JLabel("Password:");
@@ -67,6 +72,7 @@ public class Login extends JDialog implements ActionListener, PropertyChangeList
 
 		// Register an event handler that reacts to option pane state changes.
 		optionPane.addPropertyChangeListener(this);
+		
 	}
 
 	/** This method handles events for the text field. */
@@ -82,16 +88,27 @@ public class Login extends JDialog implements ActionListener, PropertyChangeList
 
 		if (logBtn.equals(value)) {
 			logName = userText.getText();
-			if(hashmap.get(logName).equals(passText.getText()) ){
+			
+//			gui.getCon().send(new UserPass(logName,passText.getText()));
+//			Boolean accepted = false;
+//			try {
+//				accepted = (Boolean)gui.getCon().getOIS().readObject();
+//			} catch (ClassNotFoundException e1) {
+//				e1.printStackTrace();
+//			} catch (IOException e1) {
+//				e1.printStackTrace();
+//			}
+			boolean accepted = true;
+			if(accepted){
 				passText.setText(null);
 				setVisible(false);
 				System.out.println(":::: "+ logName +" Joined ::::");
 				gui.getFrame().setName(logName);
 				gui.setName(logName);
-				
 			}
 			else{
 				JOptionPane.showMessageDialog(optionPane, "Username or Password is invalid.");
+				passText.setText(null);
 			}
 			 
 			
