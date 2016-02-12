@@ -18,15 +18,17 @@ public class AddElementDialog extends JDialog implements ActionListener, Propert
 	
 	JTextField textfield;
 	JOptionPane opPane;
-	String company;
+	String filename;
 	String okButton = "Ok";
 	String cancelButton = "Cancel";
 	String text = null;
 	Frame mainFrame;
+	ClientGUI gui = null;
 	
 	
 	public AddElementDialog(Frame aFrame, String aWord, String title, String question, ClientGUI parent) {
 		mainFrame = aFrame;
+		gui = parent;
 		setTitle(title);
 		
 		textfield = new JTextField(10);
@@ -66,7 +68,7 @@ public class AddElementDialog extends JDialog implements ActionListener, Propert
 	}
 
 	public String getValidatedText() {
-		return company;
+		return filename;
 	}
 
 	@Override
@@ -91,10 +93,12 @@ public class AddElementDialog extends JDialog implements ActionListener, Propert
 			opPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
 
 			if (okButton.equals(value)) {
-				company = textfield.getText();
+				filename = textfield.getText();
 			}
+			gui.accessDoc(textfield.getText());
 			this.setVisible(false);
-			((ClientGUI) mainFrame).setAdd();
+			gui.setAdd();
+			
 		}
 		
 	}

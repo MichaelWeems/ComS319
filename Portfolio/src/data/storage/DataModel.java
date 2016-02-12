@@ -24,12 +24,21 @@ public class DataModel extends AbstractListModel<String>{
 		arr = l;
 	}
 	
-	public ArrayList<String> readInFile() throws FileNotFoundException{
-		File f = new File("companies.txt");
-		Scanner scan = new Scanner(f);
-		while(scan.hasNext()){
-			arr.add(scan.nextLine());
+	public ArrayList<String> readInFile(String filename){
+		File f = new File(filename);
+		System.out.println(filename);
+		Scanner scan = null;
+		try {
+			scan = new Scanner(f);
+			while(scan.hasNext()){
+				arr.add(scan.nextLine());
+			}
+			scan.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		return arr;
 	}
 
@@ -50,5 +59,9 @@ public class DataModel extends AbstractListModel<String>{
 	public void removeElement (int index) {
 		arr.remove(index);
 	}
-
+	
+	public ArrayList<String> getArr(){
+		return arr;
+	}
+	
 }
