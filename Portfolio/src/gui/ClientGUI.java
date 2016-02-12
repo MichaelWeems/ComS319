@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 import java.io.*;
-import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,7 +14,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import data.storage.Document;
-import data.storage.UserPass;
 import server.communication.Client.Connection;
 
 
@@ -23,12 +21,7 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 
 	protected JFrame frame;
 	private JPanel contentPane;
-	private JTabbedPane tabbedPane;
-	private JFrame listPopup;
-	private JList list;
-	private JTextField text;
 	AddElementDialog listDialog;
-	
 	
 	private JTree tree;
 	private DefaultTreeModel model;
@@ -43,6 +36,8 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 	
 	private JTextField textField;
 	private JTextArea prevTxt;
+	
+	private Login login = null;
 	
 	
 	/**
@@ -70,14 +65,8 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.setSize(800,800);
 		
-		Login login = new Login(this);
-		login.setVisible(true);
-		name = login.getLoginName();
-		
-		if(name == null){
-			System.out.println("Good Bye!");
-			System.exit(0);
-		}
+		// creates a new login dialog
+		startLogin();
 		
 		/**
 		 * Bottom Panel
@@ -136,6 +125,32 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		
 	 }
 	
+	// creates a new login dialog
+	// waits for user to input username and password
+	public void startLogin(){
+		login = new Login(this);
+		login.addWindowListener(
+			    new WindowAdapter() {
+			        @Override
+			        public void windowClosing(WindowEvent event) {
+			            login.dispose();
+			            System.exit(0);
+			        }
+			    }
+		);
+		login.setVisible(true);
+		name = login.getLoginName();
+		
+		if(name == null){
+			System.out.println("Good Bye!");
+			System.exit(0);
+		}
+	}
+	
+	public Login getLogin() {
+		return login;
+	}
+	
 	
 	private class openListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
@@ -152,7 +167,7 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 			//Only if a file is selected
 			String txt = "";
 //			String fileName = tree.getName();
-			String filename = "jazz";
+			String filename = "chat.txt";
 			Document doc = new Document(filename, true);
 			doc.setToPreview();
 			try {

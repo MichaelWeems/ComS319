@@ -4,6 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -24,14 +27,14 @@ import data.storage.UserPass;
 public class Login extends JDialog implements ActionListener, PropertyChangeListener {
 	private HashMap hashmap;
 	private static final long serialVersionUID = 1L;
-	private String logName = null;
-	private JTextField userText;
-	private JTextField passText;
+	public String logName = null;
+	public JTextField userText;
+	public JTextField passText;
 	private ClientGUI gui;
 	
 	
-	private JOptionPane optionPane;
-	private String logBtn = "Login";
+	public JOptionPane optionPane;
+	public String logBtn = "Login";
 
 
 	public String getLoginName() {
@@ -42,7 +45,6 @@ public class Login extends JDialog implements ActionListener, PropertyChangeList
 		super(gui.getFrame(), true);
 		this.setBounds(100, 100, 350, 200);
 		this.gui = gui;
-		//this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
 
 		setTitle("Login");
 
@@ -50,9 +52,6 @@ public class Login extends JDialog implements ActionListener, PropertyChangeList
 		JLabel password = new JLabel("Password:");
 		userText = new JTextField(10);
 		passText = new JPasswordField(10);
-//		label.setFont(new Font("HeadLineA", Font.BOLD, 36));
-//		String mess = "Enter Your Name";
-//		textField = new JTextField(10);
 
 		Object[] array = { username, userText, password, passText};
 		Object[] options = {logBtn};
@@ -61,7 +60,6 @@ public class Login extends JDialog implements ActionListener, PropertyChangeList
 				JOptionPane.OK_OPTION, null, options, options[0]);
 
 		setContentPane(optionPane);
-		
 
 		// Ensure the text field always gets the first focus.
 		addComponentListener(new ComponentAdapter() {
@@ -88,31 +86,22 @@ public class Login extends JDialog implements ActionListener, PropertyChangeList
 
 		if (logBtn.equals(value)) {
 			logName = userText.getText();
-			
-//			gui.getCon().send(new UserPass(logName,passText.getText()));
-//			Boolean accepted = false;
-//			try {
-//				accepted = (Boolean)gui.getCon().getOIS().readObject();
-//			} catch (ClassNotFoundException e1) {
-//				e1.printStackTrace();
-//			} catch (IOException e1) {
-//				e1.printStackTrace();
-//			}
-			boolean accepted = true;
-			if(accepted){
-				passText.setText(null);
-				setVisible(false);
-				System.out.println(":::: "+ logName +" Joined ::::");
-				gui.getFrame().setName(logName);
-				gui.setName(logName);
-			}
-			else{
-				JOptionPane.showMessageDialog(optionPane, "Username or Password is invalid.");
-				passText.setText(null);
-			}
-			 
-			
+			gui.getCon().send(new UserPass(logName,passText.getText()));
+			serverResponse(true);
 		} 
 	}
-
+	
+	public void serverResponse(boolean accepted) {
+		if(accepted){
+			passText.setText(null);
+			setVisible(false);
+			System.out.println(":::: "+ logName +" Joined ::::");
+			gui.getFrame().setName(logName);
+			gui.setName(logName);
+		}
+		else{
+			JOptionPane.showMessageDialog(optionPane, "Username or Password is invalid.");
+			passText.setText(null);
+		}
+	}
 }

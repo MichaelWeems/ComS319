@@ -51,7 +51,6 @@ public class DataModel extends AbstractListModel<String>{
 		return arr.get(index);
 	}
 	
-	
 	public void addElement (String s) {
 		arr.add(s);
 	}

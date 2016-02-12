@@ -59,9 +59,15 @@ public class Editor extends JFrame {
 			  }
 		  });
 		
-		JButton btnSync = new JButton("Sync");
-		btnSync.addActionListener(new syncListener());
-		panel.add(btnSync);
+		if (!doc.getReadOnly()) {
+			JButton btnSync = new JButton("Sync");
+			btnSync.addActionListener(new syncListener());
+			panel.add(btnSync);
+		}
+		else {
+			JLabel lab = new JLabel("Read Only");
+			panel.add(lab);
+		}
 		
 		/**
 		 * Text Area Panel
@@ -72,6 +78,9 @@ public class Editor extends JFrame {
 		textArea = new JTextArea(txtForPreview());
 		scrollPane.setViewportView(textArea);
 		
+		// disable editing if read only
+		if (doc.getReadOnly())
+			textArea.setEditable(false);
 		
 		this.setVisible(true);
 	}

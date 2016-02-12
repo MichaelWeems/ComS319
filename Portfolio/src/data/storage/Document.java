@@ -24,6 +24,7 @@ public class Document implements Serializable{
 	private String filename = "";
 	
 	private boolean preview;
+	private boolean readonly;
 	
 	// Empty Constructor
 	public Document() {
@@ -31,6 +32,7 @@ public class Document implements Serializable{
 		dataModel = new DataModel();
 		filename = "temp.txt";
 		preview = false;
+		readonly = false;
 		
 		try {
 		     doc = new File(filename);
@@ -50,6 +52,7 @@ public class Document implements Serializable{
 		dataModel = new DataModel();
 		this.filename = filename;
 		preview = false;
+		readonly = false;
 		
 		try {
 		      doc = new File(filename);
@@ -77,11 +80,12 @@ public class Document implements Serializable{
 		}
 	}
 	
-	// Client Constructor
-	public Document(String filename, boolean client) {
+	// Preview Constructor
+	public Document(String filename, boolean preview) {
 		dataModel = new DataModel();
 		this.filename = filename;
-		preview = client;
+		this.preview = preview;
+		readonly = false;
 	}
 	
 	// copy the file into our datamodel
@@ -115,6 +119,10 @@ public class Document implements Serializable{
 		// each arraylist element is a new line in the document
 	}
 	
+	public void addLine(String line){
+		dataModel.addElement(line);
+	}
+	
 	public String getName(){
 		return filename;
 	}
@@ -135,9 +143,12 @@ public class Document implements Serializable{
 		return preview;
 	}
 	
+	public void setReadOnly(){
+		readonly = true;
+	}
 	
-	
-	
-	
+	public boolean getReadOnly(){
+		return readonly;
+	}
 	
 }
