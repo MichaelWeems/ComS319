@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import java.io.*;
+import java.util.Arrays;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -11,9 +12,11 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
 import data.storage.Document;
+import data.storage.FileNode;
 import server.communication.Client.Connection;
 
 
@@ -27,6 +30,8 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 	private DefaultTreeModel model;
 	private DefaultMutableTreeNode root;
 	AddElementDialog treeDialog;
+	private JRadioButton file;
+	private JRadioButton folder;
 	
 	DefaultMutableTreeNode selected;
 	
@@ -46,27 +51,22 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 	public ClientGUI(Connection con) {
 		
 		this.con = con;
-		//this.con.addObserver((Observer) this);
-		
-//		try {
-//			ois = new ObjectInputStream(con.getSocket().getInputStream());
-//		} catch (IOException e1) {
-//			e1.printStackTrace();
-//		}
 		
 		frame = new JFrame();
 		
 		frame.setTitle("Documents");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(100, 100, 1000, 800);
+		frame.setBounds(100, 100, 500, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		frame.setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.setSize(800,800);
 		
+		
+		
 		// creates a new login dialog
-		startLogin();
+		//startLogin();
 		
 		/**
 		 * Bottom Panel
@@ -79,6 +79,7 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		panelBot.add(btnOpen);
 		
 		JButton btnAdd = new JButton("Add:");
+		btnAdd.addActionListener(new addListener());
 		panelBot.add(btnAdd);
 		
 		textField = new JTextField();
@@ -88,20 +89,16 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		JButton btnDelete = new JButton("Delete");
 		panelBot.add(btnDelete);
 		
-		/**
-		 * Top Panel(Left)
-		 */
-		JScrollPane scrollTree = new JScrollPane();
-		contentPane.add(scrollTree, BorderLayout.WEST);
-		JTree tree = new JTree(new DefaultMutableTreeNode("Files"));
-		model = (DefaultTreeModel) tree.getModel();
-		root = (DefaultMutableTreeNode) model.getRoot();
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		tree.addTreeSelectionListener(this);
-		makeTree();
+		file = new JRadioButton("file");
+		folder = new JRadioButton("folder");
 		
-		scrollTree.setViewportView(tree);
-		scrollTree.setPreferredSize(new Dimension(200, 10));
+		ButtonGroup bg = new ButtonGroup();
+		
+		bg.add(file);
+		bg.add(folder);
+		panelBot.add(file);
+		panelBot.add(folder);
+		file.setSelected(true);
 		
 		/**
 		 * Top Panel(Right)
@@ -139,6 +136,9 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 			    }
 		);
 		login.setVisible(true);
+	}
+	
+	public void recieveLogin(){
 		name = login.getLoginName();
 		
 		if(name == null){
@@ -151,14 +151,20 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		return login;
 	}
 	
-	
 	private class openListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			try {
-				con.getOOS().writeObject(textField.getText());
+				if ( ((String)selected.getUserObject()).contains(".") )
+					con.getOOS().writeObject((String)selected.getUserObject());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+		}
+	}
+	
+	private class addListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			addFile();
 		}
 	}
 	
@@ -192,48 +198,20 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		this.name = name;
 	}
 	
-	// creates the base tree
-	private DefaultMutableTreeNode makeTree() {
+	// sets up the tree
+	public void setTree(JTree newtree) {
+		tree = newtree;
+
+		JScrollPane scrollTree = new JScrollPane();
+		contentPane.add(scrollTree, BorderLayout.WEST);
+		model = (DefaultTreeModel) tree.getModel();
+		root = (DefaultMutableTreeNode) model.getRoot();
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.addTreeSelectionListener(this);
 		
-		// create mammals
-		DefaultMutableTreeNode mammals = new DefaultMutableTreeNode("Mammals");
-		mammals.add(new DefaultMutableTreeNode("Human"));
-		mammals.add(new DefaultMutableTreeNode("Kangaroo"));
-		mammals.add(new DefaultMutableTreeNode("Elephant"));
-		mammals.add(new DefaultMutableTreeNode("Goat"));
-		model.insertNodeInto(mammals, root, root.getChildCount());
+		scrollTree.setViewportView(tree);
+		scrollTree.setPreferredSize(new Dimension(200, 10));
 		
-		// create reptiles
-		DefaultMutableTreeNode reptiles = new DefaultMutableTreeNode("Reptiles");
-		reptiles.add(new DefaultMutableTreeNode("Lizard"));
-		reptiles.add(new DefaultMutableTreeNode("Boa"));
-		reptiles.add(new DefaultMutableTreeNode("Iguana"));
-		model.insertNodeInto(reptiles, root, root.getChildCount());
-		
-		// create birds
-		DefaultMutableTreeNode birds = new DefaultMutableTreeNode("Birds");
-		birds.add(new DefaultMutableTreeNode("Duck"));
-		birds.add(new DefaultMutableTreeNode("Pidgeon"));
-		birds.add(new DefaultMutableTreeNode("Turkey"));
-		birds.add(new DefaultMutableTreeNode("Goose"));
-		model.insertNodeInto(birds, root, root.getChildCount());
-		
-		// create insects
-		DefaultMutableTreeNode insects = new DefaultMutableTreeNode("Insects");
-		insects.add(new DefaultMutableTreeNode("Termite"));
-		insects.add(new DefaultMutableTreeNode("Ladybug"));
-		insects.add(new DefaultMutableTreeNode("Fly"));
-		insects.add(new DefaultMutableTreeNode("Ant"));
-		model.insertNodeInto(insects, root, root.getChildCount());
-		
-		// create fish
-		DefaultMutableTreeNode fish = new DefaultMutableTreeNode("Fish");
-		fish.add(new DefaultMutableTreeNode("Sword Fish"));
-		fish.add(new DefaultMutableTreeNode("Shark"));
-		fish.add(new DefaultMutableTreeNode("Eel"));
-		model.insertNodeInto(fish, root, root.getChildCount());
-		
-		return root;
 	}
 	
 	
@@ -254,24 +232,32 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 			}
 	}
 	
-	void setAdd() {
-		String s = treeDialog.getValidatedText();
-		if(s != null && s != "\\s"){
-			// get parent node
-			DefaultMutableTreeNode temp = selected;
-			if ( selected != null ) {
-				if ( selected.equals(root))
-					temp = selected;
-				else if ( selected.getParent().getParent().equals(root))
-					temp = (DefaultMutableTreeNode) selected.getParent();
-			}
-			else if (root == null) {
-				model.setRoot(new DefaultMutableTreeNode(s));
-			}
-			model.insertNodeInto( new DefaultMutableTreeNode(s), temp, root.getChildCount());
-		}
+	void addFile() {
 		
+		String s = textField.getText();
+		
+		if(s != null && s != "\\s"){
+			
+			if (selected == null)
+				selected = root;
+			
+			String fn = (String)selected.getUserObject();
+			if (fn.contains(".")) {
+				selected = (DefaultMutableTreeNode) selected.getParent();
+				fn = (String)selected.getUserObject();
+			}
+			
+			FileNode toSend = null;
+			if (file.isSelected())
+				toSend = new FileNode(s, true, Arrays.copyOf(selected.getUserObjectPath(),selected.getUserObjectPath().length,String[].class));
+			else if (folder.isSelected()) 
+				toSend = new FileNode(s, false, Arrays.copyOf(selected.getUserObjectPath(),selected.getUserObjectPath().length,String[].class));
+			
+			con.send(toSend);
+		}
 	}
+	
+	
 	
 	public void accessDoc(String filename) {
 		con.send(filename);

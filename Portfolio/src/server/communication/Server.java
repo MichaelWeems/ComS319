@@ -11,11 +11,22 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import javax.swing.JTree;
+import javax.swing.text.Position;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreePath;
+
 import data.storage.Document;
 import data.storage.UserPass;
+import gui.Renderer;
+import data.storage.FileNode;
 
 public class Server {
 	static ArrayList<Socket> clientArr;
@@ -28,7 +39,20 @@ public class Server {
 	private static Socket client = null;
 	static ArrayList<String> chatting;
 	
+	static DefaultMutableTreeNode root = null;
+	static DefaultTreeModel treeModel = null;
+	static JTree fileTree = null;
+	
+	static String rootFolderName = "root";
+	
 	public static void main(String[] args) throws UnknownHostException, IOException{
+		
+		
+		makeFileTree();
+		
+		if (fileTree == null)
+			System.out.println("file tree is null");  // for some reason I need this conditional.
+													  // without it the tree actually is null. Doesn't make sense
 		
 		clientArr = new ArrayList<>();
 		chatting = new ArrayList<String>();
@@ -36,6 +60,7 @@ public class Server {
 		userpass = new HashMap<String,String>();
 		userpass.put("Zach", "wild");
 		userpass.put("Mike", "weems");
+		userpass.put("user", "pass");
 		
 		//Server end
 		try {
@@ -45,10 +70,8 @@ public class Server {
 			while(true){
 				client = server.accept();
 				for (int i = 0; i < 15; i++) {
-		              if (rthreadArr[i] == null /*&& wthreadArr[i] == null*/) {
+		              if (rthreadArr[i] == null) {
 		            	  (rthreadArr[i] = new ReadHandler(client, rthreadArr)).start();
-//		            	  (wthreadArr[i] = new WriteHandler(client, wthreadArr)).start();
-//		            	  threadArr[i].run();
 		            	  break;
 			          }
 			    }
@@ -59,9 +82,43 @@ public class Server {
 //		Turn into client instead and uses same socket num
 		catch (IOException e) {
 			e.printStackTrace();
-			//Client.main(args);
 		} 
 	}
+	
+	// called when server is booting up
+	static void makeFileTree(){
+		File fileRoot = new File(rootFolderName);
+		if (!fileRoot.exists())
+			fileRoot.mkdir();
+		
+		root = new DefaultMutableTreeNode(rootFolderName);
+		treeModel = new DefaultTreeModel(root);
+		fileTree = new JTree(treeModel);
+        fileTree.setShowsRootHandles(true);
+        
+        findChildren(fileRoot,root);
+        
+	}
+	
+	private static void findChildren(File parent, DefaultMutableTreeNode parentNode) {
+        File[] files = parent.listFiles();
+        if (files == null) return;
+
+        for (File file : files) {
+        	DefaultMutableTreeNode child;
+
+       		child = new DefaultMutableTreeNode(file.getName());
+        	
+        	if (child.getUserObject() == null)
+        		System.out.println(file.getName());
+        	
+            parentNode.add(child);
+            if (file.isDirectory())
+                findChildren(file, child);
+            
+        }
+    }
+	
 }
 
 class ReadHandler extends Thread {
@@ -102,6 +159,7 @@ class ReadHandler extends Thread {
 	       */
 	      ois = new ObjectInputStream(client.getInputStream());
 	      
+	      oos.writeObject(Server.fileTree);
 	      
 	      // Continuously loop through and check for new queries from the client
 	      while (true) {
@@ -160,6 +218,51 @@ class ReadHandler extends Thread {
 	    			  oos.writeObject((Boolean) true);
 	    		  else 
 	    			  oos.writeObject((Boolean) false);
+	    		  
+	    	  }
+	    	  else if (obj instanceof FileNode){
+	    		  FileNode fn = (FileNode) obj;
+	    		  
+//	    		  String path = null;
+	    		  String filepath = "";
+	    		  String fnpath[] = fn.getParentPath();
+//	    		  
+//	    		  for (int i = 0; i < fn.getParentPath().length; i++) {
+//	    			  int row = (path==null ? 0 : Server.fileTree.getRowForPath(path));
+//	    			  String s = ((FileNode)fn.getParentPath()[i].getUserObject()).toString();
+//	    			  path = Server.fileTree.getNextMatch(s, row, Position.Bias.Forward);
+//	    			  filepath += ((FileNode)fn.getParentPath()[i].getUserObject()).getName() + "\\";
+//	    			  if (path == null)
+//	    				  break;
+//	    		  }
+	    		  
+	    		  DefaultMutableTreeNode temp = Server.root;
+	    		  if (fnpath[0].equals(Server.rootFolderName)){
+	    			  filepath += fnpath[0] + "\\";
+	    		  }
+	    		  
+	    		  for (int i = 1; i < fnpath.length; i++) {
+	    			  int count = Server.treeModel.getChildCount(temp);
+	    			  for ( int j = 0; j < count; j++ ) {
+	    				  if ( ((String)((DefaultMutableTreeNode)Server.treeModel.getChild(temp,j)).getUserObject()).equals(fnpath[i])) {
+	    					  temp = (DefaultMutableTreeNode) Server.treeModel.getChild(temp, j);
+	    					  filepath += fnpath[i] + "\\";
+	    					  break;
+	    				  }
+	    			  }
+	    		  }
+	    		  File f = null;
+	    		  
+	    		  if (filepath != null) {
+	    			  f = new File(filepath + fn.getName());
+	    			  f.createNewFile();
+	    			  Server.makeFileTree();
+	    			  
+	    			  for ( int i = 0; i < Server.rthreadArr.length; i++) {
+	    				  Server.rthreadArr[i].oos.writeObject(Server.fileTree);
+	    			  }
+	    		  }
+	    		  
 	    		  
 	    	  }
 	    	  

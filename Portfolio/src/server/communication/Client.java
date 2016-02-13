@@ -3,10 +3,10 @@ package server.communication;
 import javax.swing.*;
 
 import data.storage.Document;
+import data.storage.FileNode;
 import data.storage.UserPass;
 import gui.ClientGUI;
 import gui.Editor;
-import gui.Login;
 
 import java.awt.Font;
 import java.io.*;
@@ -16,6 +16,8 @@ import java.util.*;
 public class Client {
 	
 	private static ClientGUI ui = null;
+	
+	private static Object lockObject = null;
 	
 	public static class Connection extends Observable {
 		private Socket socket;
@@ -39,6 +41,7 @@ public class Client {
                     	
                     	try {
                     		while(true) {
+                    			
 								Object obj = ois.readObject();
 								
 								if (obj instanceof Document){
@@ -59,12 +62,20 @@ public class Client {
 								}
 								else if (obj instanceof Boolean) {
 									Boolean acceptedLogin = (Boolean) obj;
-									
 									ui.getLogin().serverResponse(acceptedLogin);
+									ui.recieveLogin();
 								}
-//								else if (obj instanceof Node) {
-//									
-//								}
+								else if (obj instanceof JTree) {
+									JTree tree = (JTree) obj;
+									
+									synchronized (lockObject) {
+										while (ui == null) {
+											try{ lockObject.wait(); }
+											catch (Exception e) {}
+										}
+									}
+									ui.setTree(tree);
+								}
                     		}
 						} catch (ClassNotFoundException e) {
 							e.printStackTrace();
@@ -105,6 +116,15 @@ public class Client {
             }
         }
         
+        /** Send a line of text */
+        public void send(FileNode fn) {
+        	try {
+        		oos.writeObject((Object)fn);
+            } catch (IOException ex) {
+                notifyObservers(ex);
+            }
+        }
+        
         /** Close the socket */
         public void close() {
             try {
@@ -135,6 +155,7 @@ public class Client {
 		String server = "localhost";
         int port = 4444;
         Connection con = null;
+        lockObject = new Object();
         try {
             con = new Connection(server, port);
         } catch (IOException ex) {
@@ -142,11 +163,10 @@ public class Client {
             ex.printStackTrace();
             System.exit(0);
         }
-        
-        ui = new ClientGUI(con);
-        JFrame frame = ui.getFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(100, 100, 400, 350);
+        synchronized  (lockObject) {
+	        ui = new ClientGUI(con);
+	        lockObject.notifyAll();
+        }
 		
 	}
 }

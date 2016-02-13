@@ -97,7 +97,7 @@ public class AddElementDialog extends JDialog implements ActionListener, Propert
 			}
 			gui.accessDoc(textfield.getText());
 			this.setVisible(false);
-			gui.setAdd();
+			//gui.setAdd();
 			
 		}
 		
