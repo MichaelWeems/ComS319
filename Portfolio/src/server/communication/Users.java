@@ -10,6 +10,7 @@ public class Users {
 		users = new HashMap<String,String>();
 		users.put("Zach", "wild");
 		users.put("Mike", "weems");
+		users.put("a", "a");
 	}
 	
 	public HashMap<String,String> getUsers(){

@@ -28,7 +28,6 @@ import javax.swing.tree.TreePath;
 
 import data.storage.Document;
 import data.storage.UserPass;
-import gui.Renderer;
 import data.storage.FileNode;
 
 public class Server {
@@ -169,9 +168,6 @@ class ReadHandler extends Thread {
 	      while (true) {
 	    	  System.out.println("Before readline");
 	    	  Object obj = ois.readObject();
-	    	  System.out.println("Object Recieved");
-	    	  if ( obj instanceof FileNode)
-	    		  System.out.println("FileNode Recieved");
 	    	  
 	    	  if ( obj instanceof String ) {
 	    		  String line = (String) obj;
@@ -228,21 +224,25 @@ class ReadHandler extends Thread {
 	    		  
 	    	  }
 	    	  else if (obj instanceof FileNode){
-	    		  System.out.println("Server: Filenode");
 	    		  FileNode fn = (FileNode) obj;
 	    		  
 	    		  String filepath = "";
 	    		  String fnpath[] = fn.getParentPath();
 	    		  
-	    		  for ( int i = 0; i < fnpath.length; i++ )
+	    		  int filepathLength = fnpath.length;
+	    		  if ( fn.getDelete() )
+	    			  filepathLength--;
+	    		  
+	    		  for ( int i = 0; i < filepathLength; i++ )
 	    			  filepath += fnpath[i] + "\\";
 	    		  
 	    		  File f = new File(filepath + fn.getName());
 	    		  
 	    		  boolean delete = fn.getDelete();
-	    		  System.out.println("delete == " + delete);
+	    		  
+	    		  System.out.println(filepath + fn.getName());
+
 	    		  if (!f.exists()){
-	    			  System.out.println("file doesn't exist");
 	    			  if (fn.isDir()){
 	    				  f.mkdir();
 	    			  }
@@ -251,18 +251,18 @@ class ReadHandler extends Thread {
 	    			  }
 	    		  }
 	    		  else if (delete) {
-	    			  System.out.println("deleting");
 	    			  deleteFiles(f);
 	    		  }
 	    		  
 	    		  Server.makeFileTree();
-    			  oos.writeObject((JTree) Server.fileTree);
 	    		  
-//	    		  try {
-//    				  f.createNewFile();
-//    			  } catch (IOException e) {
-//    				  e.printStackTrace();
-//    			  }
+	    		  for (int i = 0; i < Server.rthreadArr.length; i++) {
+	    			  try {
+	    				  Server.rthreadArr[i].oos.writeObject((JTree) Server.fileTree);
+	    			  } catch (NullPointerException e) {
+	    				  continue;
+	    			  }
+	    		  }
 	    	  }
 	    	  
 	    	  int count = 0;
@@ -297,16 +297,17 @@ class ReadHandler extends Thread {
 	
 	// recursively deletes all files under a folder
 	void deleteFiles(File f) {
-		System.out.println("deleting file: " + f.getName());
-		System.out.println("is directory? " + f.isDirectory());
 		if ( f.listFiles() != null) {
-			System.out.println("files aren't null");
 			for (File file : f.listFiles()){
 				if (file.isDirectory())
 					deleteFiles(file);
 				System.out.println(file.getName());
 				file.delete();
 			}
+			f.delete();
+		}
+		else if (f.isFile()){
+			f.delete();
 		}
 	}
 

@@ -14,7 +14,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import data.storage.Document;
@@ -31,16 +32,15 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 	protected JFrame frame;
 	private JPanel contentPane;
 	private JScrollPane scrollTree;
-	AddElementDialog listDialog;
 	
 	private JTree tree;
 	private DefaultTreeModel model;
 	private DefaultMutableTreeNode root;
-	AddElementDialog treeDialog;
 	private JRadioButton file;
 	private JRadioButton folder;
 	
 	DefaultMutableTreeNode selected;
+	String nodePath[];
 	
 	// connection information
 	private Connection con;
@@ -167,7 +167,7 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		public void actionPerformed(ActionEvent e){
 			try {
 				if ( ((String)selected.getUserObject()).contains(".") )
-					con.getOOS().writeObject((String)selected.getUserObject());
+					con.getOOS().writeObject(getFilePath());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -191,7 +191,7 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 			//Only if a file is selected
 			
 			if ( ((String)selected.getUserObject()).contains(".") ) {
-				String filename = (String)selected.getUserObject();
+				String filename = getFilePath();
 				Document doc = new Document(filename, true);
 				doc.setToPreview();
 				try {
@@ -217,7 +217,6 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 	
 	// sets up the tree
 	public void setTree(JTree newtree) {
-		System.out.println("In setTree function");
 		tree = newtree;
 		
 		model = (DefaultTreeModel) tree.getModel();
@@ -228,6 +227,8 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		scrollTree.setViewportView(null);
 		scrollTree.setViewportView(tree);
 		
+		//tree.expandPath(new TreePath());
+		tree.expandRow(0);
 	}
 	
 	void addFile() {
@@ -251,9 +252,8 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 			else if (folder.isSelected()) 
 				toSend = new FileNode(s, true, Arrays.copyOf(selected.getUserObjectPath(),selected.getUserObjectPath().length,String[].class));
 			
-			
-			System.out.println("before sending to server");
 			con.send(toSend);
+			//nodePath = getNodePath(selected);
 		}
 	}
 	
@@ -270,8 +270,8 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		
 		toSend.setDelete(true);
 		
-		System.out.println("before sending to server");
 		con.send(toSend);
+		//nodePath = getNodePath((DefaultMutableTreeNode) selected.getParent());
 	}
 	
 	public void accessDoc(String filename) {
@@ -287,13 +287,37 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		return prevTxt;
 	}
 	
+	/*
+	private String[] getNodePath(DefaultMutableTreeNode sel){
+		try {
+			return (String[])sel.getUserObjectPath();
+		} catch (NullPointerException e) {
+			String s[] = { (String)root.getUserObject() };
+			return s;
+		}
+	}
+	*/
+	
+	private String getFilePath(){
+		
+		String s = "";
+		try {
+			for ( int i = 0; i < selected.getUserObjectPath().length - 1; i++ ) { 
+				String str = (String)selected.getUserObjectPath()[i];
+				s += str + "\\";
+			}
+			return s + (String)selected.getUserObjectPath()[selected.getUserObjectPath().length - 1];
+		} catch (NullPointerException e) {
+			return s = (String)root.getUserObject();
+		}
+	}
+	
 	public void observe(Observable o) {
 	    o.addObserver(this);
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("Client repainting");
 		scrollTree.repaint();
 		scrollTree.revalidate();
 	}
