@@ -3,10 +3,13 @@ package server.communication;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -61,6 +64,7 @@ public class Server {
 		userpass.put("Zach", "wild");
 		userpass.put("Mike", "weems");
 		userpass.put("user", "pass");
+		
 		
 		//Server end
 		try {
@@ -165,6 +169,9 @@ class ReadHandler extends Thread {
 	      while (true) {
 	    	  System.out.println("Before readline");
 	    	  Object obj = ois.readObject();
+	    	  System.out.println("Object Recieved");
+	    	  if ( obj instanceof FileNode)
+	    		  System.out.println("FileNode Recieved");
 	    	  
 	    	  if ( obj instanceof String ) {
 	    		  String line = (String) obj;
@@ -221,49 +228,41 @@ class ReadHandler extends Thread {
 	    		  
 	    	  }
 	    	  else if (obj instanceof FileNode){
+	    		  System.out.println("Server: Filenode");
 	    		  FileNode fn = (FileNode) obj;
 	    		  
-//	    		  String path = null;
 	    		  String filepath = "";
 	    		  String fnpath[] = fn.getParentPath();
-//	    		  
-//	    		  for (int i = 0; i < fn.getParentPath().length; i++) {
-//	    			  int row = (path==null ? 0 : Server.fileTree.getRowForPath(path));
-//	    			  String s = ((FileNode)fn.getParentPath()[i].getUserObject()).toString();
-//	    			  path = Server.fileTree.getNextMatch(s, row, Position.Bias.Forward);
-//	    			  filepath += ((FileNode)fn.getParentPath()[i].getUserObject()).getName() + "\\";
-//	    			  if (path == null)
-//	    				  break;
-//	    		  }
 	    		  
-	    		  DefaultMutableTreeNode temp = Server.root;
-	    		  if (fnpath[0].equals(Server.rootFolderName)){
-	    			  filepath += fnpath[0] + "\\";
-	    		  }
+	    		  for ( int i = 0; i < fnpath.length; i++ )
+	    			  filepath += fnpath[i] + "\\";
 	    		  
-	    		  for (int i = 1; i < fnpath.length; i++) {
-	    			  int count = Server.treeModel.getChildCount(temp);
-	    			  for ( int j = 0; j < count; j++ ) {
-	    				  if ( ((String)((DefaultMutableTreeNode)Server.treeModel.getChild(temp,j)).getUserObject()).equals(fnpath[i])) {
-	    					  temp = (DefaultMutableTreeNode) Server.treeModel.getChild(temp, j);
-	    					  filepath += fnpath[i] + "\\";
-	    					  break;
-	    				  }
+	    		  File f = new File(filepath + fn.getName());
+	    		  
+	    		  boolean delete = fn.getDelete();
+	    		  System.out.println("delete == " + delete);
+	    		  if (!f.exists()){
+	    			  System.out.println("file doesn't exist");
+	    			  if (fn.isDir()){
+	    				  f.mkdir();
+	    			  }
+	    			  else {
+	    				  f.createNewFile();
 	    			  }
 	    		  }
-	    		  File f = null;
-	    		  
-	    		  if (filepath != null) {
-	    			  f = new File(filepath + fn.getName());
-	    			  f.createNewFile();
-	    			  Server.makeFileTree();
-	    			  
-	    			  for ( int i = 0; i < Server.rthreadArr.length; i++) {
-	    				  Server.rthreadArr[i].oos.writeObject(Server.fileTree);
-	    			  }
+	    		  else if (delete) {
+	    			  System.out.println("deleting");
+	    			  deleteFiles(f);
 	    		  }
 	    		  
+	    		  Server.makeFileTree();
+    			  oos.writeObject((JTree) Server.fileTree);
 	    		  
+//	    		  try {
+//    				  f.createNewFile();
+//    			  } catch (IOException e) {
+//    				  e.printStackTrace();
+//    			  }
 	    	  }
 	    	  
 	    	  int count = 0;
@@ -294,6 +293,21 @@ class ReadHandler extends Thread {
 	    } catch (IOException | ClassNotFoundException e) {
 	    }
 		
+	}
+	
+	// recursively deletes all files under a folder
+	void deleteFiles(File f) {
+		System.out.println("deleting file: " + f.getName());
+		System.out.println("is directory? " + f.isDirectory());
+		if ( f.listFiles() != null) {
+			System.out.println("files aren't null");
+			for (File file : f.listFiles()){
+				if (file.isDirectory())
+					deleteFiles(file);
+				System.out.println(file.getName());
+				file.delete();
+			}
+		}
 	}
 
 	void printSocketInfo(Socket s) {

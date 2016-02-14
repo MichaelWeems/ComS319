@@ -24,7 +24,7 @@ public class Client {
 
 		private ObjectOutputStream oos;
 		private ObjectInputStream ois;
-
+		
         /** Create socket, and receiving thread */
         public Connection(String server, int port) throws IOException {
             socket = new Socket(server, port);
@@ -88,7 +88,6 @@ public class Client {
             receivingThread.start();
         }
         
-
         /** Send a line of text */
         public void send(String text) {
         	try {
@@ -145,6 +144,7 @@ public class Client {
         public ObjectInputStream getOIS(){
         	return ois;
         }
+        
 	}
 	
 	/**

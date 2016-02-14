@@ -5,6 +5,8 @@ import java.awt.event.*;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -20,10 +22,15 @@ import data.storage.FileNode;
 import server.communication.Client.Connection;
 
 
-public class ClientGUI extends JFrame implements TreeSelectionListener {
+public class ClientGUI extends JFrame implements TreeSelectionListener, Observer {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4218365539974626814L;
 	protected JFrame frame;
 	private JPanel contentPane;
+	private JScrollPane scrollTree;
 	AddElementDialog listDialog;
 	
 	private JTree tree;
@@ -87,6 +94,7 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		textField.setColumns(10);
 		
 		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new delListener());
 		panelBot.add(btnDelete);
 		
 		file = new JRadioButton("file");
@@ -117,6 +125,10 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		prevTxt = new JTextArea();
 		prevTxt.setEditable(false);
 		scrollTxt.setViewportView(prevTxt);
+		
+		scrollTree = new JScrollPane();
+		scrollTree.setPreferredSize(new Dimension(200, 10));
+		contentPane.add(scrollTree, BorderLayout.WEST);
 		
 		frame.setVisible(true);
 		
@@ -168,23 +180,28 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 		}
 	}
 	
-	private class prevListener implements ActionListener{
+	private class delListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			//Only if a file is selected
-			String txt = "";
-//			String fileName = tree.getName();
-			String filename = "chat.txt";
-			Document doc = new Document(filename, true);
-			doc.setToPreview();
-			try {
-				con.getOOS().writeObject(doc);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			delFile();
 		}
 	}
 	
-	
+	private class prevListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			//Only if a file is selected
+			
+			if ( ((String)selected.getUserObject()).contains(".") ) {
+				String filename = (String)selected.getUserObject();
+				Document doc = new Document(filename, true);
+				doc.setToPreview();
+				try {
+					con.getOOS().writeObject(doc);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+	}
 	
 	public JFrame getFrame(){
 		return frame;
@@ -200,36 +217,17 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 	
 	// sets up the tree
 	public void setTree(JTree newtree) {
+		System.out.println("In setTree function");
 		tree = newtree;
-
-		JScrollPane scrollTree = new JScrollPane();
-		contentPane.add(scrollTree, BorderLayout.WEST);
+		
 		model = (DefaultTreeModel) tree.getModel();
 		root = (DefaultMutableTreeNode) model.getRoot();
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		tree.addTreeSelectionListener(this);
 		
+		scrollTree.setViewportView(null);
 		scrollTree.setViewportView(tree);
-		scrollTree.setPreferredSize(new Dimension(200, 10));
 		
-	}
-	
-	
-	private class treeAddListener implements ActionListener{
-		public void actionPerformed(ActionEvent event){
-			treeDialog.setLocationRelativeTo(frame);
-			treeDialog.setVisible(true);
-			
-		}
-	}
-	
-	private class treeRemoveListener implements ActionListener{
-		public void actionPerformed(ActionEvent event){
-				if (selected.equals(root))
-					model.setRoot(null);
-				else
-					model.removeNodeFromParent(selected);
-			}
 	}
 	
 	void addFile() {
@@ -249,15 +247,32 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 			
 			FileNode toSend = null;
 			if (file.isSelected())
-				toSend = new FileNode(s, true, Arrays.copyOf(selected.getUserObjectPath(),selected.getUserObjectPath().length,String[].class));
-			else if (folder.isSelected()) 
 				toSend = new FileNode(s, false, Arrays.copyOf(selected.getUserObjectPath(),selected.getUserObjectPath().length,String[].class));
+			else if (folder.isSelected()) 
+				toSend = new FileNode(s, true, Arrays.copyOf(selected.getUserObjectPath(),selected.getUserObjectPath().length,String[].class));
 			
+			
+			System.out.println("before sending to server");
 			con.send(toSend);
 		}
 	}
 	
-	
+	void delFile() {
+		
+		if (selected == root || selected == null)
+			return;
+		
+		String s = (String)selected.getUserObject();
+		
+			
+		FileNode toSend = new FileNode(s, false, Arrays.copyOf(selected.getUserObjectPath(),
+				selected.getUserObjectPath().length,String[].class));
+		
+		toSend.setDelete(true);
+		
+		System.out.println("before sending to server");
+		con.send(toSend);
+	}
 	
 	public void accessDoc(String filename) {
 		con.send(filename);
@@ -270,6 +285,17 @@ public class ClientGUI extends JFrame implements TreeSelectionListener {
 	
 	public JTextArea prevTxt(){
 		return prevTxt;
+	}
+	
+	public void observe(Observable o) {
+	    o.addObserver(this);
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		System.out.println("Client repainting");
+		scrollTree.repaint();
+		scrollTree.revalidate();
 	}
 	
 }
