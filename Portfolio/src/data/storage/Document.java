@@ -1,30 +1,27 @@
 package data.storage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Document implements Serializable{
 	
-	private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2666440411391895074L;
 
 	private DataModel dataModel;
 	
-	private File doc;
 	private String filename = "";
 	
 	private boolean preview;
 	private boolean readonly;
+	public boolean release;
 	
 	// Empty Constructor
 	public Document() {
@@ -33,17 +30,39 @@ public class Document implements Serializable{
 		filename = "temp.txt";
 		preview = false;
 		readonly = false;
+		release = false;
 		
-		try {
-		     doc = new File(filename);
-		      if (doc.createNewFile()){
-		        System.out.println("File is created!");
-		      }else{
-		        System.out.println("File already exists.");
-		      }
-	    	} catch (IOException e) {
-		      e.printStackTrace();
-		}
+//		try {
+//		     doc = new File(filename);
+//		      if (doc.createNewFile()){
+//		        System.out.println("File is created!");
+//		      }else{
+//		        System.out.println("File already exists.");
+//		      }
+//	    	} catch (IOException e) {
+//		      e.printStackTrace();
+//		}
+	}
+	
+	// copy Constructor
+	public Document(Document d) {
+		
+		dataModel = new DataModel(d.getDataModel());
+		filename = d.getName();
+		preview = d.preview;
+		readonly = d.preview;
+		release = d.release;
+		
+//		try {
+//		     doc = new File(filename);
+//		      if (doc.createNewFile()){
+//		        System.out.println("File is created!");
+//		      }else{
+//		        System.out.println("File already exists.");
+//		      }
+//	    	} catch (IOException e) {
+//		      e.printStackTrace();
+//		}
 	}
 	
 	// Don't include file extension in the file name
@@ -53,31 +72,32 @@ public class Document implements Serializable{
 		this.filename = filename;
 		preview = false;
 		readonly = false;
+		release = false;
 		
-		try {
-		      doc = new File(filename);
-		      if (!doc.exists()) {
-		    	  
-		      //if (doc.createNewFile()){
-		    	doc.createNewFile();
-		        System.out.println("File is created!");
-		        
-		        // display the new document
-		      }
-		      //}else{
-		        //System.out.println("File already exists.");
-		      else {
-		        // read in file as arraylist
-		        readServerFile();
-		        System.out.println("File is being read!");
-		      }
-	    	} catch (IOException e) {
-		      //e.printStackTrace();
-	    		 System.out.println("File already exists.");
-			        
-			        // read in file as arraylist
-			        readServerFile();
-		}
+//		try {
+//		      doc = new File(filename);
+//		      if (!doc.exists()) {
+//		    	  
+//		      //if (doc.createNewFile()){
+//		    	doc.createNewFile();
+//		        System.out.println("File is created!");
+//		        
+//		        // display the new document
+//		      }
+//		      //}else{
+//		        //System.out.println("File already exists.");
+//		      else {
+//		        // read in file as arraylist
+//		        readServerFile();
+//		        System.out.println("File is being read!");
+//		      }
+//	    	} catch (IOException e) {
+//		      //e.printStackTrace();
+//	    		 System.out.println("File already exists.");
+//			        
+//			        // read in file as arraylist
+//			        readServerFile();
+//		}
 	}
 	
 	// Preview Constructor
@@ -86,6 +106,7 @@ public class Document implements Serializable{
 		this.filename = filename;
 		this.preview = preview;
 		readonly = false;
+		release = false;
 	}
 	
 	// copy the file into our datamodel
@@ -149,6 +170,14 @@ public class Document implements Serializable{
 	
 	public boolean getReadOnly(){
 		return readonly;
+	}
+	
+	public void setRelease(){
+		release = true;
+	}
+	
+	public boolean getRelease(){
+		return release;
 	}
 	
 }

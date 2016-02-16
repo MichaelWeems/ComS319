@@ -19,6 +19,13 @@ public class DataModel extends AbstractListModel<String>{
 		arr = new ArrayList<String>();
 	}
 	
+	// copy constructor
+	public DataModel(DataModel dm) {
+		arr = new ArrayList<String>();
+		for ( String s : dm.getArr() )
+			arr.add(s);
+	}
+	
 	// shallow copy constructor
 	public DataModel(ArrayList <String> l) {
 		arr = l;
@@ -26,7 +33,7 @@ public class DataModel extends AbstractListModel<String>{
 	
 	public ArrayList<String> readInFile(String filename){
 		File f = new File(filename);
-		System.out.println(filename);
+//		System.out.println(filename);
 		Scanner scan = null;
 		try {
 			scan = new Scanner(f);

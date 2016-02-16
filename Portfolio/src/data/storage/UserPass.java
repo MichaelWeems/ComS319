@@ -1,7 +1,13 @@
 package data.storage;
 
-public class UserPass {
+import java.io.Serializable;
+
+public class UserPass implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4116596012680909966L;
 	private String user;
 	private String pass;
 	

@@ -6,16 +6,20 @@ import data.storage.Document;
 import data.storage.FileNode;
 import data.storage.UserPass;
 import gui.ClientGUI;
-import gui.Editor;
 
 import java.awt.Font;
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
+/*
+ * A Process that can be started multiple times, each time creating a different
+ * connection to a server thread. Cannot be started before the Server process.
+ * Will boot up a gui to handle user input.
+ */
 public class Client {
 	
-	private static ClientGUI ui = null;
+	private static ClientGUI ui = null;		// 
 	
 	private static Object lockObject = null;
 	
@@ -36,7 +40,7 @@ public class Client {
                     	
                     	oos = new ObjectOutputStream(socket.getOutputStream());
                     	oos.flush();
-                        		
+                        
                     	ois = new ObjectInputStream(socket.getInputStream());
                     	
                     	try {
@@ -57,13 +61,13 @@ public class Client {
 									}
 									else {
 										System.out.println("Displaying Document..." + doc.getName());
-										Editor editFrame = new Editor(doc, oos);
+										ui.createEditor(doc);
 									}
 								}
 								else if (obj instanceof Boolean) {
 									Boolean acceptedLogin = (Boolean) obj;
 									ui.getLogin().serverResponse(acceptedLogin);
-									ui.recieveLogin();
+//									ui.receiveLogin();
 								}
 								else if (obj instanceof JTree) {
 									JTree tree = (JTree) obj;
@@ -75,6 +79,11 @@ public class Client {
 										}
 									}
 									ui.setTree(tree);
+								}
+								else if (obj instanceof String) {
+									String message = (String)obj;
+									System.out.println("Recieved JDialog Message: " + message);
+									JOptionPane.showMessageDialog(ui.getFrame(), message);
 								}
                     		}
 						} catch (ClassNotFoundException e) {

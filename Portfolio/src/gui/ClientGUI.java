@@ -4,7 +4,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -36,15 +38,24 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 	private JTree tree;
 	private DefaultTreeModel model;
 	private DefaultMutableTreeNode root;
-	private JRadioButton file;
-	private JRadioButton folder;
+	
+//	Color innerColor = new Color(209,196,233);
+	
+	private JComboBox<String> filefolder;
+	private static final String file = "File";
+	private static final String folder = "Folder";
+	private boolean fileSelected;
+	private boolean folderSelected;
+	private String[] comboBoxArr = {file, folder};
+	
+	private ArrayList<Editor> editors;
 	
 	DefaultMutableTreeNode selected;
 	String nodePath[];
 	
 	// connection information
 	private Connection con;
-	private String name = null;
+	//private String name = null;
 	
 	private JTextField textField;
 	private JTextArea prevTxt;
@@ -59,11 +70,15 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		
 		this.con = con;
 		
+		fileSelected = false;
+		folderSelected = false;
+		editors = new ArrayList<Editor>();
+		
 		frame = new JFrame();
 		
-		frame.setTitle("Documents");
+		frame.setTitle("Shared Drive");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(100, 100, 500, 400);
+		frame.setBounds(100, 100, 800, 800);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		frame.setContentPane(contentPane);
@@ -72,8 +87,6 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		
 		
 		
-		// creates a new login dialog
-		//startLogin();
 		
 		/**
 		 * Bottom Panel
@@ -97,16 +110,11 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		btnDelete.addActionListener(new delListener());
 		panelBot.add(btnDelete);
 		
-		file = new JRadioButton("file");
-		folder = new JRadioButton("folder");
-		
-		ButtonGroup bg = new ButtonGroup();
-		
-		bg.add(file);
-		bg.add(folder);
-		panelBot.add(file);
-		panelBot.add(folder);
-		file.setSelected(true);
+		filefolder = new JComboBox<String>(comboBoxArr);
+		panelBot.add(filefolder);
+		filefolder.setSelectedIndex(0);
+		fileSelected = true;
+		filefolder.addActionListener(new comboBoxListener());
 		
 		/**
 		 * Top Panel(Right)
@@ -130,8 +138,26 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		scrollTree.setPreferredSize(new Dimension(200, 10));
 		contentPane.add(scrollTree, BorderLayout.WEST);
 		
-		frame.setVisible(true);
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	
+		    	int size = editors.size();
+		    	for ( int i = 0; i < size; i++ )
+		    		editors.get(i).releaseDoc();
+		    	
+		    	editors = null;
+		    	
+		    	frame.setVisible(false);
+		    	System.exit(0);
+		    }
+		});
 		
+		// creates a new login dialog
+		startLogin();
+		
+		
+//		contentPane.setBackground( new Color(152, 38, 175) );
 	 }
 	
 	// creates a new login dialog
@@ -150,17 +176,31 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		login.setVisible(true);
 	}
 	
-	public void recieveLogin(){
-		name = login.getLoginName();
+	public void receiveLogin(){
+//		name = login.getLoginName();
 		
-		if(name == null){
-			System.out.println("Good Bye!");
-			System.exit(0);
-		}
+//		if(name == null){
+//			name = login.getLoginName();
+//		}
 	}
 	
 	public Login getLogin() {
 		return login;
+	}
+	
+	private class comboBoxListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			JComboBox<String> combo = (JComboBox<String>)e.getSource();
+			String val = (String)combo.getSelectedItem();
+			if ( val.equals(file) ) {
+				fileSelected = true;
+				folderSelected = false;
+			}
+			else if ( val.equals(folder) ) {
+				folderSelected = true;
+				fileSelected = false;
+			}
+		}
 	}
 	
 	private class openListener implements ActionListener{
@@ -168,8 +208,10 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 			try {
 				if ( ((String)selected.getUserObject()).contains(".") )
 					con.getOOS().writeObject(getFilePath());
-			} catch (IOException e1) {
+			} catch (IOException e1 ) {
 				e1.printStackTrace();
+			} catch (NullPointerException e1) {
+				
 			}
 		}
 	}
@@ -212,7 +254,7 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 	}
 	
 	public void setName(String name){
-		this.name = name;
+//		this.name = name;
 	}
 	
 	// sets up the tree
@@ -227,8 +269,8 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		scrollTree.setViewportView(null);
 		scrollTree.setViewportView(tree);
 		
-		//tree.expandPath(new TreePath());
 		tree.expandRow(0);
+//		tree.setBackground(innerColor);
 	}
 	
 	void addFile() {
@@ -247,9 +289,9 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 			}
 			
 			FileNode toSend = null;
-			if (file.isSelected())
+			if (fileSelected)
 				toSend = new FileNode(s, false, Arrays.copyOf(selected.getUserObjectPath(),selected.getUserObjectPath().length,String[].class));
-			else if (folder.isSelected()) 
+			else if (folderSelected) 
 				toSend = new FileNode(s, true, Arrays.copyOf(selected.getUserObjectPath(),selected.getUserObjectPath().length,String[].class));
 			
 			con.send(toSend);
@@ -286,6 +328,15 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 	public JTextArea prevTxt(){
 		return prevTxt;
 	}
+	
+	public void createEditor(Document doc){
+		
+		Editor e = new Editor(doc, con.getOOS());
+		if ( !doc.getReadOnly() ) {
+			editors.add(e);
+		}
+	}
+	
 	
 	/*
 	private String[] getNodePath(DefaultMutableTreeNode sel){

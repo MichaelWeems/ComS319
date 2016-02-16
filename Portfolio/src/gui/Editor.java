@@ -11,14 +11,24 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import data.storage.Document;
+import data.storage.UserPass;
+import gui.ClientGUI;
 
 public class Editor extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1991783421961899236L;
 	private JPanel contentPane;
 	private JTextArea textArea;
 	
 	private Document doc;
 	private ObjectOutputStream oos;
+	
+	private final Document d;
+	
+	private static final String release = "RELEASE";
 
 	/**
 	 * Launch the application.
@@ -34,9 +44,11 @@ public class Editor extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Editor(Document doc, ObjectOutputStream oos) {
+	public Editor(Document doc, final ObjectOutputStream oos) {
 		this.doc = doc;
 		this.oos = oos;
+		
+		d = doc;
 		
 //		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(400, 100, 500, 600);
@@ -44,6 +56,8 @@ public class Editor extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
+		setTitle(doc.getName());
 		/**
 		 * Button Panel
 		 */
@@ -54,6 +68,8 @@ public class Editor extends JFrame {
 		panel.add(btnClose);
 		btnClose.addActionListener(new ActionListener(){
 			  public void actionPerformed(ActionEvent e){
+				  System.out.println("Closing Editor1");
+				  releaseDoc();
 				  setVisible(false);
 //				  System.exit(0);
 			  }
@@ -82,7 +98,19 @@ public class Editor extends JFrame {
 		if (doc.getReadOnly())
 			textArea.setEditable(false);
 		
+		
+		
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	System.out.println("Closing editor2");
+		    	releaseDoc();
+		    	setVisible(false);
+		    }
+		});
+		
 		this.setVisible(true);
+		
 	}
 	
 	private String txtForPreview(){
@@ -103,12 +131,27 @@ public class Editor extends JFrame {
 			}
 			scan.close();
 			
+			System.out.println("Syncing doc (" + doc.getName() + ") with the server");
 			try {
 				oos.writeObject(doc);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		}
+	}
+	
+	
+	public void releaseDoc(){
+		System.out.println("Editor: checking if doc is readonly");
+		if (!doc.getReadOnly()){
+	    	System.out.println("Releasing doc");
+	    	UserPass up = new UserPass("$RELEASE$",doc.getName());
+	        try {
+				oos.writeObject(up);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}    
+    	}
 	}
 
 }

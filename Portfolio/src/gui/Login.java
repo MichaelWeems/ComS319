@@ -28,6 +28,7 @@ import data.storage.UserPass;
 public class Login extends JFrame implements ActionListener, PropertyChangeListener {
 	private static final long serialVersionUID = 1L;
 	public String logName = null;
+	public boolean accept = false;
 	public JTextField userText;
 	public JTextField passText;
 	private ClientGUI gui;
@@ -37,8 +38,8 @@ public class Login extends JFrame implements ActionListener, PropertyChangeListe
 	public String logBtn = "Login";
 
 
-	public String getLoginName() {
-		return logName;
+	public boolean getAcceptance() {
+		return accept;
 	}
 
 	public Login(ClientGUI gui) {
@@ -83,26 +84,30 @@ public class Login extends JFrame implements ActionListener, PropertyChangeListe
 		Object value = optionPane.getValue();
 
 		optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
-
+		
 		if (logBtn.equals(value)) {
-			logName = userText.getText();
-			gui.getCon().send(new UserPass(logName,passText.getText()));
-			serverResponse(true);
+			String temp = userText.getText();
+			gui.getCon().send(new UserPass(temp,passText.getText()));
 		} 
 	}
 	
 	public void serverResponse(boolean accepted) {
+		accept = accepted;
 		if(accepted){
+			logName = userText.getText();
 			passText.setText(null);
 			setVisible(false);
 			System.out.println(":::: "+ logName +" Joined ::::");
 			gui.getFrame().setName(logName);
 			gui.setName(logName);
-			gui.setVisible(true);
+			gui.getFrame().setVisible(true);
 		}
 		else{
-			JOptionPane.showMessageDialog(optionPane, "Username or Password is invalid.");
+			JOptionPane.showMessageDialog(optionPane, 
+					"Username or Password is invalid.\n(Hint: username 'a' password 'a')");
 			passText.setText(null);
+			userText.setText(null);
+			userText.requestFocusInWindow();
 		}
 	}
 }
