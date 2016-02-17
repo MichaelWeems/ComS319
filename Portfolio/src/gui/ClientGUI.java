@@ -3,10 +3,8 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -16,64 +14,63 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import data.storage.Document;
 import data.storage.FileNode;
 import server.communication.Client.Connection;
 
-
+/*
+ * Main gui that the user sees after logging in. 
+ * Allows the user to: preview, edit, read, add, and delete files hosted on the server. 
+ * Sends requests to the server for these actions.
+ * 
+ */
 public class ClientGUI extends JFrame implements TreeSelectionListener, Observer {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -4218365539974626814L;
-	protected JFrame frame;
-	private JPanel contentPane;
-	private JScrollPane scrollTree;
 	
-	private JTree tree;
-	private DefaultTreeModel model;
-	private DefaultMutableTreeNode root;
+	// JFrame
+	protected JFrame frame;							// JFrame that holds the JPanel
+	private JPanel contentPane;						// Pane to hold all gui components
+	private JScrollPane scrollTree;					// Displays the file tree for the user
 	
-//	Color innerColor = new Color(209,196,233);
+	// Components
+	private JTree tree;								// Holds the file tree from the server
+	private DefaultTreeModel model;					// Model for the tree
+	private DefaultMutableTreeNode root;			// Root of the file tree
+	DefaultMutableTreeNode selected;				// The currently selected node in the filetree
 	
-	private JComboBox<String> filefolder;
-	private static final String file = "File";
-	private static final String folder = "Folder";
-	private boolean fileSelected;
-	private boolean folderSelected;
-	private String[] comboBoxArr = {file, folder};
+	private JTextField textField;					// Used to add files to the server. Filename set here
+	private JTextArea prevTxt;						// Area for Documents to be previewed before opening
 	
-	private ArrayList<Editor> editors;
+	private JComboBox<String> filefolder;			// Selects whether to add a file or folder to the server
+	private static final String file = "File";		// String to be used in the combobox for index 0
+	private static final String folder = "Folder";	// String to be used in the combobox for index 1
+	private boolean fileSelected;					// Index 0 of the combo box is selected
+	private boolean folderSelected;					// Index 1 of the combo box is selected
+	private String[] comboBoxArr = {file, folder};	// The options in the combobox
 	
-	DefaultMutableTreeNode selected;
-	String nodePath[];
+	// Other GUIs
+	private ArrayList<Editor> editors;				// List of editors currently opened by this client process
+	private Login login = null;						// Login gui used to access this ClientGUI
 	
-	// connection information
-	private Connection con;
-	//private String name = null;
+	// Connection
+	private Connection con;							// Connection to the server
 	
-	private JTextField textField;
-	private JTextArea prevTxt;
-	
-	private Login login = null;
-	
-	
-	/**
+	/*
 	 * Create the frame.
+	 * Initialize all components not stored on the server. 
+	 * Assigns all listeners and launches the Login gui.
+	 * Does not make this gui visible.
 	 */
 	public ClientGUI(Connection con) {
 		
 		this.con = con;
-		
-		fileSelected = false;
-		folderSelected = false;
-		editors = new ArrayList<Editor>();
-		
+
+		/**
+		 * Frame
+		 */
 		frame = new JFrame();
 		
 		frame.setTitle("Shared Drive");
@@ -85,11 +82,8 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.setSize(800,800);
 		
-		
-		
-		
 		/**
-		 * Bottom Panel
+		 * Bottom Panel and components
 		 */
 		JPanel panelBot = new JPanel();
 		contentPane.add(panelBot, BorderLayout.SOUTH);
@@ -113,11 +107,14 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		filefolder = new JComboBox<String>(comboBoxArr);
 		panelBot.add(filefolder);
 		filefolder.setSelectedIndex(0);
-		fileSelected = true;
 		filefolder.addActionListener(new comboBoxListener());
 		
+		fileSelected = true;
+		folderSelected = false;
+		editors = new ArrayList<Editor>();
+		
 		/**
-		 * Top Panel(Right)
+		 * Top Panel(Right) and components
 		 */
 		JPanel rightPane = new JPanel();
 		rightPane.setPreferredSize(new Dimension(280, 150));
@@ -138,6 +135,7 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		scrollTree.setPreferredSize(new Dimension(200, 10));
 		contentPane.add(scrollTree, BorderLayout.WEST);
 		
+		// Set action to complete by default closing operation
 		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -153,15 +151,13 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		    }
 		});
 		
-		// creates a new login dialog
-		startLogin();
-		
-		
-//		contentPane.setBackground( new Color(152, 38, 175) );
+		startLogin();	// creates a new login dialog
 	 }
 	
-	// creates a new login dialog
-	// waits for user to input username and password
+	/*
+	 * Creates a new login dialog.
+	 * Waits for user to input username and password
+	 */
 	public void startLogin(){
 		login = new Login(this);
 		login.addWindowListener(
@@ -176,104 +172,83 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		login.setVisible(true);
 	}
 	
-	public void receiveLogin(){
-//		name = login.getLoginName();
-		
-//		if(name == null){
-//			name = login.getLoginName();
-//		}
-	}
-	
+	/*
+	 * Returns the login gui
+	 */
 	public Login getLogin() {
 		return login;
 	}
 	
-	private class comboBoxListener implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			JComboBox<String> combo = (JComboBox<String>)e.getSource();
-			String val = (String)combo.getSelectedItem();
-			if ( val.equals(file) ) {
-				fileSelected = true;
-				folderSelected = false;
-			}
-			else if ( val.equals(folder) ) {
-				folderSelected = true;
-				fileSelected = false;
-			}
-		}
-	}
-	
-	private class openListener implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			try {
-				if ( ((String)selected.getUserObject()).contains(".") )
-					con.getOOS().writeObject(getFilePath());
-			} catch (IOException e1 ) {
-				e1.printStackTrace();
-			} catch (NullPointerException e1) {
-				
-			}
-		}
-	}
-	
-	private class addListener implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			addFile();
-		}
-	}
-	
-	private class delListener implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			delFile();
-		}
-	}
-	
-	private class prevListener implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			//Only if a file is selected
-			
-			if ( ((String)selected.getUserObject()).contains(".") ) {
-				String filename = getFilePath();
-				Document doc = new Document(filename, true);
-				doc.setToPreview();
-				try {
-					con.getOOS().writeObject(doc);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
-	}
-	
+	/*
+	 * Returns the frame of the GUI
+	 */
 	public JFrame getFrame(){
 		return frame;
 	}
 	
+	/*
+	 * Returns the Connection to the server
+	 */
 	public Connection getCon() {
 		return con;
 	}
 	
-	public void setName(String name){
-//		this.name = name;
+	/*
+	 * Returns the area used to preview a document
+	 */
+	public JTextArea prevTxt(){
+		return prevTxt;
 	}
 	
-	// sets up the tree
-	public void setTree(JTree newtree) {
-		tree = newtree;
+	/*************************************************************************************
+	 * 
+	 * Tree component methods
+	 */
+	
+	/*
+	 * (non-Javadoc)
+	 * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
+	 * 
+	 * Sets the selected node of in the tree to the user's input
+	 */
+	@Override
+	public void valueChanged(TreeSelectionEvent e) {
+		selected = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+	}
+
+	/*
+	 * Traces through the tree to the current selected node.
+	 * Appends the each node's contents in the path to a string,
+	 * returns this string as a path.
+	 */
+	private String getFilePath(){
 		
-		model = (DefaultTreeModel) tree.getModel();
-		root = (DefaultMutableTreeNode) model.getRoot();
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		tree.addTreeSelectionListener(this);
-		
-		scrollTree.setViewportView(null);
-		scrollTree.setViewportView(tree);
-		
-		tree.expandRow(0);
-//		tree.setBackground(innerColor);
+		String s = "";
+		try {
+			for ( int i = 0; i < selected.getUserObjectPath().length - 1; i++ ) { 
+				String str = (String)selected.getUserObjectPath()[i];
+				s += str + "\\";
+			}
+			return s + (String)selected.getUserObjectPath()[selected.getUserObjectPath().length - 1];
+		} catch (NullPointerException e) {
+			return s = (String)root.getUserObject();
+		}
 	}
 	
-	void addFile() {
+	/*************************************************************************************
+	 * 
+	 * Methods to send requests to the server
+	 */
+	
+	/*
+	 * Adds a file or folder to the server.
+	 * 
+	 * Looks at the currently selected node in the file tree, the combobox selected index,
+	 * and the text in the textfield. Uses this information to add a file or folder of the 
+	 * name listed in the textfield and the location of the node in the tree to the server. 
+	 * Creates a FileNode object with this information and sends it through the Connection.
+	 */
+	public void addFile() {
 		
 		String s = textField.getText();
 		
@@ -289,17 +264,30 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 			}
 			
 			FileNode toSend = null;
-			if (fileSelected)
+			if (fileSelected) {
+				if (!s.contains("."))  {	// default to a text file if no extension is given
+					s += ".txt";
+				}
 				toSend = new FileNode(s, false, Arrays.copyOf(selected.getUserObjectPath(),selected.getUserObjectPath().length,String[].class));
-			else if (folderSelected) 
+			} else if (folderSelected) {
+				if (s.contains(".")) {
+					showErrorDialog("Invalid character: .\nFolder name cannot contain a file extension.");
+					return;
+				}
 				toSend = new FileNode(s, true, Arrays.copyOf(selected.getUserObjectPath(),selected.getUserObjectPath().length,String[].class));
+			}	
 			
 			con.send(toSend);
-			//nodePath = getNodePath(selected);
+			System.out.println("Sent file/folder Add request to the server");
 		}
 	}
 	
-	void delFile() {
+	/*
+	 * Deletes a file or folder from the server.
+	 * 
+	 * Looks at the selected node in the file tree and sends a delete request to the server.
+	 */
+	public void delFile() {
 		
 		if (selected == root || selected == null)
 			return;
@@ -313,53 +301,150 @@ public class ClientGUI extends JFrame implements TreeSelectionListener, Observer
 		toSend.setDelete(true);
 		
 		con.send(toSend);
-		//nodePath = getNodePath((DefaultMutableTreeNode) selected.getParent());
 	}
 	
+	/*
+	 * Send a request to the server to open the given file
+	 */
 	public void accessDoc(String filename) {
 		con.send(filename);
 	}
-
-	@Override
-	public void valueChanged(TreeSelectionEvent e) {
-		selected = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+	
+	/*************************************************************************************
+	 * 
+	 * Callback functions 
+	 * (called from the server-handling thread after receiving a response from the server)
+	 */
+	
+	/*
+	 * Will set the tree in our scrollpane to what the server sends to the client.
+	 * (This should contain the current server file tree.
+	 * 
+	 * Callback method
+	 */
+	public void setTree(JTree newtree) {
+		tree = newtree;
+		
+		model = (DefaultTreeModel) tree.getModel();
+		root = (DefaultMutableTreeNode) model.getRoot();
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.addTreeSelectionListener(this);
+		
+		scrollTree.setViewportView(null);
+		scrollTree.setViewportView(tree);
+		
+		tree.expandRow(0);
 	}
 	
-	public JTextArea prevTxt(){
-		return prevTxt;
-	}
-	
+	/*
+	 * Will create a new Editor gui for the user to edit or read a document in.
+	 * 
+	 * Callback method
+	 */
 	public void createEditor(Document doc){
 		
-		Editor e = new Editor(doc, con.getOOS());
+		Editor e = new Editor(doc, con);
 		if ( !doc.getReadOnly() ) {
 			editors.add(e);
 		}
 	}
 	
+	/*
+	 * Sets the preview area of the gui with the contents of a Document
+	 * 
+	 * Callback method
+	 */
+	public void setPreviewText(Document docprev) {
+		String txt = "";
+		for ( String s : docprev.getDataModel().getArr())
+			txt += s;
+		
+		prevTxt.setText(txt);
+		prevTxt.setFont(new Font("Arial", Font.PLAIN, 10));
+	}
 	
 	/*
-	private String[] getNodePath(DefaultMutableTreeNode sel){
-		try {
-			return (String[])sel.getUserObjectPath();
-		} catch (NullPointerException e) {
-			String s[] = { (String)root.getUserObject() };
-			return s;
+	 * Displays a dialogbox with an error message
+	 */
+	public void showErrorDialog(String error) {
+		System.out.println("Recieved JDialog Message: " + error);
+		JOptionPane.showMessageDialog(frame, error);
+	}
+	
+	/*************************************************************************************
+	 * 
+	 * Listeners
+	 */
+	
+	/*
+	 * Listens for changes in a combobox. 
+	 * Sets whether or not file or folder is selected
+	 */
+	private class comboBoxListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			if (e.getSource().equals(filefolder)) {
+				
+				String val = (String)filefolder.getSelectedItem();
+				
+				if ( val.equals(file) ) {
+					fileSelected = true;
+					folderSelected = false;
+				}
+				else if ( val.equals(folder) ) {
+					folderSelected = true;
+					fileSelected = false;
+				}
+			}
 		}
 	}
-	*/
 	
-	private String getFilePath(){
-		
-		String s = "";
-		try {
-			for ( int i = 0; i < selected.getUserObjectPath().length - 1; i++ ) { 
-				String str = (String)selected.getUserObjectPath()[i];
-				s += str + "\\";
+	/*
+	 * Listens for the open button press.
+	 * Sends a request to the server to edit/read the selected file
+	 */
+	private class openListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			if ( ((String)selected.getUserObject()).contains(".") )
+				con.send(getFilePath());
+		}
+	}
+	
+	/*
+	 * Listens for the add button press.
+	 * Calls the addFile() method to request the server to add a file
+	 * with a given name and location in its file tree
+	 */
+	private class addListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			addFile();
+		}
+	}
+	
+	/*
+	 * Listens for the add button press.
+	 * Calls the delFile() method to request the server to delete a file
+	 * at the given location in its file tree
+	 */
+	private class delListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			delFile();
+		}
+	}
+	
+	/*
+	 * Listens for the preview button press.
+	 * Only allows the server to be queried if a 'file' is selected.
+	 * Will query the server for a document to be sent in preview mode.
+	 * Sends the server an empty document to be filled and sent back.
+	 */
+	private class prevListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			if ( ((String)selected.getUserObject()).contains(".") ) {
+				String filename = getFilePath();
+				Document doc = new Document(filename, true);
+				doc.setToPreview();
+				con.send(doc);
 			}
-			return s + (String)selected.getUserObjectPath()[selected.getUserObjectPath().length - 1];
-		} catch (NullPointerException e) {
-			return s = (String)root.getUserObject();
 		}
 	}
 	

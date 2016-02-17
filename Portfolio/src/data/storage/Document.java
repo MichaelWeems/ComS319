@@ -8,99 +8,63 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+/*
+ * Object containing the contents of a file, the file's name,
+ * and whether or not to preview, set to read only, or release
+ * the lock on this file in the server
+ */
 public class Document implements Serializable{
 	
-	/**
-	 * 
+	/*
+	 * Allows this object to be sent through the socket
 	 */
 	private static final long serialVersionUID = -2666440411391895074L;
 
-	private DataModel dataModel;
+	private DataModel dataModel;	// Holds all the file contents
+	private String filename = "";	// Name of the file in question
+	private boolean preview;		// Set to preview?
+	private boolean readonly;		// Set to read only?
+	public boolean release;			// Is the user done editing this document?
 	
-	private String filename = "";
-	
-	private boolean preview;
-	private boolean readonly;
-	public boolean release;
-	
-	// Empty Constructor
+	/*
+	 * Constructs a Document object.
+	 * sets all flags to false, creates an empty datamodel,
+	 * and gives the document a temporary name.
+	 */
 	public Document() {
-		
 		dataModel = new DataModel();
 		filename = "temp.txt";
 		preview = false;
 		readonly = false;
 		release = false;
-		
-//		try {
-//		     doc = new File(filename);
-//		      if (doc.createNewFile()){
-//		        System.out.println("File is created!");
-//		      }else{
-//		        System.out.println("File already exists.");
-//		      }
-//	    	} catch (IOException e) {
-//		      e.printStackTrace();
-//		}
 	}
 	
-	// copy Constructor
+	/*
+	 * Copy Constructor for a Document object.
+	 */
 	public Document(Document d) {
-		
 		dataModel = new DataModel(d.getDataModel());
 		filename = d.getName();
 		preview = d.preview;
 		readonly = d.preview;
 		release = d.release;
-		
-//		try {
-//		     doc = new File(filename);
-//		      if (doc.createNewFile()){
-//		        System.out.println("File is created!");
-//		      }else{
-//		        System.out.println("File already exists.");
-//		      }
-//	    	} catch (IOException e) {
-//		      e.printStackTrace();
-//		}
 	}
 	
-	// Don't include file extension in the file name
+	/*
+	 * Constructs a new Document with the given filename
+	 */
 	public Document(String filename) {
-		
 		dataModel = new DataModel();
 		this.filename = filename;
 		preview = false;
 		readonly = false;
 		release = false;
-		
-//		try {
-//		      doc = new File(filename);
-//		      if (!doc.exists()) {
-//		    	  
-//		      //if (doc.createNewFile()){
-//		    	doc.createNewFile();
-//		        System.out.println("File is created!");
-//		        
-//		        // display the new document
-//		      }
-//		      //}else{
-//		        //System.out.println("File already exists.");
-//		      else {
-//		        // read in file as arraylist
-//		        readServerFile();
-//		        System.out.println("File is being read!");
-//		      }
-//	    	} catch (IOException e) {
-//		      //e.printStackTrace();
-//	    		 System.out.println("File already exists.");
-//			        
-//			        // read in file as arraylist
-//			        readServerFile();
-//		}
 	}
 	
-	// Preview Constructor
+	/*
+	 * Constructs a new Document with the given filename
+	 * and preview flag.
+	 */
 	public Document(String filename, boolean preview) {
 		dataModel = new DataModel();
 		this.filename = filename;
@@ -109,11 +73,19 @@ public class Document implements Serializable{
 		release = false;
 	}
 	
-	// copy the file into our datamodel
+	/*
+	 * Will read a document from the server into
+	 * the datamodel
+	 */
 	public void readServerFile(){
 		dataModel.readInFile(filename);
 	}
 	
+	/*
+	 * Writes what is in the datamodel into the file 
+	 * on the server. Uses the filename to get the 
+	 * complete path.
+	 */
 	public void writeServerFile(){
 		
 		List<String> lines = dataModel.getArr();
@@ -125,59 +97,75 @@ public class Document implements Serializable{
 		}
 	}
 	
-	// copy the file into our datamodel
-	public void readClientFile(/* TextArea ta */){
-		
-		// read in the string stored in the TextArea
-		
-		// copy contents of string into arraylist
-		// each line of the input is a new arraylist element
-	}
-	
-	public void writeClientFile(/* TextArea ta */){
-		
-		// copy datamodel into the text editing area
-		// each arraylist element is a new line in the document
-	}
-	
+	/*
+	 * Add an element to the datamodel
+	 */
 	public void addLine(String line){
 		dataModel.addElement(line);
 	}
 	
+	/*
+	 * Returns the filename for this Document
+	 */
 	public String getName(){
 		return filename;
 	}
 	
+	/*
+	 * Set the datamodel for this Document
+	 * to another existing datamodel
+	 */
 	public void setDataModel(DataModel dm){
 		dataModel = dm;
 	}
 	
+	/*
+	 * Returns the datamodel for this Document
+	 */
 	public DataModel getDataModel(){
 		return dataModel;
 	}
 	
+	/*
+	 * Set this document to preview
+	 */
 	public void setToPreview(){
 		preview = true;
 	}
 	
+	/*
+	 * Returns if this Document is set to preview or not
+	 */
 	public boolean preview(){
 		return preview;
 	}
 	
+	/*
+	 * Set this Document to read only
+	 */
 	public void setReadOnly(){
 		readonly = true;
 	}
 	
+	/*
+	 * Returns if this Document is set to read only or not
+	 */
 	public boolean getReadOnly(){
 		return readonly;
 	}
 	
+	/*
+	 * 
+	 */
 	public void setRelease(){
 		release = true;
 	}
 	
+	/*
+	 * Returns if this Document's edit lock will be released
+	 * for others to use
+	 */
 	public boolean getRelease(){
 		return release;
 	}
-	
 }

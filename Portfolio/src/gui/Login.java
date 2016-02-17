@@ -4,44 +4,41 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.util.HashMap;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import data.storage.Document;
 import data.storage.UserPass;
 
+/*
+ * GUI component that is the first thing the user will see. Requests for user input
+ * to receive their username and password and queries the server for login authentication.
+ * If the server confirms, the Login page will be closed and the application gui will be 
+ * presented. If the server denies login, the Login page will be redisplayed for the
+ * user to attempt another login.
+ */
 public class Login extends JFrame implements ActionListener, PropertyChangeListener {
+	
 	private static final long serialVersionUID = 1L;
-	public String logName = null;
-	public boolean accept = false;
-	public JTextField userText;
-	public JTextField passText;
-	private ClientGUI gui;
 	
+	public String logName = null;		// User inputted login name
+	public boolean accept = false;		// The server's response to the login attempt
+	public JTextField userText;			// Where the user inputs their username
+	public JTextField passText;			// Where the user inputs their password
+	private ClientGUI gui;				// The gui to launch when login is successful
 	
-	public JOptionPane optionPane;
-	public String logBtn = "Login";
+	public JOptionPane optionPane;		// Links together input fields and enables dialog boxes
+	public String logBtn = "Login";		// The text displayed on the login button
 
-
-	public boolean getAcceptance() {
-		return accept;
-	}
-
+	/*
+	 * Constructs a new Login object. Login is a child of JFrame
+	 * and so this constructor initializes its gui components.
+	 */
 	public Login(ClientGUI gui) {
 		super();
 		this.setBounds(100, 100, 350, 200);
@@ -85,12 +82,20 @@ public class Login extends JFrame implements ActionListener, PropertyChangeListe
 
 		optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
 		
+		// When the login button is pressed, send the username
+		// and password to the server for login authentication
 		if (logBtn.equals(value)) {
 			String temp = userText.getText();
 			gui.getCon().send(new UserPass(temp,passText.getText()));
 		} 
 	}
 	
+	/*
+	 * Callback method. Called from the server handling thread of the client,
+	 * this method will receive the server's response to a login attempt and
+	 * either hide the Login and launch the ClientGUI, or it will display a
+	 * failure dialog and continue to display the Login gui.
+	 */
 	public void serverResponse(boolean accepted) {
 		accept = accepted;
 		if(accepted){
@@ -109,5 +114,13 @@ public class Login extends JFrame implements ActionListener, PropertyChangeListe
 			userText.setText(null);
 			userText.requestFocusInWindow();
 		}
+	}
+	
+	/*
+	 * Returns the server's response to the login attempt.
+	 * Defaults to false if the server hasn't responded.
+	 */
+	public boolean getAcceptance() {
+		return accept;
 	}
 }

@@ -1,1 +1,0 @@
-Run the program from the Launcher package. Running the 'Main' class will start the server and an instance of the client. If the server is already running, 'Main' will only create a new client.

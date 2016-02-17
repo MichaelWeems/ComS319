@@ -1,6 +1,5 @@
 package server.communication;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,7 +31,7 @@ public class Server {
 	static HashMap<String,Boolean> mutex = null;			// Ensures that no file can be edited 
 															// by more than one user at a time
 	
-	static HashMap<String,String> userpass = null;			// Database of user login information
+	static Users userpass = null;							// Database of user login information
 	
 	private static ServerSocket server = null;				// Connection handle for other processes to latch onto
 	private static Socket client = null;					// A connection to one particular client
@@ -56,17 +55,14 @@ public class Server {
 													// for editing more than once at a time
 		
 		// construct the user authentication hashmap
-		userpass = new HashMap<String,String>();
-		userpass.put("Zach", "wild");
-		userpass.put("Mike", "weems");
-		userpass.put("user", "pass");
-		userpass.put("a", "a");
+		userpass = new Users();
 		
-		//Server end
+		// create the server connection stub
 		try {
 			
 			server = new ServerSocket(4444);
-			
+
+			// listen for new client connections
 			while(true){
 				client = server.accept();
 				for (int i = 0; i < 15; i++) {
@@ -79,10 +75,7 @@ public class Server {
 			    }
 			}
 		} 
-		catch (IOException e) {
-//			e.printStackTrace();
-			Client.main(args);
-		} 
+		catch (IOException e) {	} 
 	}
 	
 	/*
@@ -156,51 +149,60 @@ class ReadHandler extends Thread {
 	public void run() {
 		
 	    try {
-    	  /*
-	       * Create Object input and output streams for this client.
-	       * These will send and receive Document objects
-	       */
+
+	      // Create Object input and output streams for this client.
+	      // These will send and receive Document objects
     	  oos = new ObjectOutputStream(client.getOutputStream());
 	      oos.flush();
 		    
 	      ois = new ObjectInputStream(client.getInputStream());
 	      
-	      // send the current filetree layout to the client
-	      oos.writeObject(Server.fileTree);
+	      // send the current file tree layout to the client
+		  oos.writeObject(Server.fileTree);
 	      
 	      // Continuously loop through and check for new queries from the client
 	      while (true) {
+	    	  System.out.print("Waiting to receive request from client.....");
 	    	  Object obj = ois.readObject();  // Wait for a request from the client
+	    	  System.out.println("Request Received!");
+	    	  System.out.println("Request info:");
+	    	  System.out.println("     Object type:     " + obj.getClass());
+	    	  System.out.println("     Object toString: " + obj.toString());
+	    	  System.out.println();
 	    	  
-	    	  if ( obj instanceof String ) {
+	    	  if ( obj instanceof String ) {  // request access to a file
 	    		  fileReadRequest((String) obj);
 	    	  }
 	    	  else if (obj instanceof Document){
 	    		  	Document doc = (Document) obj;
 	    		  	
-	    		  	if (doc.preview()) {
+	    		  	if (doc.preview()) {  	// send back a previewable document
 	    		  		previewDoc(doc);
 	    		  	}
-	    		  	else {
-		    			 System.out.println("Writing..." + doc.getName());
-			    		 doc.writeServerFile();
-		    		 }
+	    		  	else {					// write client document to the server
+	    		  		System.out.println("Writing file " + doc.getName() + " to the server");
+	    		  		doc.writeServerFile();
+		    		}
 	    	  }
 	    	  else if (obj instanceof UserPass){
 	    		  UserPass up = (UserPass) obj;
 	    		  
-	    		  if ( up.getUser().equals("$RELEASE$")){    // Using a UserPassword object to assist
-	    			  System.out.print("Releasing...");		 // in releasing document locks
-	    			  System.out.println(up.getPass());
+	    		  // Using a UserPassword object to assist
+	    		  // in releasing document locks
+	    		  if ( up.getUser().equals("$RELEASE$")){
+	    			  System.out.print("Releasing edit rights for " + up.getPass());
 	    			  Server.mutex.put(up.getPass(),false);
 	    		  }
 	    		  else {
-		    		  loginAuthenticate(up);
+		    		  loginAuthenticate(up);				// authenticate user login
 	    		  }
 	    	  }
 	    	  else if (obj instanceof FileNode){
-	    		  initFile((FileNode) obj);
+	    		  initFile((FileNode) obj);					// create or delete a file/folder
 	    	  }
+	    	  
+	    	  System.out.println("------------------------------------------------------------");
+	    	  
 	    	  int count = 0;
 	          if ( count == threadArr.length )
 	        	  break;
@@ -248,14 +250,14 @@ class ReadHandler extends Thread {
 	  	  // check if the document is already checked out.
 	  	  // determine readonly mode or not
 	  	  try {
-		    	  if ( Server.mutex.get(doc.getName()) == true ) {
-		    		  doc.setReadOnly();
-		    		  System.out.println("Doc set to read only");
-		    	  }
-		    	  else {
-		    		  Server.mutex.put(doc.getName(),true);
-		    		  System.out.println("Doc is now checked out");
-		    	  }
+	    	  if ( Server.mutex.get(doc.getName()) == true ) {
+	    		  doc.setReadOnly();
+	    		  System.out.println("Doc set to read only");
+	    	  }
+	    	  else {
+	    		  Server.mutex.put(doc.getName(),true);
+	    		  System.out.println("Doc is now checked out");
+	    	  }
 	  	  } catch (NullPointerException e) {
 	  		  Server.mutex.put(doc.getName(),true);  // the file is not in the mutual exclusion list yet, so add it
 	  		  System.out.println("Doc is now checked out");
@@ -284,6 +286,7 @@ class ReadHandler extends Thread {
 			
 			System.out.println("Previewing..." + doc.getName());
 			oos.writeObject(doc);
+			scan.close();
 			
 		} catch (FileNotFoundException e1) {
 			System.out.println("File Not Found, Unable to Preview");
@@ -291,36 +294,6 @@ class ReadHandler extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	/*
-	 * Checks if the username and password provided are legitimate.
-	 * Sends back confirmation to the client.
-	 */
-	private void loginAuthenticate(UserPass up) {
-		System.out.print("Processing Login...");
-		try {
-		  
-			if (Server.userpass.get(up.getUser()).equals(up.getPass())) {
-				System.out.println("Login Successful!");
-				oos.writeObject((Boolean) true);
-			}
-			else {
-				System.out.println("Login Failed!");
-				oos.writeObject((Boolean) false);
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			try {
-				System.out.println("Login Failed!");
-				oos.writeObject((Boolean) false);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		}
-		
 	}
 	
 	/*
@@ -372,19 +345,19 @@ class ReadHandler extends Thread {
 	 */
 	private void addFileFolder(File f, String fname, FileNode fn) {
 		if (fn.isDir()){
-  		  System.out.println("Adding folder...." + fn.getName());
-			  f.mkdir();
-			  System.out.println("Added " + fn.getName());
-		  }
-		  else {
-			  System.out.println("Adding file...." + fn.getName());
-			  try {
+			System.out.println("Adding folder...." + fn.getName());
+			f.mkdir();
+			System.out.println("Added " + fn.getName() + " at location: " + fname);
+		}
+		else {
+			System.out.println("Adding file...." + fn.getName());
+			try {
 				f.createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			  System.out.println("Added " + fn.getName());
-		  }
+			System.out.println("Added " + fn.getName() + " at location: " + fname);
+		}
 	}
 	
 	/*
@@ -396,7 +369,7 @@ class ReadHandler extends Thread {
 			if ( Server.mutex.get(fname) == false ) {
 				System.out.println("Deleting file...." + fn.getName());
 				deleteFiles(f);
-				System.out.println("Deleted: " + fn.getName());
+				System.out.println("Deleted: " + fn.getName() + " at location: " + fname);
 			}
 			else {
 				System.out.println("Sending JDialog Message: " + "File: " + f.getName() + " is open by another user");
@@ -408,9 +381,7 @@ class ReadHandler extends Thread {
 			}
 		}
 		else {
-			System.out.println("Deleting file...." + fn.getName());
 			deleteFiles(f);
-			System.out.println("Deleted: " + fn.getName());
 		}
 	}
 	
@@ -422,13 +393,43 @@ class ReadHandler extends Thread {
 			for (File file : f.listFiles()){
 				if (file.isDirectory())
 					deleteFiles(file);
-				System.out.println(file.getName());
+				System.out.print("Deleting file: " + file.getName() + "....");
 				file.delete();
+				System.out.print("Deleted!");
 			}
 			f.delete();
 		}
 		else if (f.isFile()){
 			f.delete();
+		}
+	}
+	
+	/*
+	 * Checks if the username and password provided are legitimate.
+	 * Sends back confirmation to the client.
+	 */
+	private void loginAuthenticate(UserPass up) {
+		System.out.print("Processing Login...");
+		try {
+		  
+			if (Server.userpass.get(up.getUser()).equals(up.getPass())) {
+				System.out.println("Login Successful!");
+				oos.writeObject((Boolean) true);
+			}
+			else {
+				System.out.println("Login Failed!");
+				oos.writeObject((Boolean) false);
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			try {
+				System.out.println("Login Failed!");
+				oos.writeObject((Boolean) false);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 }
