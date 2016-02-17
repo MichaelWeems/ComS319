@@ -1,15 +1,11 @@
 package actual_lab3;
 
-
 import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.*;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -68,18 +64,18 @@ public class Client {
                 notifyObservers(ex);
             }
         }
-		
 	}
 	
 	/**
 	 * Create the frame.
 	 */
-	static class UI extends JFrame implements Observer {
+	static class UI extends JFrame implements Observer, Serializable {
 		
-        private Connection con;
+		private static final long serialVersionUID = 1L;
+
+		private Connection con;
         
         private static JFrame frame;
-		private static JPanel contentPane;
 		private static JTextField textField;
 		static JList<String> list;
 		protected static DataModel listModel;
@@ -87,8 +83,6 @@ public class Client {
 		private static ArrayList<String> chatting;
 		private String name = null;
 		static Socket newClient;
-		
-	    private OutputStream outputStream;
 		
 		public UI(Connection con) {
 	            this.con = con;
@@ -100,10 +94,10 @@ public class Client {
 			return frame;
 		}
 		
-		 private void make() {
+		private void make() {
 	
-			 frame = new JFrame();
-			 JPanel contentPane = new JPanel();
+			frame = new JFrame();
+			JPanel contentPane = new JPanel();
 			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 			frame.setContentPane(contentPane);
 			contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
@@ -166,7 +160,7 @@ public class Client {
 	        textField.addActionListener(sendListener);
 	        btnSubmit.addActionListener(sendListener);
 	        
-	     // Ensure the text field always gets the first focus.
+	        // Ensure the text field always gets the first focus.
 			frame.addComponentListener(new ComponentAdapter() {
 				public void componentShown(ComponentEvent ce) {
 					textField.requestFocusInWindow();
@@ -193,10 +187,8 @@ public class Client {
 	        public void setName(String name){
 	        	this.name = name;
 	        }
-        
 	}
 		
-
 	/**
 	 * Launch the application.
 	 */
@@ -212,7 +204,6 @@ public class Client {
             ex.printStackTrace();
             System.exit(0);
         }
-        final Connection connect = con;
         
         UI ui = new UI(con);
         JFrame frame = ui.getFrame();

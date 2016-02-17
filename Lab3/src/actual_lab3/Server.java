@@ -2,7 +2,6 @@ package actual_lab3;
 
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -12,7 +11,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Server {
 	static ArrayList<Socket> clientArr;
@@ -24,7 +22,6 @@ public class Server {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException{
 		
-		Buffer buff = new Buffer();
 		clientArr = new ArrayList<>();
 		chatting = new ArrayList<String>();
 		
@@ -56,7 +53,6 @@ public class Server {
 class ClientHandler extends Thread {
 	private DataInputStream is = null;
 	private PrintStream os = null;
-	private BufferedWriter bw = null;
 	private Socket client = null;
 	private final ClientHandler[] threadArr;
 	private int max;
@@ -79,13 +75,14 @@ class ClientHandler extends Thread {
 	      os = new PrintStream(client.getOutputStream());
 	      
 	      OutputStreamWriter osw = new OutputStreamWriter(os);
-          bw = new BufferedWriter(osw);
+          new BufferedWriter(osw);
           
 
 	      
 	      /* Start the conversation. */
 	      while (true) {
-	        String line = is.readLine();
+	        @SuppressWarnings("deprecation")
+			String line = is.readLine();
 	        Server.chatting.add(line);
 	        
 	        PrintWriter write = null;
@@ -164,57 +161,9 @@ class ClientHandler extends Thread {
 	             System.out.println("Message sent to the client is "+mess);
 	             bw.flush();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
 	} // end add
-}
-
-
-class Buffer{
-//	int sum = 0;
-	String mess = null;
-	ArrayList<String> chatting;
-	
-	public void chatBoard(){
-		chatting = new ArrayList<>();
-		File file = new File("chat.txt");
-		Scanner scan = null;
-		try {
-			scan = new Scanner(file);
-			while(scan.hasNextLine()){
-				chatting.add(scan.nextLine());
-			}
-			scan.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	synchronized public void add(String str) {
-		
-		mess = str;
-		
-		try { Thread.sleep((int)(Math.random()*100)); } 
-		catch (InterruptedException e) { e.printStackTrace(); }
-		chatting.add(mess);
-		
-		PrintWriter write = null;
-		try {
-			write = new PrintWriter("chat.txt");
-			for(int i = 0; i < chatting.size(); i++){
-				write.println(chatting.get(i));
-			}
-			write.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-
-	} // end add
-	
-	
 }
