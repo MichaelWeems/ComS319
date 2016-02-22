@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Canvas</title>
+		<script src="./Canvas.js"></script>
+	</head>
+	<body>
+		<p>
+			<input type="button" id="start" name="start" value="START">
+			<input type="button" id="left" name="left" value="TURN LEFT">
+			<input type="button" id="right" name="right" value="TURN RIGHT">
+		</p>
+		<canvas id="CanVans" width="1000" height="600" 
+		style="border:1px solid #000000;"></canvas>
+		<script>
+			var contxt = document.getElementById("CanVans").getContext("2d");
+			contxt.fillStyle="#FF0000";
+			
+			var x = -5;
+			var y = 300;
+			var right = 5;
+			var down = 0;
+			var turn = 0;
+			
+			
+			var srtBtn = document.getElementById("start");
+			var lftBtn = document.getElementById("left");
+			var rgtBtn = document.getElementById("right");
+			
+			srtBtn.onclick = function(){
+				setInterval(startTimer, 50);
+			}
+			lftBtn.onclick = function(){
+				leftTurn(contxt);
+			}
+			rgtBtn.onclick = function(){
+				rightTurn(contxt);
+			}
+			
+		</script>
+	</body>
+</html>
