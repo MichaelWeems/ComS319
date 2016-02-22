@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<title>Validation Form</title>
+		<script src="./validation.js"></script>
+	</head>
+	<body>
+		<h1>Validation Form</h1>
+		
+		<form id="validationform" action>
+			<fieldset>
+				<legend>Please Enter Below</legend>
+				<p>
+					<label for="myname">Name *</label>
+					<input id="myname" name="myname" type="text">
+				</p>
+					<label for="gender">Gender *</label> 
+					<select>
+						<option value="none">[Select]</option> 
+						<option value="female">Female</option> 
+						<option value="male">Male</option>
+					</select>
+				<p>
+					<label for="addr" >Address *</label>
+					<input id="addr" name="addr" type="text">
+				</p>
+				<p>
+					<label for="email" >Email *</label>
+					<input id="email" name="email" type="text">
+				</p>
+				<p>
+					<label for="phone">Phone</label>
+					<input id="phone" name="phone" type="text">
+				</p>
+				<p>
+					<input type="button" id="sub" name="sub" value="Submit"> 
+				</p>
+				
+			</fieldset>
+		</form>
+		
+		<script>
+			var subBtn = document.getElementById("sub");
+			subBtn.onclick = function(){
+				var form = document.getElementById("validationform");
+				clickIt(form);
+			}
+			
+		</script>
+		
+	</body>
+</html>
