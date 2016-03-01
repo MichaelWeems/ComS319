@@ -6,6 +6,7 @@
 function Library(){
 	this.shelves = {};
 	this.shelfcount = 0;
+	this.showLib = false;
 	this.addShelf = function(shelf) {this.shelves[this.shelfcount++] = shelf;};
 	this.getShelf = function(index) {return this.shelves[index]};
 
@@ -13,8 +14,11 @@ function Library(){
 	this.isBookAvailable = function(name) {
 
 		for (i = 0; i < this.shelfcount; i++) {
-			if ( this.shelves[i].books[name] != undefined ) {
-				console.log( this.shelves[i].getName() );
+			for (j = 0; j < this.shelves[i].bookcount; j++) {
+				if ( this.shelves[i].books[j].name == name ) {
+					console.log( "The book " + name + " is available on " + this.shelves[i].name );
+					return;
+				}
 			}
 		}
 		console.log("The book is not available");
@@ -75,7 +79,7 @@ for (i = 0; i < 3; i++) {
 
 $(document).ready(function() {
     $("#isAvailable").click( function() {
-		text = "";
+		text = $("#isAvailText").val();
 		lib.isBookAvailable(text);
     });
 	
@@ -86,7 +90,17 @@ $(document).ready(function() {
     });
 	
 	$("#showLibrary").click( function() {
-		showLibrary();
+		if (!lib.showLib) {
+			lib.showLib = true;
+			showLibrary();
+			$("#showLibrary").attr("value","Hide the Library!");
+		}
+		else {
+			lib.showLib = false;
+			hideLibrary();
+			$("#showLibrary").attr("value","Show the Library!");
+		}
+		
     });
 	
 }); // end of ready
@@ -96,7 +110,6 @@ $(document).ready(function() {
 // Create the Table content
 
 function showLibrary() {
-
 	mytable = $("<table border='2'></table>"); // creates DOM elements
 	mytablebody = $('<tbody></tbody>'); 
 
@@ -129,4 +142,8 @@ function showLibrary() {
 	$("td").click( function() {
 		lib.getDetails($(this).text());
     });
+}
+
+function hideLibrary() {
+	$("table").remove();
 }
