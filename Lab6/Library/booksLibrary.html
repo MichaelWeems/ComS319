@@ -3,13 +3,24 @@
 
 <body>
 
+<div style="float:left">
+	<div align="horizontal">
+		<input id="isAvailable" type='button' value='Is this book available?' style="width: 200px;">
+		<input id="isAvailText" type='text' style="width: 200px;">
+	</div>
+	<div>
+		<input id="listShelves" type='button' value='List all the shelves in the Library' style="width: 200px;">
+	</div>
+	<div>
+		<input id="showLibrary" type='button' value='Show the Library!' style="width: 200px;">
+	</div>
 
-<input id="isAvailable" type='button' value='Is this book available?'>
-<input id="isAvailText" type='text'>
-<input id="listShelves" type='button' value='List all the shelves in the Library'>
-<input id="showLibrary" type='button' value='Show the Library!'>
+	<div id="tableEnd"></div>
+</div>
 
-<div id="tableEnd"></div>
+<div style="float:left">
+	<textarea id="responseText" readonly="readonly" rows="50" cols="50"></textarea>
+</div>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"> </script>
 <script type="text/javascript" src="./booksLibrary.js"></script>
