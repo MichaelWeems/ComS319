@@ -69,6 +69,7 @@ function Library(){
 				total += sArr[i].bookcountArr[name];
 			}
 			console.log("The Library has " + total + " copies of " + name); 
+			$("#responseText").val("The Library has " + total + " copies of " + name);
 		});
 	}
 
