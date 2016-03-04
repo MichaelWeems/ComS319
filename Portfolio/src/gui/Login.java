@@ -1,5 +1,6 @@
 package gui;
 
+<<<<<<< Updated upstream
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -42,40 +43,95 @@ public class Login extends JFrame implements ActionListener, PropertyChangeListe
 	public Login(ClientGUI gui) {
 		super();
 		this.setBounds(100, 100, 350, 200);
-		this.gui = gui;
+=======
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import server.communication.Client.Connection;
 
-		setTitle("Login");
+import data.storage.UserPass;
 
-		JLabel username = new JLabel("Username");
-		JLabel password = new JLabel("Password:");
-		userText = new JTextField(10);
-		passText = new JPasswordField(10);
+public class Login extends JFrame {
 
-		Object[] array = { username, userText, password, passText};
-		Object[] options = {logBtn};
+	private JPanel contentPane;
+	private ClientGUI gui;
+	private JTextField userTxt;
+	private JPasswordField passTxt;
+	private JButton btn;
+	private String logName;
 
-		optionPane = new JOptionPane(array, JOptionPane.QUESTION_MESSAGE,
-				JOptionPane.OK_OPTION, null, options, options[0]);
-
-		setContentPane(optionPane);
-
-		// Ensure the text field always gets the first focus.
-		addComponentListener(new ComponentAdapter() {
-			public void componentShown(ComponentEvent ce) {
-				userText.requestFocusInWindow();
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Connection connect = new Connection("localhost", 4444);
+					ClientGUI gui = new ClientGUI(connect);
+					Login frame = new Login(gui);
+					
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
+	}
 
-		// Register an event handler that reacts to option pane state changes.
-		optionPane.addPropertyChangeListener(this);
+	/**
+	 * Create the frame.
+	 */
+	public Login(ClientGUI gui) {
 		
+>>>>>>> Stashed changes
+		this.gui = gui;
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 320, 150);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPane);
+		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+		
+		JLabel header = new JLabel("Login to Document Database");
+		header.setFont(new Font("Ariel", Font.BOLD, 20));
+		JPanel top = new JPanel();
+		contentPane.add(top);
+		top.add(header);
+		
+		/**
+		 * User and Password
+		 */
+		JPanel cent = new JPanel();
+		cent.setLayout(new FlowLayout(FlowLayout.LEFT));
+		contentPane.add(cent);
+		JLabel user = new JLabel("User Name:");
+		userTxt = new JTextField(10);
+		cent.add(user);
+		cent.add(userTxt);
+		
+		JPanel bot = new JPanel();
+		bot.setLayout(new FlowLayout(FlowLayout.LEFT));
+		contentPane.add(bot);
+		JLabel pass = new JLabel("  Password:");
+		passTxt = new JPasswordField(10);
+		bot.add(pass);
+		bot.add(passTxt);
+		
+		btn = new JButton("Login");
+		bot.add(btn);
+		btn.addActionListener(new loginListener());
+		
+		this.setVisible(true);
+	}
+	
+	public String getLoginName(){
+		return logName;
 	}
 
-	/** This method handles events for the text field. */
-	public void actionPerformed(ActionEvent e) {
-		optionPane.setValue(logBtn);
-	}
-
+<<<<<<< Updated upstream
 	/** This method reacts to state changes in the option pane. */
 	public void propertyChange(PropertyChangeEvent e) {
 		Object value = optionPane.getValue();
@@ -96,11 +152,29 @@ public class Login extends JFrame implements ActionListener, PropertyChangeListe
 	 * either hide the Login and launch the ClientGUI, or it will display a
 	 * failure dialog and continue to display the Login gui.
 	 */
+=======
+	private class loginListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			
+			logName = userTxt.getText();
+			System.out.println(passTxt.getPassword());
+			gui.getCon().send(new UserPass(logName, passTxt.getText()));
+			
+			serverResponse(true);
+		}
+	}
+	
+	
+>>>>>>> Stashed changes
 	public void serverResponse(boolean accepted) {
 		accept = accepted;
 		if(accepted){
+<<<<<<< Updated upstream
 			logName = userText.getText();
 			passText.setText(null);
+=======
+			passTxt.setText(null);
+>>>>>>> Stashed changes
 			setVisible(false);
 			System.out.println(":::: "+ logName +" Joined ::::");
 			gui.getFrame().setName(logName);
@@ -108,6 +182,7 @@ public class Login extends JFrame implements ActionListener, PropertyChangeListe
 			gui.getFrame().setVisible(true);
 		}
 		else{
+<<<<<<< Updated upstream
 			JOptionPane.showMessageDialog(optionPane, 
 					"Username or Password is invalid.\n(Hint: username 'a' password 'a')");
 			passText.setText(null);
@@ -124,3 +199,10 @@ public class Login extends JFrame implements ActionListener, PropertyChangeListe
 		return accept;
 	}
 }
+=======
+			JOptionPane.showMessageDialog(contentPane, "Username or Password is invalid.");
+			passTxt.setText(null);
+		}
+	}
+}
+>>>>>>> Stashed changes

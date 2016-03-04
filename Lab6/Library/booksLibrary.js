@@ -1,173 +1,151 @@
-// ---------------------------------------------------------------------------
-// Classes
-
-// -------------
-// Library Class
-function Library(){
-	this.shelves = {};
-	this.shelfcount = 0;
-	this.showLib = false;
-	this.addShelf = function(shelf) {this.shelves[this.shelfcount++] = shelf;};
-	this.getShelf = function(index) {return this.shelves[index]};
-
-	// returns which shelf this book is on
-	this.isBookAvailable = function(name) {
-
-		for (i = 0; i < this.shelfcount; i++) {
-			for (j = 0; j < this.shelves[i].bookcount; j++) {
-				if ( this.shelves[i].books[j].name == name ) {
-					//console.log( "The book " + name + " is available on " + this.shelves[i].name );
-					return "The book " + name + " is available on " + this.shelves[i].name;
-				}
-			}
-		}
-		//console.log("The book, " + name + ", is not available");
-		return "The book, " + name + ", is not available";
-	};
+/**
+ * 
+ */
+$(document).ready(function() {
 	
+	$('#txtfield').hide();
 	
-	// ---------------------------------------------------------------------------
-	// Create the Table content
+	createTable();
+	
+});
 
-	this.showLibrary = function() {
-		mytable = $("<table border='2'></table>"); // creates DOM elements
-		mytablebody = $('<tbody></tbody>'); 
 
-		curr_row = $('<tr style="background-color:green"></tr>');
-		for(col = 0; col < 3; col++) {
-			curr_cell = $('<td></td>');
-			curr_text = this.shelves[col].name;
-			curr_cell.append(curr_text);
-			curr_row.append(curr_cell);
-		}
-		mytablebody.append(curr_row); // appends arg to mytablebody
 
-		for(row = 0; row < 11; row++) {
-			curr_row = $('<tr></tr>');
+function createTable(){
+	var lib = new Library();
+	lib.fillShelves();
+	
+	myHeader = $("<table border='1'></table>");
+	head = $('<thead></thead>');
+	row = $('<tr></tr>');
+	
+	for(i = 0; i < 3; i++){
+		var shelf = lib.shelves[i];
+		cell = $('<th></th>');
+		cell.css('width', '55px');
+		cell.css('background-color', 'lightgreen')
+		cell.append(shelf.name);
+		row.append(cell);
+	}
+	head.append(row);
+	myHeader.append(head);
+	myHeader.insertAfter($('#header'));
+
+	mytable = $("<table border='1'></table>");
+	body = $('<tbody></tbody>');
+	for(x = 0; x < 10; x++){
+		row = $('<tr></tr>');
+		for(y = 0; y < 3; y++){
+			var shelf = lib.shelves[y];
+			var book = shelf.books[x];
+			cell = $('<td></td>');
+			cell.css('width', '55px');
+			cell.css('background-color','lightyellow');
 			
-			for(col = 0; col < 3; col++) {
-				curr_cell = $('<td style="width:126px"></td>');
-				curr_text = '';
-				if ( this.shelves[col].books[row] != undefined ) {
-					curr_text = this.shelves[col].books[row].name;
-				}
-				curr_cell.append(curr_text);
-				curr_row.append(curr_cell);
-			  }
-			  mytablebody.append(curr_row); // appends arg to mytablebody
+			
+			cell.append(book.name).hover(function(){
+				$('legend').html($(this).html()+" Info");
+				//
+				update(book, shelf);
+				$('#txtfield').show();
+				console.log(book.name+": There are "+book.copies);
+			}, function(){
+				$('#txtfield').hide()}).click(function(){
+				console.log("clicker: "+$(this).html());
+				this.toggle = !this.toggle;
+			    $(this).fadeTo('fast', this.toggle ? 0.4 : 1);
+			    this.toggle ? book.rent() : book.rtrn();
+			    update(book, shelf);
+			});
+			row.append(cell);
 		}
-		mytable.append(mytablebody);
-		mytable.insertBefore($('#tableEnd')); // real dom from document!
-		
-		sCount = this.shelfcount;
-		sArr = this.shelves;
-		
-		$("td").click( function() {
-			name = $(this).text();
-			total = 0;
-			for (i = 0; i < sCount; i++) {
-				total += sArr[i].bookcountArr[name];
-			}
-			console.log("The Library has " + total + " copies of " + name); 
-			$("#responseText").val("The Library has " + total + " copies of " + name);
-		});
+		body.append(row);
 	}
+	
+	mytable.append(body);
+	mytable.insertBefore($('#books'));
+	
 
-	this.hideLibrary = function() {
-		$("table").remove();
+	$('th').hover(function(event){
+		$('legend').html($(this).html()+" Info");
+//		$('#bookInfo').html($(this).html());//rework this
+		$('#txtfield').show();
+	}, function(){
+		$('#txtfield').hide();
+	});
+	
+//	$('td').hover(function(event){
+//		$('legend').html($(this).html()+" Info");
+//		$('#bookInfo').html($(this).copies);
+//		$('#txtfield').show();
+//	}, function(){
+//		$('#txtfield').hide();
+//	});
+
+//	$('td').click(function(){
+//		console.log("clicker: "+$(this).html());
+//		this.toggle = !this.toggle;
+//	    $(this).fadeTo('fast', this.toggle ? 0.4 : 1);
+//	    
+//	});
+	function update(bk, sh){
+		var mess = "";
+		if(bk.copies == 0)
+			mess = "This Book is not Available";
+		$('#bookInfo').html(sh.name+":<br>There are "+bk.copies+" copies in the Library<br>"+mess);
 	}
+	
 };
 
-// -------------
-// Shelf Class
-function Shelf() {
-	this.books = {};
-	this.name = "";
-	this.bookcount = 0;
-	this.bookcountArr = {};
-	this.addBook = function(book) {this.books[this.bookcount++] = book;};
-}
-
-// -------------
-// Book Class
-function Book(bookName) {
-  this.name = bookName;
-}
-
-
-// ---------------------------------------------------------------------------
-// Initialize the table
-
-var lib = new Library();
-
-for (var i = 0; i < 3; i++) {
-	s = new Shelf();
-	s.name = "Shelf " + i;
-	lib.addShelf(s);
-}
-
-for (i = 0; i < 3; i++) {
-	for (j = 0; j < 11; j++) {
-		lib.getShelf(i).addBook(new Book("Book" + j));
+/**
+ * Library
+ */
+function Library(){
+	this.name = "Library";
+	this.shelves = [new Shelf(), new Shelf(), new Shelf()];
+	this.books = [];
+	
+	this.fillShelves = function(){
+		for(i = 0; i < 10; i++){
+			this.books.push(new Book);
+		}
 		
-		if ( lib.getShelf(i).bookcountArr["Book" + j] == undefined ) {
-			lib.getShelf(i).bookcountArr["Book" + j] = 0;
-		}
-		lib.getShelf(i).bookcountArr["Book" + j]++;
-	}
-}
+		for(j = 0; j < 3; j++){
+			for(k = 0; k < 10; k++){
+				var num = Math.floor(Math.random()* 10);
+				this.shelves[j].books.push(this.books[num]);
+				this.books[num].rtrn();
+			};
+		};
+	};
+};
+/**
+ * Shelf
+ */
+var s = 0;
+function Shelf(){
+	++s;
+	this.name = "Shelf "+s; 
+	this.books = [];
+};
 
-// ---------------------------------------------------------------------------
-// handlers
+/**
+ * Books
+ */
+var b = 0;
+function Book(){
+	this.copies = 0;
+	this.name = "Book "+ (++b);
+	
+	this.rent = function() {--this.copies};
+	
+	this.rtrn = function() {++this.copies};
+};
 
-$(document).ready(function() {
-    $("#isAvailable").click( function() {
-		text = $("#isAvailText").val();
-		response = lib.isBookAvailable(text);
-		$("#responseText").val(response);
-		$("#isAvailText").val("");
-    });
-	
-	$("#isAvailText").bind("isAvail", function(e){
-		text = $("#isAvailText").val();
-		response = lib.isBookAvailable(text);
-		console.log(response);
-		$("#responseText").val(response);
-		$("#isAvailText").val("");
-	});
-	$("#isAvailText").keyup(function(e){
-		if(e.keyCode == 13)
-		{
-			$(this).trigger("isAvail");
-		}
-	});
-	
-	$("#listShelves").click( function() {
-		response = "";
-		for ( i = 0; i < lib.shelfcount; i++ ) {
-			//console.log(lib.shelves[i]);
-			response += lib.shelves[i].name;
-			response += "\t Book count: " + lib.shelves[i].bookcount + "\n";
-			for (j = 0; j < lib.shelves[i].bookcount; j++) {
-				response += "\t - " + lib.shelves[i].books[j].name + "\n";
-			}
-			response += "\n";
-		}
-		$("#responseText").val(response);
-    });
-	
-	$("#showLibrary").click( function() {
-		if (!lib.showLib) {
-			lib.showLib = true;
-			lib.showLibrary();
-			$("#showLibrary").attr("value","Hide the Library!");
-		}
-		else {
-			lib.showLib = false;
-			lib.hideLibrary();
-			$("#showLibrary").attr("value","Show the Library!");
-		}
-    });
-}); // end of ready
+
+
+
+
+
 
 
