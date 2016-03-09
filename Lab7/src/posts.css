@@ -1,0 +1,32 @@
+.table {
+	border-collapse:separate; 
+	border-spacing:0em 1em;
+}
+
+.titleRow {
+    background-color: lightblue;
+	margin-left: 20px;
+}
+
+.postRow {
+	background: lightgrey;
+    color: navy;
+    margin-left: 20px;
+}
+
+
+.title {
+	width: 100px;
+}
+
+.message {
+	width: 500px;
+}
+
+.time {
+	width: 200px;
+}
+
+.edit {
+	width: 50px;
+}

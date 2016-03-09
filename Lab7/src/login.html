@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<HTML>
+<!-- 
+– use'ajax'call'to'/checkLogin.php'file'to'check'user/password
+– on'success'go'to'viewPosts.php
+– on'failure'– ask'the'user'to'correct'the'username'and'password 
+-->
+<HEAD>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="posts.css">
+</HEAD>
+<BODY>
+
+<div class="loginDiv">
+<p>Username</p>
+<input type="text" name="username" id="username"/> <br>
+<p>Password</p>
+<input type="text" name="password" id="password"/> <br>
+<input type="button" value="Login" id="login" />
+
+</div>
+
+<div class="app">
+	<div class="viewPosts"></div>
+	<div class="createPosts">
+		<form action="updatePosts.php" enctype="multipart/form-data"  method="POST">
+		<p>Submit a new Post</p>
+		<input type="text" name="Title" placeholder="Title"/> <br>
+		<input type="text" name="Message" id="createMessage" placeholder="Message" size="50"/>
+		<input type="submit" id="submit" style="background:lightblue"/>
+		</form>
+	</div>
+</div>
+
+</BODY>
+
+<script> 
+$(document).ready(function() {
+
+$(".app").hide();
+
+$("#login").click (function () {
+  
+  req = "username=" + $("#username").val();
+  req += "&password=" + $("#password").val();
+  
+  console.log("checkLogin.php?" + req);
+  $.get("checkLogin.php?" + req, 
+        function(data,status) {
+			
+			console.log("Login was successful: " + data);
+			if ( data == "true" ) {
+				$(".loginDiv,.app").toggle();
+				$.post("viewPosts.php", {"username": $("#username").val()},
+					function (data) {
+						$(".viewPosts").html(data);
+					});
+			}
+			else {
+				alert("Incorrect login information");
+				$("#username").val("");
+				$("#password").val("");
+			}
+   });
+});
+
+
+}); // end of document ready function
+
+</script>
+
+</HTML>
