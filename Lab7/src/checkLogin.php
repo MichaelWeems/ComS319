@@ -1,36 +1,34 @@
 <?php
 $ret = false;
-$file = fopen("users.txt","r");
+$file = file_get_contents('users.txt');
 
-while(!feof($file)){
-  if ($temp = fgets($file)) {
-	//var_dump($temp);
-	if (confirmLogin($temp, $_GET["username"], $_GET["password"])) {
+$userpass= explode(",", $file);
+for ($j = 0; $j < count($userpass) - 1; $j++ ) {
+	
+	if (confirmLogin($userpass[$j], $userpass[$j+1], $_GET["username"], $_GET["password"]) ) {
 		$ret = true;
 		break;
 	}
-  }
+	$j++;
 }
 
 fclose($file);
 
 if ( $ret ) {
-	$_SESSION['username'] = $_GET['username'];
+	if ( isset($_GET['username']) ) {
+		$username = $_GET['username'];
+		$_SESSION['username'] = $username;
+	}
 }
 
 echo json_encode($ret);
 
-function confirmLogin($line, $user, $pass) {
+function confirmLogin($fuser, $fpass, $user, $pass) {
 
-	$retr = false;
-	$vars = explode(",", $line);
-	
-	if ($vars[0] == $user) {
-		if ($vars[1] == $pass) {
-			$retr = true;
-		}
+	if ($fuser == $user && $fpass == $pass) {
+		return true;
 	}
-	return $retr;
+	return false;
 }
 
 ?>

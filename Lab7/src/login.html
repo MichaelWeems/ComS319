@@ -20,10 +20,11 @@ password <input type="text" name="password" id="password"/> <br>
 
 <div class="app">
 	<div class="createPosts">
-		<h4>Submit a new Post</h4>
+		<label for="Title" id="label">Submit a new Post</label> <br>
 		<input type="text" id="Title" placeholder="Title" /> <br>
 		<input type="text" id="Message" placeholder="Message" size="50"/>
-		<input type="button" id="submit" value="Submit" style="background:lightblue"/>
+		<input type="button" id="submit" value="submit" style="background:lightblue"/>
+		<input type="button" id="makepost" value="Make a Post" style="background:lightblue"/>
 		&nbsp&nbsp&nbsp&nbsp&nbsp
 		<input type="button" id="logout" value="logout" />
 	</div>
@@ -35,30 +36,29 @@ password <input type="text" name="password" id="password"/> <br>
 <script> 
 $(document).ready(function() {
 
-$(".app").hide();
-$('.createPosts').hide();
+hideAll();
+
+$("#makepost").click(function() {
+	showCreatePost();
+	$('#Title').focus();
+});
+
+$('#Message').keydown(function (e){
+    if(e.keyCode == 13){
+		submitPost();
+    }
+})
 
 $("#submit").click(function() {
-	console.log("Adding post:");
-	console.log("\tTitle: " + $("#Title").val());
-	console.log("\tMessage: " + $("#Message").val());
-	
-	$.post("updatePosts.php", {title: $("#Title").val(), message: $("#Message").val()}, 
-		function(data) {	
-			console.log("data: " + data);
-			console.log("Added a post, now attempting to refresh the page");
-			$.post("viewPosts.php", {username: $("#username").val()}, 
-			function(data) {
-				$('.viewPosts').html(data);
-				console.log("...Refresh Successful!");
-			});
-	});
+	submitPost();
 });
 
 $("#login").click (function () {
   
   req = "username=" + $("#username").val();
   req += "&password=" + $("#password").val();
+  
+  var username_var = $("#username").val();
   
   console.log("checkLogin.php?" + req);
   $.get("checkLogin.php?" + req, 
@@ -67,8 +67,10 @@ $("#login").click (function () {
 			if ( data == "true" ) {
 				$(".loginDiv,.app").toggle();
 				$('.createPosts').show();
-				$.post("viewPosts.php", {username: $("#username").val()},
+				console.log("username: " + username_var);
+				$.post("viewPosts.php", {username: username_var},
 					function (data) {
+						console.log(data);
 						$(".viewPosts").html(data);
 					});
 			}
@@ -100,11 +102,69 @@ function edit( ind ) {
 	$.post("updatePosts.php", {index: i, message: newPost},
 		function (data, index) {
 			console.log(data);
-			$.post("viewPosts.php", {username: $("#username").val()},
+			$.post("viewPosts.php", {},
 					function (data, index) {
 						$(".viewPosts").html(data);
 					});
 		});
+}
+
+function like( ind ) {
+	// like the post at index
+	console.log("Like function: " + ind);
+	var i = ind;
+	
+	$.post("updatePosts.php", {index: i, like: "like"},
+		function (data, index) {
+			console.log("UpdatePosts return value: " + data);
+			$.post("viewPosts.php", {},
+					function (data, index) {
+						$(".viewPosts").html(data);
+					});
+		});
+}
+
+function hideAll() {
+	$(".app").hide();
+	$('.createPosts').hide();
+	$('#Title').hide();
+	$('#Message').hide();
+	$('#label').hide();
+	$('#submit').hide();
+}
+
+function hideCreatePost() {
+	$('#Title').hide();
+	$('#Message').hide();
+	$('#label').hide();
+	$('#submit').hide();
+}
+
+function showCreatePost() {
+	$('#Title').show();
+	$('#Message').show();
+	$('#label').show();
+	$('#submit').show();
+	$('#makepost').hide();
+}
+
+function submitPost() {
+	console.log("Adding post:");
+	console.log("\tTitle: " + $("#Title").val());
+	console.log("\tMessage: " + $("#Message").val());
+	
+	$.post("updatePosts.php", {title: $("#Title").val(), message: $("#Message").val()}, 
+		function(data) {	
+			console.log("data: " + data);
+			console.log("Added a post, now attempting to refresh the page");
+			$.post("viewPosts.php", {}, 
+			function(data) {
+				$('.viewPosts').html(data);
+				$('#Message').val('');
+				$('#Title').val('');
+				console.log("...Refresh Successful!");
+			});
+	});
 }
 
 </script>
