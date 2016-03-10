@@ -23,12 +23,10 @@
 <div class="app">
 	<div class="viewPosts"></div>
 	<div class="createPosts">
-		<form action="updatePosts.php" enctype="multipart/form-data"  method="POST">
 		<p>Submit a new Post</p>
-		<input type="text" name="Title" placeholder="Title"/> <br>
-		<input type="text" name="Message" id="createMessage" placeholder="Message" size="50"/>
-		<input type="submit" id="submit" style="background:lightblue"/>
-		</form>
+		<input type="text" id="Title" placeholder="Title" /> <br>
+		<input type="text" id="Message" placeholder="Message" size="50"/>
+		<input type="button" id="submit" value="Submit" style="background:lightblue"/>
 	</div>
 </div>
 
@@ -38,6 +36,24 @@
 $(document).ready(function() {
 
 $(".app").hide();
+$('.createPosts').hide();
+
+$("#submit").click(function() {
+	console.log("Adding post:");
+	console.log("\tTitle: " + $("#Title").val());
+	console.log("\tMessage: " + $("#Message").val());
+	
+	$.post("updatePosts.php", {title: $("#Title").val(), message: $("#Message").val()}, 
+		function(data) {	
+			console.log("data: " + data);
+			console.log("Added a post, now attempting to refresh the page");}).done(
+			function() {
+				$.post("viewPosts.php", {username: $("#username").val()}, function(data) {
+					$('.viewPosts').html(data);
+					console.log("...Refresh Successful!");
+				});
+			});
+});
 
 $("#login").click (function () {
   
@@ -47,11 +63,11 @@ $("#login").click (function () {
   console.log("checkLogin.php?" + req);
   $.get("checkLogin.php?" + req, 
         function(data,status) {
-			
 			console.log("Login was successful: " + data);
 			if ( data == "true" ) {
 				$(".loginDiv,.app").toggle();
-				$.post("viewPosts.php", {"username": $("#username").val()},
+				$('.createPosts').show();
+				$.post("viewPosts.php", {username: $("#username").val()},
 					function (data) {
 						$(".viewPosts").html(data);
 					});

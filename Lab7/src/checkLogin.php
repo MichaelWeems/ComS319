@@ -15,6 +15,10 @@ while(!feof($file)){
 
 fclose($file);
 
+if ( $ret ) {
+	$_SESSION['username'] = $_GET['username'];
+}
+
 echo json_encode($ret);
 
 function confirmLogin($line, $user, $pass) {

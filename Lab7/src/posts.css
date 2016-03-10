@@ -1,5 +1,5 @@
 .table {
-	border-collapse:separate; 
+	border-collapse:collapse; 
 	border-spacing:0em 1em;
 }
 
@@ -7,15 +7,16 @@
     background-color: lightblue;
 	margin-left: 20px;
 }
-
-.postRow {
-	background: lightgrey;
+	
+.postRow td {
+	border-bottom: solid thin;
     color: navy;
     margin-left: 20px;
 }
 
 
 .title {
+	background: lightgrey;
 	width: 100px;
 }
 
