@@ -1,33 +1,32 @@
 <?php
-var_dump($_GLOBALS);
 session_start();
 date_default_timezone_set('America/Chicago');
 $time = new DateTime();
 
-// edit a post on the server
-if ( isset($_GET['post_Index']) ) {
+//if ( $_REQUEST['op'] == 'add' ) { // add a post to the server
+if ( array_key_exists('index', $_REQUEST) ) {
 	$posts = $_SESSION['posts'];
-	$i = $_GET['i'];
+	$i = $_REQUEST['index'];
 	
-	$posts[$i]->"title" = $_GET["title"];
-	$posts[$i]->"message" = $_GET["message"];
+	$reqMess = $_REQUEST["message"];
 	
-	
-	$posts[$i]->"time" = $time->format('H:i');
+	$posts[$i]->message = $reqMess;
+	$posts[$i]->time = $time->format('H:i');
 	
 	$toFile = json_encode($posts);
-	file_put_contents("posts.txt", $toFile);
-
-
+	file_put_contents('posts.txt', $toFile);
 }
-else if ( isset($_SESSION['posts']) ) { // add a post to the server
+
+else if (isset($_SESSION['posts'])) {
 	$posts = $_SESSION['posts'];
 	array_push($posts, array('title' => $_POST['title'], 'message' => $_POST['message'], 'time' => $time->format('H:i')));
 	$toFile = json_encode($posts);
 	file_put_contents('posts.txt', $toFile);
 }
-else { // initialize the post array on the server
+else {
 	$toFile = array('title' => $_POST['title'], 'message' => $_POST['message'], 'time' => $time->format('H:i'));
 	file_put_contents('posts.txt', json_encode($toFile));
 }
+
+
 ?>

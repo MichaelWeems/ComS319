@@ -1,5 +1,4 @@
 <?php
-sleep(1);
 $ret = false;
 $file = fopen("users.txt","r");
 
