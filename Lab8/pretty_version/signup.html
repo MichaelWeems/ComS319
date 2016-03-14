@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+	<title>Library</title>
+
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Com S 319 - Lab 8</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <h1 class="header center orange-text">Sign up</h1>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="section">
+      <!--   Contains main functionality   -->
+		<div class="signup_form">
+		Username 				<input type="text" name="username" id="username"/> <br>
+		Password 				<input type="password" name="password" id="password"/> <br>
+		Confirm Password 	<input type="password" name="confirmpassword" id="confirmpassword"/> <br>
+		Email 					<input type="email" name="email" id="email"/> <br>
+		Phone 					<input type="phone" name="phone" id="phone"/> <br><br>
+									<input type="checkbox" name="librarian" id="librarian"><label for="librarian" style="">Librarian?</label><br><br>
+		First name				<input type="text" name="fname" id="fname"/> <br>
+		Last name				<input type="text" name="lname" id="lname"/> <br>
+		<a id="signup" class="btn-large waves-effect waves-light orange" href="library.html">Sign Up</a>
+	</div>
+    </div>
+    <br>
+  </div>
+
+  <footer class="page-footer orange">
+    <div class="footer-copyright">
+      <div class="container">
+      Made by <a class="orange-text text-lighten-3">Michael Weems & Zach Wild</a>
+      </div>
+    </div>
+  </footer>
+
+
+	<!--  Scripts-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/signup.js"></script>
+	<script type="text/javascript" src="./js/materialize.js"></script>
+
+  </body>
+</html>
