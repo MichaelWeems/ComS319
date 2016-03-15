@@ -8,10 +8,10 @@
 //		Begins a calling loop to the server to get a randomized 
 //		staff to display in the designated canvas
 //
-function startLoopStaff( clef, key, bpm, notes, iteration, maxIteration ) {
+function startLoopStaff( key, beat, beatcount, iteration, maxIteration ) {
 	
-	var queryString = {'clef' : clef, 'key' : key, 'bpm' : bpm, 'notes' : notes, 
-		'iteration' : iteration, 'maxIteration' : maxIteration}; 
+	var queryString = { 'key' : key, 'beat' : beat, 'beatcount' : beatcount, 'iteration' : iteration,
+		'maxIteration' : maxIteration}; 
 
     phpcall_buildStaff(queryString);
 	
@@ -42,7 +42,7 @@ function phpcall_buildStaff(queryString) {
 	$.ajax( 
         { 
             type: 'POST', 
-            url: '../php/buildStaff.php', 
+            url: 'src/php/buildStaff.php', 
             data: queryString, 
             success: function(data){ 
                 phpcall_buildStaff_callback(data);
@@ -66,20 +66,20 @@ function phpcall_buildStaff_callback(data) {
 	var obj = jQuery.parseJSON(data); 
 	
 	// Create a staff object from the contents of obj
-	var staves = parseStaves(obj);
+	//var staves = parseStaves(obj);
 	
 	// Check if the loop is done
-	if (staves.checkLoopComplete() /* && user defined quit request */ ) {
-		// Clean up the canvas
-		// ....
-		return;
-	}
+//	if (staves.checkLoopComplete() /* && user defined quit request */ ) {
+//		// Clean up the canvas
+//		// ....
+//		return;
+//	}
 	
 	// Draw the staff
-	drawStaff(staves);
+	drawStaff(obj);
 	
 	// call the function again, this time with the timestamp we just got from server.php 
-	loopStaff(staves.iteration); 
+	//loopStaff(staves.iteration); 
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -97,28 +97,41 @@ function drawStaff(staff) {
 	Vex.Flow.Renderer.Backends.CANVAS);
 
 	var ctx = renderer.getContext();
-	var stave = new Vex.Flow.Stave(10, 0, 500);
+	var treble = new Vex.Flow.Stave(10, 0, 500);
+	var bass = new Vex.Flow.Stave(10, 150, 500, 'bass');
 
 	// Add a treble clef
-	stave.addClef("treble");
-	stave.addClef("bass");
-	stave.setContext(ctx).draw();
+	treble.addClef("treble");
+	bass.addClef("bass");
+	
+	console.log("time signature: " + staff['timesignature']);
+	treble.addTimeSignature(staff['timesignature']);
+	bass.addTimeSignature(staff['timesignature']);
+	
+	console.log("key signature: " + staff['keysignature']);
+	treble.addKeySignature(staff['keysignature']);
+	bass.addKeySignature(staff['keysignature']);
+	
+	treble.setContext(ctx).draw();
+	bass.setContext(ctx).draw();
 
-	var notes = [
-	new Vex.Flow.StaveNote(
-	{ keys: ["g/4", "b/4", "cb/5", "e/5", "g#/5", "b/5"],
-		duration: "h" }).
-		addAccidental(0, new Vex.Flow.Accidental("bb")).
-		addAccidental(1, new Vex.Flow.Accidental("b")).
-		addAccidental(2, new Vex.Flow.Accidental("#")).
-		addAccidental(3, new Vex.Flow.Accidental("n")).
-		addAccidental(4, new Vex.Flow.Accidental("b")).
-		addAccidental(5, new Vex.Flow.Accidental("##")),
-		new Vex.Flow.StaveNote({ keys: ["c/4"], duration: "h" })
-	];
-
+	var treble_notes = [];
+	for (var i = 0; i < staff['treble'].length; i++){
+		treble_notes[i] = new Vex.Flow.StaveNote({
+			keys: staff['treble'][i], duration: staff['duration'],
+			clef: "treble"});
+	}
+	
+	var bass_notes = [];
+	for (var i = 0; i < staff['bass'].length; i++){
+		bass_notes[i] = new Vex.Flow.StaveNote({
+			keys: staff['bass'][i], duration: staff['duration'],
+			clef: "bass"});
+	}
+	
 	// Helper function to justify and draw a 4/4 voice
-	Vex.Flow.Formatter.FormatAndDraw(ctx, stave, notes);
+	Vex.Flow.Formatter.FormatAndDraw(ctx, treble, treble_notes);
+	Vex.Flow.Formatter.FormatAndDraw(ctx, bass, bass_notes);
 
 }
 	
@@ -130,9 +143,7 @@ function drawStaff(staff) {
 //	
 function parseStaves(obj) {
 
-	var staff = new Staff();
-	
-	// set all variables for staff object
+	var staff = JSON.parse(obj);
 	
 	return staff;
 }

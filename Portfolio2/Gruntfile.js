@@ -16,14 +16,14 @@ module.exports = function(grunt) {
     // all of our configuration will go here
 	
 	// configure jshint to validate js files -----------------------------------
-    jshint: {
-      options: {
-        reporter: require('jshint-stylish') // use jshint-stylish to make our errors look and read good
-      },
+//    jshint: {
+//      options: {
+//        reporter: require('jshint-stylish') // use jshint-stylish to make our errors look and read good
+//      },
 
       // when this task is run, lint the Gruntfile and all js files in src
-      build: ['Gruntfile.js', 'src/**/*.js']
-    },
+//      build: ['Gruntfile.js', 'src/**/*.js']
+//    },
 	
   });
 
@@ -32,9 +32,9 @@ module.exports = function(grunt) {
   // ===========================================================================
   // we can only load these if they are in our package.json
   // make sure you have run npm install so our app can find these
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('vexflow');
-  grunt.registerTask('jshint', ['jshint']);
+//  grunt.loadNpmTasks('grunt-contrib-jshint');
+//  grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('vexflow');
+//  grunt.registerTask('jshint', ['jshint']);
   
 };

@@ -2,11 +2,6 @@
 //// Objects
 
 
-
-
-
-
-
 ////////////////////////////////////////////////////////
 /*
 MIGHT NOT NEED THE STAVES OBJECT AS IT IS
@@ -16,17 +11,6 @@ CLEFS. NOT SURE, NEED TO LOOK INTO HOW
 VEXFLOW ACTUALLY WORKS
 																	*/
 ////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -62,7 +46,7 @@ function Staves(){
 //					- Clef
 function Staff(){
 	this.notes=[];
-	this.clef="";
+	//this.clef="";
 	this.keySignature="";
 	this.timeSignature="";
 	this.timeSignatureVal=0;
@@ -71,7 +55,7 @@ function Staff(){
 	this.setTimeSigVal = function(val) { this.timeSignatureVal = val; };
 	this.setTimeSignature = function(ts) { this.timeSignature = ts; };
 	this.setKeySignature = function(ks) { this.keySignature = ks; };
-	this.setClef = function(c) { this.clef = c; };
+	//this.setClef = function(c) { this.clef = c; };
 	this.addStaveNote = function(sn) { 
 		var total = timeFilled;
 		if (sn.duration=="w") {
