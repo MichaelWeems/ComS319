@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+	<title>Sight Reader</title>
+	
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>  
+	<nav class="light-blue lighten-1" role="navigation">
+		<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Com S 319 - Lab 8</a>
+			<ul class="right hide-on-med-and-down">
+				<li id="display-username">username</li>		<!-- display the username -->
+				<li><a href="index.html">Logout</a></li> 	<!-- invalidate session, Log user out-->
+			</ul>
+		</div>	
+	</nav>
+	
+	<div class="container">
+		<div class="applet"></div>
+	</div>
+	
+	<footer class="page-footer orange">
+		<div class="footer-copyright">
+			<div class="container">
+				Made by <a class="orange-text text-lighten-3">Michael Weems & Zach Wild</a>
+			</div>
+		</div>
+	</footer>
+
+	<!--  Scripts-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./src/js/materialize.js"></script>
+	<script type="text/javascript" src="./node_modules/vexflow/releases/vexflow-min.js"></script>
+	<script type="text/javascript" src="./src/js/sightread_init.js"></script>
+	<script type="text/javascript" src="./src/js/sightread_objects.js"></script>
+    <script type="text/javascript" src="./src/js/sightread_functions.js"></script>
+	
+</body>
+</html>

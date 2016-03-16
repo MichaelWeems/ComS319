@@ -3,17 +3,60 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-	<title>Sight Reader</title>
-<body>  
-	<input id="start" type="button" value="Start Sight Reading!"/> <br>
-	<canvas width=700 height=400"></canvas>
+	<title>Portfolio 2</title>
 
-	<!--  Scripts-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<script type="text/javascript" src="./node_modules/vexflow/releases/vexflow-min.js"></script>
-	<script type="text/javascript" src="./src/js/sightread_handlers.js"></script>
-	<script type="text/javascript" src="./src/js/sightread_functions.js"></script>
-	<script type="text/javascript" src="./src/js/sightread_objects.js"></script>
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Com S 319 - Lab 8</a>
+    </div>
+  </nav>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <h1 class="header center orange-text">Sight Reading Trainer</h1>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="section">
+      <!--   Contains main functionality   -->
+		<div class="loginDiv">
+            <div class="mat-div">
+                <label for="username" class="mat-label">Username</label>
+                <input type="text" name="username" id="username" class="mat-input">
+            </div>
+            <div class="mat-div">
+                <label for="password "class="mat-label">Password</label>
+                <input type="password" name="password" id="password" class="mat-input">
+            </div>
+			<a id="login" class="btn-large waves-effect waves-light orange" href="sightreader.html">Login</a>
+			<a id="signup" class="btn-large waves-effect waves-light orange" href="signup.html">Sign up</a>
+		</div>
+    </div>
+    <br>
+  </div>
+
+  <footer class="page-footer orange">
+    <div class="footer-copyright">
+      <div class="container">
+      Made by <a class="orange-text text-lighten-3">Michael Weems & Zach Wild</a>
+      </div>
+    </div>
+  </footer>
+
+    
+    <!--  Scripts-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./src/js/materialize.js"></script>
+    <script type="text/javascript" src="./src/js/login_handlers.js"></script>
+    <script type="text/javascript" src="./src/js/login_objects.js"></script>
+    <script type="text/javascript" src="./src/js/login_functions.js"></script>
 	
-</body>
+
+  </body>
 </html>
