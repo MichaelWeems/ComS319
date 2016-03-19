@@ -3,17 +3,22 @@
 
 $(document).ready(function() {
 
-	$(".mat-input").focus(function() {
-      $(this).parent().addClass("is-active is-completed");
-    });
+	hideAll();
 
-    $(".mat-input").focusout(function() {
-      if ($(this).val() === "")
-        $(this).parent().removeClass("is-completed");
-      $(this).parent().removeClass("is-active");
-    });
-    
-    $('select').material_select();
+	$("#makepost").click(function() {
+		showCreatePost();
+		$('#Title').focus();
+	});
+
+	$('#Message').keydown(function (e){
+		if(e.keyCode == 13){
+			submitPost();
+		}
+	})
+
+	$("#submit").click(function() {
+		submitPost();
+	});
 
 	$("#login").click (function () {
 	  
@@ -50,5 +55,6 @@ $(document).ready(function() {
 			 $("#includedContent").load("login.html"); 
 		});
 	});
+
 
 }); // end of document ready function

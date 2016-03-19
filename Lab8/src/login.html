@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+		
+		<link href="style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+                <meta charset="UTF-8">
+            <title>Login Page</title>
+    </head>
+    <body>
+
+		<div class="user" style="display:none"></div>
+
+        <div class="login">
+            <div style="float:left">
+                <h3>Sign Up</h3>
+                *Username: <input type="text" id="Uuser"><br>
+                *Password: <input type="password" id="Upass"><br>
+                *Confirm<br>Password: <input type="password" id="Uconfirm"><br>
+                *Email: <input style="text" id="Uemail"><br>
+                *Phone: <input style="text" id="Uphone"><br>
+                *Librarian: <input type="checkbox" id="Ulib"><br>
+                *Firstname: <input style="text" id="first"><br>
+                *Lastname: <input style="text" id="last"><br>
+                <input type="button" id="Usub" value="Sign Up">
+            </div>
+            <div style="float:left">
+                <h3>Sign In</h3>
+                *Username: <input type="text" id="Iuser" value="librarian"><br>
+                *Password: <input type="password" id="Ipass" value="a"><br>
+                *Librarian: <input type="checkbox" id="lib" checked><br>
+                <input type="button" id="Isub" value="Sign In">
+            </div>
+            <div class="mainBody"></div>
+            <div class="tableBody"></div>
+            
+        </div>	
+	
+    <script>
+    $(document).ready(function() {
+		//When person signs in 'I'
+		$('#Isub').click(function(){
+			var login = {'username':$('#Iuser').val(),'password':$('#Ipass').val(),'librarian':$('#lib').is(':checked')};
+			
+			console.log("Getting ready to connect to Database....");
+			$.ajax({
+				type: 'GET',
+				url: 'php/login.php',
+				data: login,
+				success: function(data){
+					connect_callback(data,$('#Iuser').val());
+				}
+			
+			});
+			
+		});
+		//when someone signs up 'U'
+		 $('#Usub').click(function(){
+			var user = $('#Uuser').val();
+			var pass = $('#Upass').val();
+			var passConf = $('#Uconfirm').val();
+			var email = $('#Uemail').val();
+			var phone = $('#Uphone').val();
+			var lib = $('#Ulib').is(':checked');
+			var first = $('#first').val();
+			var last = $('#last').val();
+			
+			var out = "";
+			if(!/\s*(?=\w+)/.test(user)){
+				out += "Name Required (alphanumerical only)\n";
+			}
+			if(!/\s*(?=\w+)/.test(pass)){
+				out += "Password Required\n\n";
+			}
+			else if(passConf != pass){
+				out += "Confirmation Password doesn't match Password\n"
+			}
+			if(!/\w+@\w+[.][a-z]+/.test(email)){
+				out += "Email Required (alphanumeric only in 'xxx@xxx.xxx' format)\n";
+			}
+			if(!(/\d{3}\-\d{3}\-\d{4}/.test(phone)|/\d{10}/.test(phone))){
+				out += "Phone must be in 'xxx-xxx-xxxx' " +
+				"or 'xxxxxxxxxx' format\n";
+			}
+			if(!/\s*(?=\w+)/.test(first)){
+				out += "First name Required\n";
+			}
+			if(!/\s*(?=\w+)/.test(last)){
+				out += "Last name Required\n";
+			}
+			if(!/\w+/.test(out)){
+				//alert("Info Validated!");
+				var login = {'username':user,'password':pass,'librarian':lib, 'email':email,
+					'phone':phone, 'firstname':first, 'lastname':last};
+				$.ajax({
+					type: 'GET',
+					url: 'php/signUp.php',
+					data: login,
+					success: function(data){
+						connect_callback(data,$('#Uuser').val());
+					}
+				});
+			}
+			else{
+				alert(out);
+			}
+				
+		});
+		function connect_callback(data,user) {
+			console.log("Server Response - PHP echo statements: " + data);
+			var response = JSON.parse(data);
+			console.log("Server Response - Parsed JSON: " + response);
+			
+			if (response == "librarian"){
+				$('.login').hide();
+				$('title').html(user + " Page");
+				libShow(user);
+				
+			}else if (response == "student"){
+				$('.login').hide();
+				$('title').html(user + " Page");
+				stuShow(user);
+			} else if (response == "username taken"){
+				alert("This username is already taken");
+				$('#Uuser').val("");
+			}else{
+				alert("Incorrect Username or Password");
+				$('#Ipass').val("");
+			}
+		}
+		//contents for librarian page
+		function libShow(user){
+			$('.user').show();
+			$('.user').load('librarian.html', function() {
+				$('.user-logout').html(user);
+				$('.user-logout').append("&nbsp<a id=\"logout\" style=\"Color:blue\">Logout</a>");
+				
+				get_booklist_lib();
+				
+				$('#shelves-btn').click(function(){
+					var phpscript = 'php/librarian_func.php';
+					display_shelves(phpscript);
+				});
+				
+				$('#logout').click(function() {
+				
+					$.ajax({
+						type: 'GET',
+						url: 'php/logout.php',
+						data: "",
+						success: function(data){
+							console.log("Successfully logged out");
+							$('title').empty();
+							$('title').html("Login");
+							$(".user").hide(); 
+							$(".login").show();
+						}
+					});
+				});
+				
+				$('#submit-view-loans').click(function() {
+					get_LoanHistory_student('librarian');
+					
+				});
+			
+				$('#submit-add-book').click(function(){
+					console.log($('#book-title').val(), $('#author').val());
+					addbook($('#book-title').val(), $('#author').val());
+				});
+			
+			});
+			
+		}
+	   
+
+	   //contents for student page
+		function stuShow(user){
+			$('.user').show();
+			$('.user').load('student.html', function() {
+				$('.user-logout').html(user);
+				$('.user-logout').append("&nbsp<a id=\"logout\" style=\"Color:blue\">Logout</a>");
+				
+				get_LoanHistory_student('student');
+				
+				$('#borrowBtn').click(function() {
+					borrow_book($('#borrow-book-name').val());
+				});
+				
+				$('#shelves-btn').click(function(){
+					var phpscript = 'php/student_func.php';
+					display_shelves(phpscript);
+				});
+				
+				$('#logout').click(function() {
+					$.ajax({
+						type: 'GET',
+						url: 'php/logout.php',
+						data: "",
+						success: function(data){
+							console.log("Successfully logged out");
+							$(".user").empty();
+							$('title').empty();
+							$('title').html("Login");
+							$(".user").hide(); 
+							$(".login").show();
+						}
+					});
+				});
+			});
+		}
+    
+    });
+    
+	function return_book( copyId ) {
+		// return the book with the given copyId
+		console.log("return book function: " + copyId);
+		
+		var op = 'return';
+		var book = {'op': op, 'copyId':copyId};
+			
+		$.ajax({
+            type: 'GET',
+            url: 'php/student_func.php',
+            data: book,
+            success: function(data){
+				//$('#shelves-view').html(data);
+				//update loan history
+				get_LoanHistory_student('student');
+				// update shelf display
+            }
+        
+        });
+	}
+	
+	function borrow_book( title ) {
+		// borrow a book with the given title
+		console.log("borrow book function: " + title);
+		
+		var op = 'borrow';
+		var book = {'op': op, 'title':title};
+			
+		$.ajax({
+			type: 'GET',
+			url: 'php/student_func.php',
+			data: book,
+			success: function(data){
+				//console.log(data);
+				if (data == "Found None"){
+					$('#borrow-error').val("There were no copies of '" + title + "' left");
+					return;
+				}
+				//$('#shelves-view').html(data);
+				//$('#return-book').html(data);
+				//update loan history
+				get_LoanHistory_student('student');
+				// update shelf display
+			}
+		
+		});
+	}
+	
+	function addbook( title, author ) {
+		// borrow a book with the given title
+		console.log("add book function: " + title + " / " + author);
+		
+		
+		var op = 'add';
+		var book = {'op': op, 'title':title, 'author': author};
+			
+		$.ajax({
+			type: 'GET',
+			url: 'php/librarian_func.php',
+			data: book,
+			success: function(data){
+				//console.log(data);
+				console.log("book added");
+				get_booklist_lib();
+				//if (data == "Found None"){
+				//	$('#borrow-error').val("There were no copies of '" + title + "' left");
+				//	return;
+				//}
+				//$('#shelves-view').html(data);
+				//$('#return-book').html(data);
+				//update loan history
+				//get_LoanHistory_student();
+				// update shelf display
+			}
+		
+		});
+		
+	}
+	
+	function addbook_existing( id ) {
+		// borrow a book with the given title
+		console.log("add book function existing: " + id);
+		
+		var op = 'add_existing';
+		var book = {'op': op, 'id':id};
+			
+		$.ajax({
+			type: 'GET',
+			url: 'php/librarian_func.php',
+			data: book,
+			success: function(data){
+				console.log(data);
+				console.log("book added");
+				get_booklist_lib();
+				//if (data == "Found None"){
+				//	$('#borrow-error').val("There were no copies of '" + title + "' left");
+				//	return;
+				//}
+				//$('#shelves-view').html(data);
+				//$('#return-book').html(data);
+				//update loan history
+				//get_LoanHistory_student();
+				// update shelf display
+			}
+		
+		});
+	}
+	
+	// displays the loan history for the student
+	function get_LoanHistory_student(user) {
+		var data;
+		if (user == 'student') {
+			data = {'user': user};
+		} else {
+			console.log("Username: " + $('#view-loans-user').val());
+			data = {'user': user, 'username': $('#view-loans-user').val()};
+		}
+		$.ajax({
+			type: 'GET',
+			url: 'php/build_student_return_section.php',
+			data: data,
+			success: function(data){
+				console.log("Retrieved Loan History");
+				console.log(data);
+				$('#return-book').empty();
+				$("#return-book").append(data);
+			}
+		});
+	}
+	// displays the booklist for the librarian
+	function get_booklist_lib() {
+		$.ajax({
+			type: 'GET',
+			url: 'php/build_librarian_add_section.php',
+			data: "",
+			success: function(data){
+				console.log("Retrieved Book List");
+				//console.log(data);
+				$('#existing-books').empty();
+				$("#existing-books").append(data);
+			}
+		});
+	}	
+	
+	function display_shelves(phpscript){
+		var op = "shelves";
+		var data = {'op': op };
+		$.ajax({
+			type: 'GET',
+			url: phpscript,
+			data: data,
+			success: function(data){
+				console.log("Retrieved shelves");
+				//console.log(data);
+				$('#shelves').empty();
+				$("#shelves").html(data);
+			}
+		});
+	}
+	
+	function get_details(id){
+		var data = {'copyId': id};
+		$.ajax({
+			type: 'GET',
+			url: 'php/display_details.php',
+			data: data,
+			success: function(data){
+				var details = JSON.parse(data);
+				
+				var str = "DETAILS:\n";
+				str += "Title: " + details['title'] + " - Author: " + details['author'] + " - BookId: " + details['bookId'] + " - CopyId: " + details['copyId'];
+				$("#info").val(str);
+			}
+		});
+	}
+	
+	function delete_book(id){
+		console.log("deleting copyId: " + id);
+		var op = 'delete';
+		var data = {'op': op, 'copyId': id};
+		$.ajax({
+			type: 'GET',
+			url: 'php/librarian_func.php',
+			data: data,
+			success: function(data){
+				display_shelves('php/librarian_func.php');
+			}
+		});
+	}
+	
+	</script>
+    </body>
+</html>
