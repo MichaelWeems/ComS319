@@ -14,15 +14,14 @@ $(document).ready(function() {
     });
     
     $('select').material_select();
-    
-    $('#password').keypress(function(e) {
-        if(e.which == 13) {
-            login();
-        }
-    });
 
-    $("#login").click (function () {
-        login();
+    $(".img-container").click (function () {
+        var login = {'username': $('#username').val(),'password': $('#password').val()};
+        var script = "src/php/login.php";
+        var func = login_callback;
+        
+        console.log("Sending Login info to server");
+        ajax(login, script, func);
 	});
 
 	$("#signup").click (function () {
@@ -34,10 +33,8 @@ $(document).ready(function() {
 
 }); // end of document ready function
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// Functions
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //	ajax
@@ -54,24 +51,8 @@ function ajax(parameters, script, func){
     });
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-//	login
-//
-//		Makes a call to login.php with the user supplied
-//      parameters
-//
-function login(){
-    var login = {'username': $('#username').val(),'password': $('#password').val()};
-    var script = "src/php/login.php";
-    var func = login_callback;
-
-    console.log("Sending Login info to server");
-    ajax(login, script, func);
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Callback functions
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //	login_callback
@@ -90,7 +71,7 @@ function login_callback(data){
             window.location.href = "app.html";
         }
         else if ( response.user == 'user' ){
-            window.location.href = "wall.html";
+            window.location.href = "app.html";
         }
         else if ( response.user == 'invalid' ){
             alert("Invalid username or password");

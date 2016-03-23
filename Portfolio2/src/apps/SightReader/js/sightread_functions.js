@@ -92,7 +92,7 @@ function phpcall_buildStaff_callback(data) {
 //
 function drawStaff(staff) {
 
-	var canvas = $("canvas")[0];
+	var canvas = $("#sightread-canvas")[0];
 	var renderer = new Vex.Flow.Renderer(canvas,
 	Vex.Flow.Renderer.Backends.CANVAS);
 
