@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 	<title>Portfolio 2</title>
 
@@ -11,48 +11,115 @@
 	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
-  <nav class="light-blue lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Com S 319 - Lab 8</a>
-    </div>
-  </nav>
-  <div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-      <h1 class="header center orange-text">Sight Reading Trainer</h1>
-    </div>
-  </div>
+    <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container">
+            <ul class="left hide-on-med-and-down">
+                <li><a href="appselect.html">Apps</a></li>
+                <li><a href="wall.html"></a></li>
+            </ul>
+            <ul class="right hide-on-med-and-down">
+                <li><a id="username"></a></li>
+                <li><a id="logout">logout</a></li>
+            </ul>
+        </div>
+    </nav>
 
+    <div class="container" style="height:1000px; max-width:1500px">
+            <!--   Contains main functionality   -->
+            <div class="wall">
+                <div class="card-wall-wrapper">
+                    <div class="card" style="width:100%; height:100%">
+                        <div class="card-image waves-effect waves-block waves-light">
+                            <div class="img-container"></div>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title activator grey-text text-darken-4">Pandas!<i class="material-icons right">more_vert</i></span>
+                            <p><a href="#">Lift up to see</a></p>
+                        </div>
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+                            <p>Pandas!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-wall-wrapper">
+                    <div class="card" style="width:100%; height:100%">
+                        <div class="card-image waves-effect waves-block waves-light">
+                            <div class="img-container"></div>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title activator grey-text text-darken-4">Pandas!<i class="material-icons right">more_vert</i></span>
+                            <p><a href="#">Lift up to see</a></p>
+                        </div>
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+                            <p>Pandas!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-wall-wrapper">
+                    <div class="card" style="width:100%; height:100%">
+                        <div class="card-image waves-effect waves-block waves-light">
+                            <div class="img-container"></div>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title activator grey-text text-darken-4">Pandas!<i class="material-icons right">more_vert</i></span>
+                            <p><a href="#">Lift up to see</a></p>
+                        </div>
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+                            <p>Pandas!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-wall-wrapper">
+                    <div class="card" style="width:100%; height:100%">
+                        <div class="card-image waves-effect waves-block waves-light">
+                            <div class="img-container"></div>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title activator grey-text text-darken-4">Pandas!<i class="material-icons right">more_vert</i></span>
+                            <p><a href="#">Lift up to see</a></p>
+                        </div>
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+                            <p>Pandas!</p>
+                        </div>
+                    </div>
+                </div>
+		  </div>
+        <br>
+    </div>
 
-  <div class="container">
-    <div class="section">
-      <!--   Contains main functionality   -->
-		<div class="loginDiv">
-            <div class="mat-div">
-                <label for="username" class="mat-label">Username</label>
-                <input type="text" name="username" id="username" class="mat-input">
+    <footer class="page-footer orange">
+        <div class="footer-copyright">
+            <div class="container">
+                Made by <a class="orange-text text-lighten-3">Michael Weems & Zach Wild</a>
             </div>
-            <div class="mat-div">
-                <label for="password "class="mat-label">Password</label>
-                <input type="password" name="password" id="password" class="mat-input">
-            </div>
-			<a id="login" class="btn-large waves-effect waves-light orange">Login</a>
-			<a id="signup" class="btn-large waves-effect waves-light orange" href="signup.html">Sign up</a>
-		</div>
-    </div>
-    <br>
-  </div>
-
-  <footer class="page-footer orange">
-    <div class="footer-copyright">
-      <div class="container">
-      Made by <a class="orange-text text-lighten-3">Michael Weems & Zach Wild</a>
-      </div>
-    </div>
-  </footer>
+        </div>
+    </footer>
     
     <!--  Scripts-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="./src/js/materialize.js"></script>
-    <script type="text/javascript" src="./src/js/login_handlers.js"></script>
+    <script type="text/javascript" src="./src/js/ajax.js"></script>
+    <script type="text/javascript" src="./src/js/profile_handlers.js"></script>
+    
+    
+    <!--
+    <script>
+                                var canvas = document.createElement("canvas");
+                                canvas.width = 40;
+                                canvas.height = 40;
+                                var context = canvas.getContext("2d");
+                                var deferred = $.Deferred();
+                                $("<img/>").attr("src", "data:image/gif;base64," + base64).load(function() {
+                                    context.scale(width/this.width,  height/this.height);
+                                    context.drawImage(this, 0, 0); 
+                                    deferred.resolve($("<img/>").attr("src", canvas.toDataURL()));               
+                                 });
+                                 return deferred.promise();   
+                            </script> -->
 
-  </body>
+</body>
 </html>

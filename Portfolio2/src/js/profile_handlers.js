@@ -5,7 +5,7 @@ $(document).ready(function() {
     
     get_user();
 
-	$('#logout').click(function() {
+    $('#logout').click(function() {
         logout();
     });
 

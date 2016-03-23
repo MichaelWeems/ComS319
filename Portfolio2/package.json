@@ -1,5 +1,5 @@
 {
-  "name": "FaceBook",
+  "name": "SightReader",
   "version": "0.1.0",
   "devDependencies": {
 	"vexflow": "^1.2.1"

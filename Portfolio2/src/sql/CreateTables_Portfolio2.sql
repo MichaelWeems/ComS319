@@ -4,9 +4,8 @@ Password varchar(50),
 admin varchar(5),
 securityquestion varchar(50),
 securityanswer varchar(50),
-imageId int,
-primary key(username),
-foreign key(imageId) references Group8_image(imageId));
+primary key(username)
+);
 
 insert into Group8_users(username, password, admin)
 values('ztwild', '48fa4c38043122c03a61b1fb03d378ee', 'false'),
@@ -17,11 +16,11 @@ values('ztwild', '48fa4c38043122c03a61b1fb03d378ee', 'false'),
 create table if not exists Group8_apps(
 name varchar(30) not null,
 description varchar(50),
-filepath varchar(250) not null,
+location varchar(250) not null,
 primary key(name)
 );
 
-insert into Group8_apps(name, filepath)
+insert into Group8_apps(name, location)
 values('SightReader', 'src\\apps\\SightReader');
 
 create table if not exists Group8_userposts(
@@ -37,16 +36,9 @@ values('mdweems'),('user'),('ztwild');
 create table if not exists Group8_posts(
 title varchar(50),
 text varchar(4000),
+data varchar(250),
 postId int(4) not null,
-imageId int,
-foreign key(postId) references Group8_userposts(postId),
-foreign key(imageId) references Group8_image(imageId));
+foreign key(postId) references Group8_userposts(postId));
 
 insert into Group8_posts(postId, title)
 values(1, 'Jazz'),(2, 'Uh Huh...'),(3, 'Yezzir');
-
-create table if not exists Group8_image(
-imageId int not null AUTO_INCREMENT,
-imagepath varchar(250),
-imagefilename varchar(50),
-primary key(imageId));

@@ -42,7 +42,7 @@ function phpcall_buildStaff(queryString) {
 	$.ajax( 
         { 
             type: 'POST', 
-            url: 'src/apps/SightReader/php/buildStaff.php', 
+            url: 'src/php/buildStaff.php', 
             data: queryString, 
             success: function(data){ 
                 phpcall_buildStaff_callback(data);

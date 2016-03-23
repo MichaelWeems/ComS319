@@ -25,34 +25,11 @@ $(document).ready(function() {
         login();
 	});
 
-	$("#signup").click (function () {
-		$.post("logout.php", {}, function(data) {
-				console.log(data);
-			 $("#includedContent").load("login.html"); 
-		});
-	});
-
 }); // end of document ready function
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// Functions
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//	ajax
-//
-//		calls the designated php script with the given data. 
-//		on return it will call the given callback function
-//
-function ajax(parameters, script, func){
-    $.ajax({
-        type: 'GET',
-        url: script,
-        data: parameters,
-        success: function(data){func(data);}
-    });
-}
 
 /////////////////////////////////////////////////////////////////////////////////
 //	login
@@ -87,10 +64,11 @@ function login_callback(data){
     
     if (typeof response.user != 'undefined'){
         if ( response.user == 'admin' ){
-            window.location.href = "app.html";
+            window.location.assign("admin.html");
         }
         else if ( response.user == 'user' ){
-            window.location.href = "wall.html";
+            window.location.assign("wall.html");
+            console.log("after changing location");
         }
         else if ( response.user == 'invalid' ){
             alert("Invalid username or password");

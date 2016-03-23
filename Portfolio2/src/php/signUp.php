@@ -17,23 +17,22 @@ while($row = $res->fetch_assoc()){
 }
 
 $pass = md5($_GET["password"]);
-$loginSQL = "insert into Group8_users(username, password, email, phone, librarian, firstname, lastname)"
-    ."values('".$_GET["username"]."', '".$pass."', '".$_GET["email"]."', '".$_GET["phone"]."', '"
-	.$_GET["librarian"]."', '".$_GET["firstname"]."', '".$_GET["lastname"]."');";
+$loginSQL = "insert into Group8_users(username, password, admin)"
+    ."values('".$_GET["username"]."', '".$pass."', '".$_GET["admin"]."');";
 
 $conn->query($loginSQL);
 
-$loginSQL = "select librarian from Group8_users where username = '"
+$loginSQL = "select admin from Group8_users where username = '"
     .$_GET["username"]."';";
 
 $res = $conn->query($loginSQL);
 	
-$ret = "";
+$ret = array("user" => "invalid");
 while($row = $res->fetch_assoc()){
-	if($_GET["librarian"] == "true"){
-		$ret .= 'librarian';
+	if($_GET["admin"] == "true"){
+		$ret["user"] = 'admin';
 	}else{
-		$ret .= 'student';
+		$ret["user"] = 'user';
 	}
 }
 echo json_encode($ret);
