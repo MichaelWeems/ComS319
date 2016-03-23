@@ -37,6 +37,6 @@ while($row = $res->fetch_assoc()){
 }
 echo json_encode($ret);
 	
-include 'close_connection.php';
+include 'connection_close.php';
 
 ?>

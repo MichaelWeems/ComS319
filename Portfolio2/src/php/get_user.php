@@ -5,5 +5,5 @@ session_start();
 $json['username'] = $_SESSION["username"];
 echo json_encode($json);
 	
-include 'close_connection.php';
+include 'connection_close.php';
 ?>
