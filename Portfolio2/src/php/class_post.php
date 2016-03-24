@@ -1,4 +1,6 @@
 <?php
+include 'class_comment.php';
+
 class Post {
 
 	private $postId;
@@ -14,6 +16,7 @@ class Post {
         $this->text = "";
         $this->data = "";
         $this->image = "";
+        $this->comments = array();
         
         $this->setvars_fromDB();
 	}
@@ -27,6 +30,13 @@ class Post {
 			$this->set_title($row["title"]);
 			$this->set_text($row["text"]);
             $this->set_data($row["data"]);
+            
+        }
+        
+        $sql = "select commentId from Group8_comments where postId = '".$this->postId."';";
+		$res = $conn->query($sql);
+		while($row = $res->fetch_assoc()){
+			$this->comments[$row["commentId"]] = new Comment($row["commentId"]);
         }
 
         include 'connection_close.php';
@@ -50,7 +60,7 @@ class Post {
     
     
 
-	public function get_id() {
+	public function get_postId() {
 		return $this->postId;
 	}  
 	
@@ -69,6 +79,21 @@ class Post {
 	public function get_image() {
 		return $this->image;
 	}
+    
+    public function get_comments(){
+        return $this->comments;
+    }
+    
+    
+    public function write_comment($username, $text){
+        include 'connection.php';
+
+        $sql = "insert into Group8_comments(username, text, postId)values('".$username."', '".$text."', '".$this->postId."');";
+		if ($conn->query($sql) === false){
+			die('Invalid query: '.$conn->error);
+		}
+		include 'connection_close.php';
+    }
 	
     
     
