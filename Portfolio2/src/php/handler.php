@@ -2,8 +2,8 @@
 include 'class_post.php';
 include 'class_user.php';
 session_start();
-function build_wallPosts($posts){
-    
+
+function build_posts($posts){
     $html  = '';
     foreach($posts as $post){
         $html .= '<div class="card-wall-wrapper">';
@@ -18,14 +18,10 @@ function build_wallPosts($posts){
         $html .=        '</div>';
         $html .=        '<div class="card-reveal">';
         $html .=            '<span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>';
-        $html .=            '<p>Pandas!</p>';
+        $html .=            '<p>Comments here...</p>';
         $html .= '</div></div></div>';
     }
     return $html;
-}
-
-function build_profilePosts($user){
-    
     
 }
 
@@ -39,12 +35,13 @@ if ($op == "create post"){
 }
 else if ($op == "get all posts") {
     // needs username
-    $posts = $user->get_posts();
-    echo json_encode(build_wallPosts($posts));
+    $posts = $user->get_allPosts();
+    echo json_encode(build_posts($posts));
 }
 else if ($op == "get user posts"){
     // needs username
-	echo json_encode(build_profilePosts());
+    $posts = $user->get_posts();
+	echo json_encode(build_posts($posts));
 }
 else if ($op == "write comment"){
 	// need postId, username

@@ -29,6 +29,29 @@ class User {
         return $this->posts;
     }
     
+    public function get_allPosts() {
+		include 'connection.php';
+		
+		$posts = array();
+        $friends = array();
+		$sql = "select friend from Group8_friends where username = '".$this->get_username()."';";
+		$res = $conn->query($sql);
+		while($row = $res->fetch_assoc()){
+			array_push($friends, $row["friend"]);
+		};
+        
+        foreach ($friends as $friend){
+            $sql = "select postId from Group8_posts where username = '".$this->get_username()."' OR username = '".$friend."';";
+            $res = $conn->query($sql);
+            while($row = $res->fetch_assoc()){
+                $posts[$row["postId"]] = new Post($row["postId"]);
+            };
+        }
+        
+        return $posts;
+		include 'connection_close.php';
+	}
+    
     public function set_friends() {
 		include 'connection.php';
 		
