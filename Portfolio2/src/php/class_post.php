@@ -6,6 +6,7 @@ class Post {
 	private $text;
 	private $data;
     private $image;
+    private $comments;
 
 	function __construct($id) {
         $this->postId = $id;
@@ -35,12 +36,12 @@ class Post {
 		$this->title = $btitle;
 	}	
 	
-	public function set_text($bauthor) {
-		$this->author = $bauthor;
+	public function set_text($text) {
+		$this->text = $text;
 	}
 	
-	public function set_data($id) {
-		$this->bookId = $id;
+	public function set_data($data) {
+		$this->data = $data;
 	}
     
     public function set_image($image) {

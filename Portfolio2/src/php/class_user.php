@@ -16,7 +16,7 @@ class User {
 		include 'connection.php';
 		
 		$this->posts = array();
-		$sql = "select postId from Group8_userposts where username = '".$this->get_username()."';";
+		$sql = "select postId from Group8_posts where username = '".$this->get_username()."';";
 		$res = $conn->query($sql);
 		while($row = $res->fetch_assoc()){
 			$this->posts[$row["postId"]] = new Post($row["postId"]);
@@ -24,6 +24,10 @@ class User {
         
 		include 'connection_close.php';
 	}
+    
+    public function get_posts(){
+        return $this->posts;
+    }
     
     public function set_friends() {
 		include 'connection.php';
@@ -68,23 +72,11 @@ class User {
     public function createPost($title, $text, $data) {
 		include 'connection.php';
         
-        $sql = "insert into Group8_posts(title, text, data)values('".$title."', '".$text."', '".$data."');";
+        $sql = "insert into Group8_posts(title, text, data, username)values('".$title."', '".$text."', '".$data."', '".$this->get_username()."');";
 		if ($conn->query($sql) === false){
 			die('Invalid query: '.$conn->error);
 		}
         
-        $sql = "select max(postId) from Group8_posts";
-		$res = $conn->query($sql);
-		$postId = "";
-		while($row = $res->fetch_assoc()){
-			$postId = $row['max(postId)'];
-		}
-        
-        $sql = "insert into Group8_userposts(username, postId)values('".$this->get_username()."', '".$postId."');";
-		if ($conn->query($sql) === false){
-			die('Invalid query: '.$conn->error);
-		}
-		
 		include 'connection_close.php';
 	}
 	
@@ -96,11 +88,6 @@ class User {
 			die("Invalid query: ".$conn->error);
 		}
 		
-		$sql = "delete from Group8_userposts where postId = '".$this->postId."';";
-		if (!$conn->query($sql)){
-			die("Invalid query: ".$conn->error);
-		}
-        
 		include 'connection_close.php';
 	}
 }

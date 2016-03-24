@@ -48,7 +48,7 @@ foreign key(postId) references Group8_posts(postId),
 foreign key(username) references Group8_users(username));
 
 insert into Group8_comments(username, postId, text)
-values('mdweems', 1, 'jazzity jazzin jazz'),('mdweems', 2 ,  'Uh Huh...'),('juicy',3, 'Yezzir');
+values('mdweems', 1, 'jazzity jazzin jazz'),('mdweems', 2 ,  'Uh Huh...'),('mdweems',3, 'Yezzir');
 
 
 create table if not exists Group8_apps(
