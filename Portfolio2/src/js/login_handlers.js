@@ -20,6 +20,8 @@ $(document).ready(function() {
             login();
         }
     });
+    
+    $('#username').focus();
 
     $("#login").click (function () {
         login();
