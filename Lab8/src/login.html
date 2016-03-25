@@ -227,6 +227,7 @@
 				//$('#shelves-view').html(data);
 				//update loan history
 				get_LoanHistory_student('student');
+                display_shelves('php/student_func.php');
 				// update shelf display
             }
         
@@ -254,6 +255,7 @@
 				//$('#return-book').html(data);
 				//update loan history
 				get_LoanHistory_student('student');
+                display_shelves('php/student_func.php');
 				// update shelf display
 			}
 		
@@ -306,6 +308,8 @@
 				console.log(data);
 				console.log("book added");
 				get_booklist_lib();
+                display_shelves('php/librarian_func.php');
+                
 				//if (data == "Found None"){
 				//	$('#borrow-error').val("There were no copies of '" + title + "' left");
 				//	return;
