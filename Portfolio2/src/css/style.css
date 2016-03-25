@@ -137,3 +137,7 @@
     height: 300%;
     transition: width 0.3s ease 0.3s, height 0.3s ease 0.3s;
 }
+
+.likebutton:hover {
+    cursor:pointer;
+}

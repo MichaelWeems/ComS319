@@ -35,7 +35,8 @@ primary key(postId),
 foreign key(username) references Group8_users(username));
 
 insert into Group8_posts(title, text, username)
-values('Jazz', 'McGee', 'mdweems'),('wooooo hoooooooo', 'Uh Huh...', 'mdweems'),('juicy', 'Yezzir', 'mdweems');
+values('Jazz', 'McGee', 'mdweems'),('wooooo hoooooooo', 'Uh Huh...', 'mdweems'),
+('juicy', 'J', 'mdweems'),('its me', 'zach', 'ztwild'),('ass', 'titties', 'ztwild');
 
 
 create table if not exists Group8_comments(
@@ -48,7 +49,21 @@ foreign key(postId) references Group8_posts(postId),
 foreign key(username) references Group8_users(username));
 
 insert into Group8_comments(username, postId, text)
-values('mdweems', 1, 'jazzity jazzin jazz'),('mdweems', 2 ,  'Uh Huh...'),('mdweems',3, 'Yezzir');
+values('mdweems', 1, 'jazzity jazzin jazz'),('mdweems', 2 ,  'Uh Huh...'),
+('mdweems',3, 'Yezzir'), ('ztwild',1, 'blaha'), ('ztwild',2, 'poooooooooooop');
+
+
+create table if not exists Group8_likes(
+likeId int not null AUTO_INCREMENT,
+username varchar(10),
+postId int(4) not null,
+primary key(likeId),
+foreign key(postId) references Group8_posts(postId),
+foreign key(username) references Group8_users(username));
+
+insert into Group8_likes(username, postId)
+values('mdweems', 1),('ztwild', 1),('ztwild', 2),
+('mdweems', 3);
 
 
 create table if not exists Group8_apps(
