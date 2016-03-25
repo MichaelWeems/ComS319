@@ -1,7 +1,43 @@
 <?php
 include 'class_post.php';
 include 'class_user.php';
+include 'class_applist.php';
+
 session_start();
+
+/********************************************************************************************************
+ *  Build app select html
+ */
+
+/*
+ *  Builds the HTML to house a list of app selectors. 
+ *  Will be appended to a div when received by the 
+ *  javascript handler. Creates a card container to 
+ *  host the app name and description for each app.
+ */
+function build_appSelectors($apps){
+    $html  = '';
+    foreach($apps as $app){
+        $html .= '<div class="card-app-wrapper">';
+        $html .=    '<div class="card app-card" id="card'.$app->get_name().'">';
+        $html .=        '<div class="card-image waves-effect waves-block waves-light">';
+        $html .=            '<div class="img-container"></div>';
+        $html .=        '</div>';
+        $html .=        '<div class="card-content">';
+        $html .=            '<span class="card-title activator grey-text text-darken-4">'.$app->get_name();
+        $html .=            '</span><br>';
+        $html .=            '<p><div style="float:left">'.$app->get_description().'</div></p>';
+        $html .=        '</div>';
+        $html .= '</div></div>';
+    }
+    return $html;
+}
+
+
+
+/********************************************************************************************************
+ *  Build wall post html
+ */
 
 /*
  *  Builds the HTML to house a reply field to add a new comment. 
@@ -54,7 +90,7 @@ function build_posts($posts, $user){
     $html  = '';
     foreach($posts as $post){
         $html .= '<div class="card-wall-wrapper">';
-        $html .=    '<div class="card" id="card'.$post->get_postId().'">';
+        $html .=    '<div class="card wall-card" id="card'.$post->get_postId().'">';
         $html .=        '<div class="card-image waves-effect waves-block waves-light">';
         $html .=            '<div class="img-container"></div>';
         $html .=        '</div>';
@@ -122,5 +158,9 @@ else if ($op == "like"){
     $ret['postId'] = $postId;
     $ret['likecount'] = count($post->get_likes());
     echo json_encode($ret);
+}
+else if ($op == "get all apps") {
+    $applist = new AppList();
+    echo json_encode(build_appSelectors($applist->get_applist()));
 }
 ?>

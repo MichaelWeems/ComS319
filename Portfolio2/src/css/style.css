@@ -120,7 +120,21 @@
     z-index: 0;
 }
 
-.card {
+.card-app-wrapper {
+    width: 40%;
+    height: 30%;
+    float:left; 
+    margin-right:5%;
+    margin-bottom:5%;
+}
+
+.card.app-card {
+    height:100%;
+    width:100%;
+    margin-bottom: 5px;
+}
+
+.card.wall-card {
     position: absolute; 
     display: inline-block;
     width: 100%;

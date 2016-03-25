@@ -6,6 +6,10 @@ $(document).ready(function() {
     get_user();
     get_wallPosts();
     
+    $('#appselect').click(function(){
+       appselect(); 
+    });
+    
 	$('#logout').click(function() {
         logout();
     });
@@ -14,6 +18,15 @@ $(document).ready(function() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// Functions
+
+/////////////////////////////////////////////////////////////////////////////////
+//	appselect
+//
+//		loads the appselect page
+//
+function appselect(){
+    window.location.assign("appselect.html");
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //	get_wallPosts
@@ -40,19 +53,19 @@ function set_wallHandlers(){
         
         
         
-        if ($(this).parent().parent().parent().attr('class') == 'card') {
+        if ($(this).parent().parent().parent().attr('class') == 'card wall-card') {
             $('.expander').each(function(){
-                $(this).parent().parent().parent().removeClass('card large');
-                $(this).parent().parent().parent().addClass('card');
+                $(this).parent().parent().parent().removeClass('large');
+                $(this).parent().parent().parent().addClass('wall-card');
                 $(this).parent().parent().parent().parent().css('z-index', '1');
             });
-            $(this).parent().parent().parent().removeClass('card');
-            $(this).parent().parent().parent().addClass('card large');
+            $(this).parent().parent().parent().removeClass('wall-card');
+            $(this).parent().parent().parent().addClass('large');
             $(this).parent().parent().parent().parent().css('z-index', '10');
         }
         else {
-            $(this).parent().parent().parent().removeClass('card large');
-            $(this).parent().parent().parent().addClass('card');
+            $(this).parent().parent().parent().removeClass('large');
+            $(this).parent().parent().parent().addClass('wall-card');
             $(this).parent().parent().parent().parent().css('z-index', '1');
         }
     });
