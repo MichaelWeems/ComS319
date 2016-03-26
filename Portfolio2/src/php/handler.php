@@ -1,9 +1,8 @@
 <?php
+session_start();
 include 'class_post.php';
 include 'class_user.php';
 include 'class_applist.php';
-
-session_start();
 
 /********************************************************************************************************
  *  Build app select html
@@ -162,5 +161,17 @@ else if ($op == "like"){
 else if ($op == "get all apps") {
     $applist = new AppList();
     echo json_encode(build_appSelectors($applist->get_applist()));
+}
+else if ($op == "open app"){
+    $app = new App($_GET['appname']);
+    $_SESSION['html'] = file_get_contents($app->get_html_location());
+    $_SESSION['scripts'] = file_get_contents($app->get_htmlscripts_location());
+    var_dump($_SESSION);
+}
+else if ($op == "get app") {
+    $json = array();
+    $json['html'] = $_SESSION['html'];
+    $json['scripts'] = $_SESSION['scripts'];
+    echo json_encode($json);
 }
 ?>

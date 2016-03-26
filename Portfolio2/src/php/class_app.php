@@ -7,7 +7,9 @@ class App {
 	private $location;
     
     private $html;
+    private $scripts;
     private $html_location;
+    private $htmlscripts_location;
 
 	function __construct($name) {
         $this->name = $name;
@@ -17,17 +19,18 @@ class App {
     public function setvars_fromDB(){
         include 'connection.php';
 		
-        $sql = "select description, location, html_location from Group8_apps where name = '".$this->name."';";
+        $sql = "select description, location, html_location, htmlscripts_location from Group8_apps where name = '".$this->name."';";
 		$res = $conn->query($sql);
 		while($row = $res->fetch_assoc()){
             $this->description = $row["description"];
             $this->location = $row["location"];
-            //$this->html_location = $row["html_location"];
-            $this->html_location = '..\\apps\\SightReader\\pages\\sightreader_app.html';
+            $this->html_location = $row["html_location"];
+            $this->htmlscripts_location = $row["htmlscripts_location"];
         }
         include 'connection_close.php';
         
         $this->html = file_get_contents($this->html_location);
+        $this->scripts = file_get_contents($this->htmlscripts_location);
     }
     
 	public function set_name($name) {
@@ -70,5 +73,13 @@ class App {
     public function get_html_location() {
 		return $this->html_location;
 	}
+    
+    public function get_scripts(){
+        return $this->scripts;
+    }
+    
+    public function get_htmlscripts_location(){
+        return $this->htmlscripts_location;
+    }
 }
 ?>

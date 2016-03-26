@@ -71,8 +71,9 @@ name varchar(30) not null,
 description varchar(50),
 location varchar(250) not null,
 html_location varchar(200),
+htmlscripts_location varchar(200),
 primary key(name)
 );
 
-insert into Group8_apps(name, description, location, html_location)
-values('SightReader', 'helps you sight read', 'src\\apps\\SightReader', 'src\\apps\\SightReader\\pages\\sightreader_app.html');
+insert into Group8_apps(name, description, location, html_location, htmlscripts_location)
+values('SightReader', 'helps you sight read', 'src\\apps\\SightReader', '..\\apps\\SightReader\\pages\\sightreader_app.html', '..\\apps\\SightReader\\pages\\include_scripts.html');

@@ -3,7 +3,7 @@
 
 $(document).ready(function() {
 
-    $(".app").load("src/pages/sightreader_app.html",
+    $(".app").load("src/apps/SightReader/pages/sightreader_app.html",
     function() {
         $(".mat-input").focus(function() {
             $(this).parent().addClass("is-active is-completed");

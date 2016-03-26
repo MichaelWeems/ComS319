@@ -6,6 +6,10 @@ $(document).ready(function() {
     get_user();
     get_appselectors();
     
+    $('#wall').click(function(){
+       wall(); 
+    });
+    
 	$('#logout').click(function() {
         logout();
     });
@@ -14,6 +18,15 @@ $(document).ready(function() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// Functions
+
+/////////////////////////////////////////////////////////////////////////////////
+//	wall
+//
+//		loads the wall page
+//
+function wall(){
+    window.location.assign("wall.html");
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //	get_appselectors
@@ -37,6 +50,14 @@ function get_appselectors(){
 //
 function set_pageHandlers(){
     
+    $('.app-card').click(function(){
+        var appname = $(this).attr('id').substring(4);
+        var op = {'op': 'open app', 'appname': appname};
+        var script = 'src/php/handler.php';
+        var func = openapp_callback;
+        
+        ajax(op, script, func);
+    });
 
 }
 
@@ -59,4 +80,14 @@ function get_appselectors_callback(data){
     $('.wall').append(obj);
     
     set_pageHandlers();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//	openapp_callback
+//
+//		Will open the app page. html will be saved as a session variable
+//
+function openapp_callback(data){
+    console.log("About to open the app");
+    window.location = "app.html";
 }
