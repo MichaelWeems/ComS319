@@ -20,7 +20,7 @@ function build_appSelectors($apps){
         $html .= '<div class="card-app-wrapper">';
         $html .=    '<div class="card app-card" id="card'.$app->get_name().'">';
         $html .=        '<div class="card-image waves-effect waves-block waves-light">';
-        $html .=            '<div class="img-container"></div>';
+        $html .=            '<div class="img-container"><img src=src/img/sightreader.jpg></div>';
         $html .=        '</div>';
         $html .=        '<div class="card-content">';
         $html .=            '<span class="card-title activator grey-text text-darken-4">'.$app->get_name();
@@ -57,7 +57,7 @@ function build_one_comment(&$html, $comment){
     $html .=    '<div class="row" style="margin-top:0px; margin-bottom:0px; padding-top: -25px; padding-bottom: -25px">';
     $html .=        '<div class="col s5 m12">';
     $html .=            '<div class="card-panel">';
-    $html .=                '<span><a id="commentusername'.$comment->get_commentId().'">'.$comment->get_username().'</a><br><a id="commenttext'.$comment->get_commentId().'">'.$comment->get_text().'</a></span>';
+    $html .=                '<span><div id="commentusername'.$comment->get_commentId().'">'.$comment->get_username().'</div><div id="commenttext'.$comment->get_commentId().'">'.$comment->get_text().'</div></span>';
     $html .=   '</div></div></div>';
 }
 
@@ -94,20 +94,21 @@ function build_posts($posts, $user){
         $html .=            '<div class="img-container"></div>';
         $html .=        '</div>';
         $html .=        '<div class="card-content">';
-        $html .=            '<span class="card-title activator grey-text text-darken-4">'.$post->get_title();
-        $html .=            '<i class="material-icons right expander">more_vert</i></span><br>';
+        $html .=            '<span class="card-title activator grey-text text-darken-4"><div style="width:50%" class="expander left">'.$post->get_title().'</div>';
+        $html .=            '<i class="material-icons right">more_vert</i></span><br>';
         $html .=            '<span style="float:right"><a class="likebutton" onclick="like('.$post->get_postId().')">';
-        $html .=            '<img src="src/img/like.png" alt="like" style="width:16px;height:16px;"></a>';
-        $html .=            '<a id="likecount'.$post->get_postId().'" style="font-size:20px">'.count($post->get_likes()).'</a>';
-        $html .=            '<div id="like'.$post->get_postId().'" style="font-size:10px">';
+        $html .=            '<img src=src/img/like.png alt="like" style="width:16px;height:16px;"></a>';
+        $html .=            '<a id="likecount'.$post->get_postId().'" style="font-size:20px" class="grey-text text-darken-4">'.count($post->get_likes()).'</a></span>';
+        $html .=            '<span style="float:right"><div id="like'.$post->get_postId().'" style="font-size:10px">';
         if (isset($post->get_likes()[$user])) {
             $html .= 'You like this';
         }
         $html .=            '</div></span>';
-        $html .=            '<p><div style="float:left">'.$post->get_text().'</div></p>';
+        $html .=            '<div style="clear:both"></div>';
+        $html .=            '<span style="clear:both">'.$post->get_text().'</span>';
         $html .=        '</div>';
         $html .=        '<div class="card-reveal" id="reveal'.$post->get_postId().'">';
-        $html .=            '<span class="card-title grey-text text-darken-4">Comments<i class="material-icons right expander">close</i></span>';
+        $html .=            '<span class="card-title grey-text text-darken-4"><h6 class="expander left">Comments</h6><i class="material-icons right">close</i></span>';
         
         $comments = $post->get_comments();
         build_comments($html, $comments, $post->get_postId());

@@ -11,9 +11,10 @@
 	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
-    <nav class="light-blue lighten-1" role="navigation">
+    <nav class="blue" role="navigation">
         <div class="nav-wrapper container">
             <ul class="left hide-on-med-and-down">
+                <li><h5 style="padding-right:5px; padding-top:5px">Wall</h5></li>
                 <li><a id="appselect">Apps</a></li>
             </ul>
             <ul class="right hide-on-med-and-down">
@@ -22,14 +23,15 @@
             </ul>
         </div>
     </nav>
-
-    <div class="container" style="height:1000px; max-width:1500px">
-            <!--   Contains main functionality   -->
-            <div class="wall"></div>
-        <br>
+    <div class="mainbody container">
+        <div class="container" style="height:100%; margin-top:5%">
+                <!--   Contains main functionality   -->
+                <div class="wall"></div>
+            <br>
+        </div>
     </div>
 
-    <footer class="page-footer orange">
+    <footer class="page-footer blue">
         <div class="footer-copyright">
             <div class="container">
                 Made by <a class="orange-text text-lighten-3">Michael Weems & Zach Wild</a>
@@ -44,20 +46,5 @@
     <script type="text/javascript" src="./src/js/wall_handlers.js"></script>
     
     
-    <!--
-    <script>
-                                var canvas = document.createElement("canvas");
-                                canvas.width = 40;
-                                canvas.height = 40;
-                                var context = canvas.getContext("2d");
-                                var deferred = $.Deferred();
-                                $("<img/>").attr("src", "data:image/gif;base64," + base64).load(function() {
-                                    context.scale(width/this.width,  height/this.height);
-                                    context.drawImage(this, 0, 0); 
-                                    deferred.resolve($("<img/>").attr("src", canvas.toDataURL()));               
-                                 });
-                                 return deferred.promise();   
-                            </script> -->
-
 </body>
 </html>

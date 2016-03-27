@@ -51,22 +51,20 @@ function set_wallHandlers(){
     
     $('.expander').click(function(){
         
-        
-        
         if ($(this).parent().parent().parent().attr('class') == 'card wall-card') {
             $('.expander').each(function(){
                 $(this).parent().parent().parent().removeClass('large');
                 $(this).parent().parent().parent().addClass('wall-card');
-                $(this).parent().parent().parent().parent().css('z-index', '1');
+                $(this).parent().parent().parent().parent().css('z-index', '50');
             });
             $(this).parent().parent().parent().removeClass('wall-card');
             $(this).parent().parent().parent().addClass('large');
-            $(this).parent().parent().parent().parent().css('z-index', '10');
+            $(this).parent().parent().parent().parent().css('z-index', '100');
         }
         else {
             $(this).parent().parent().parent().removeClass('large');
             $(this).parent().parent().parent().addClass('wall-card');
-            $(this).parent().parent().parent().parent().css('z-index', '1');
+            $(this).parent().parent().parent().parent().css('z-index', '50');
         }
     });
     
