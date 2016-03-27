@@ -25,14 +25,16 @@
  * App
  */
 .app {
-	padding: 50px;
+	padding: -10px 50px 300px 50px;
+    height:100%;
+    width:100%;
 }
 .canvas-area {
-    padding:50px;
+    padding-left:150px;
 }
 
 .controls {
-    width: 800px;
+    margin-left:20px;
     margin-bottom: 50px;
 }
 

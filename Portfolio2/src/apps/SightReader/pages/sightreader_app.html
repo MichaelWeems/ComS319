@@ -1,67 +1,65 @@
-<div class="canvas-area">
-    <canvas id="sightread-canvas" width="700" height="300"></canvas>
-</div>
-<a id="start" class="btn-large waves-effect waves-light orange" style="margin-bottom: 25px">Start Sight Reading!</a>
-<div class="controls">
-    <div style="width:200px; float:left">
-        <div id="beatcount" class="input-field" style="height:50px">
-            <select>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4" selected>4</option>
-              <option value="6">6</option>
-              <option value="8">8</option>
-            </select>
-            <label>Beats per Measure</label>
-        </div>
-
-        <div id="beat" class="input-field" style="height:50px">
-            <select>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4" selected>4</option>
-              <option value="6">6</option>
-              <option value="8">8</option>
-            </select>
-            <label>Beat Value</label>
-        </div>
-    </div>
-    
-    <div id="key" class="input-field" style="margin-left:25px; width:200px; float:left">
-        <select style="height:50px">
-          <option value="a">A</option>
-          <option value="b">B</option>
-          <option value="c" selected>C</option>
-          <option value="d">D</option>
-          <option value="e">E</option>
-          <option value="f">F</option>
-          <option value="g">G</option>
-        </select>
-        <label>Key Signature</label>
+<div class="card" style="height:100%; width:100%; background-color:rgb(250,250,250); margin-top:15px">
+    <br>
+    <h3 class="header center orange-text">Sight Reading Trainer</h3>
+    <div class="card-content" style="height:80%">
         
-            
-    </div>
+        <div class="card" style="background-color:rgb(255,255,255)">
+            <div class="card-content">
+                <div class="canvas-area">
+                    <canvas id="sightread-canvas" width="700" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card" style="background-color:rgb(255,255,255); height:40%">
+            <div class="card-content">
+                <p class="range" style="width: 50%; float:left">
+                    <label for="tempo">Tempo</label>
+                    <input type="range" id="tempo" min="45" max="240" step="1" >
+                </p>
+                <div class="controls" style="float:right">
+                    <div style="width:200px; float:left">
+                        <div id="beatcount" class="input-field" style="height:50px">
+                            <select>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4" selected>4</option>
+                              <option value="6">6</option>
+                              <option value="8">8</option>
+                            </select>
+                            <label>Beats per Measure</label>
+                        </div>
 
-    <form action="#" style="width:200px; float:left; margin-top:17px; margin-left:25px">
-        <p>
-          <input name="difficulty" type="radio" id="difficulty-easy" checked/>
-          <label for="difficulty-easy">Easy</label>
-        </p>
-        <p>
-          <input name="difficulty" type="radio" id="difficulty-medium" />
-          <label for="difficulty-medium">Medium</label>
-        </p>
-        <p>
-          <input name="difficulty" type="radio" id="difficulty-hard" />
-          <label for="difficulty-hard">Hard</label>
-        </p>
-    </form>
-    
-    <p class="range" style="width: 425px">
-        <input type="range" id="loopcount" min="1" max="10" step="1" />
-    </p>
-    
-</div>
-<div class="info-bar">
-    <!-- Create a textfield to display config data to user -->
+                        <div id="beat" class="input-field" style="height:50px">
+                            <select>
+                              <option value="2">2</option>
+                              <option value="4" selected>4</option>
+                              <option value="8">8</option>
+                            </select>
+                            <label>Beat Value</label>
+                        </div>
+                    </div>
+
+                    <form id="difficulty" action="#" style="float:left; margin-top:30px; margin-left:50px">
+                        <p>
+                          <input name="difficulty" type="radio" id="easy" checked/>
+                          <label for="easy">Easy</label>
+                        </p>
+                        <p>
+                          <input name="difficulty" type="radio" id="medium" />
+                          <label for="medium">Medium</label>
+                        </p>
+                        <p>
+                          <input name="difficulty" type="radio" id="hard" />
+                          <label for="hard">Hard</label>
+                        </p>
+                    </form>
+                </div>
+                <div style="margin-top:16%">
+                    <a id="start" class="btn-large waves-effect waves-light orange" style="margin-bottom: 25px">Start Sight Reading!</a>
+                    <a id="end" class="btn-large waves-effect waves-light orange" style="margin-bottom: 25px">Finish</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

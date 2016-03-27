@@ -1,64 +1,99 @@
 <?php
 
-////////////////////////////////////////////////////
-//	This section will be from the sql database //
-// Temp using php for usability in testing     //
+$difficulty = $_GET['difficulty'];
 
-// List all major keys here (may or may not add minor keys)
-$C = array('C','D','E','F','G','A','B');
-$C['key']='C';
-
-// Place all the keys into an array
-$keys = array($C);
-
-$requestedKey = null;
-
-// Check for the given key
-foreach($keys as $key){
-	if ($key['key'] == $_REQUEST['key'] ) {	// find the key we want
-		$requestedKey = $key;
-		break;
-	}
-}
-
-
-
-// end section from the sql database //
-///////////////////////////////////////////
+$notes = array('C','D','E','F','G','A','B');
+$accidentals = array('x', '#', 'b', 'n');
 
 // begin building the staff
 $responseStaff = array();
 $treble = array();
 $bass = array();
+$duration = $_GET['beat'];
 
-for ($i = 0; $i < intval($_REQUEST['beatcount']); $i++) {
+if ($difficulty == 'hard'){
+    $duration = (string)(intval($duration)*2);
+}
 
-	// grab random elements from the key array and place them into the return array
-	
-	// account for difficulty with if statements?
-	
-	// create notes (only one for each clef for now)
+for ($i = 0; $i < intval($_GET['beatcount']); $i++) {
+
 	$tgroup = array();
 	$bgroup = array();
+    
+    if ($difficulty == 'easy'){
+        
+        shuffle($notes);
+        $tnote = current($notes)."/5";
+        
+        shuffle($notes);
+        $bnote = current($notes)."/3";
+
+        array_push($tgroup, $tnote);
+        array_push($bgroup, $bnote);
+        
+        // push the notes into the treble and bass clefs
+        array_push($treble, $tgroup);
+        array_push($bass, $bgroup);
+        
+    }
+    else if ($difficulty == 'medium'){
+        
+        $count = rand(1,3);
+        
+        for ($j = 0; $j < $count; $j++){
+            shuffle($notes);
+            $tnote = current($notes)."/5";
+
+            shuffle($notes);
+            $bnote = current($notes)."/3";
+
+            array_push($tgroup, $tnote);
+            array_push($bgroup, $bnote);
+        }
+        // push the notes into the treble and bass clefs
+        array_push($treble, $tgroup);
+        array_push($bass, $bgroup);
+    }
+    else if ($difficulty == 'hard'){
+        $count = rand(1,3);
+        
+        $oct = rand(1,2);
+        $high = "/5";
+        $low = "/3";
+        if ($oct == 1){
+            $high = "/4";
+            $low = "/3";
+        }
+        
+        for ($j = 0; $j<2; $j++){
+            $tgroup = array();
+	        $bgroup = array();
+            
+            for ($k = 0; $k < $count; $k++){
+                shuffle($notes);
+                $tnote = current($notes).$high;
+                
+                shuffle($notes);
+                $bnote = current($notes).$low;
+
+                array_push($tgroup, $tnote);
+                array_push($bgroup, $bnote);
+            }
+            
+            // push the notes into the treble and bass clefs
+            array_push($treble, $tgroup);
+            array_push($bass, $bgroup);
+        }
+    }
 	
-	$tnote =  $requestedKey[$i]."/5";
-	$bnote =  $requestedKey[$i]."/3";
 	
-	array_push($tgroup, $tnote);
-	array_push($bgroup, $bnote);
-	
-	// push the notes into the treble and bass clefs
-	array_push($treble, $tgroup);
-	array_push($bass, $bgroup);
 	
 }
 
 $responseStaff['treble'] = $treble;
 $responseStaff['bass'] = $bass;
-$responseStaff['keysignature'] = $requestedKey[0];
-$responseStaff['timesignature'] = $_REQUEST['beatcount']."/".$_REQUEST['beat'];
-$responseStaff['duration'] = $_REQUEST['beat'];
-$responseStaff['iterations'] = $_REQUEST['iteration'];
+$responseStaff['timesignature'] = $_GET['beatcount']."/".$_GET['beat'];
+$responseStaff['duration'] = $duration;
 
 // Encode the staff into json
 $json = json_encode($responseStaff);

@@ -1,34 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// Functions
 
-
 /////////////////////////////////////////////////////////////////////////////////
-//	startLoopStaff
+//  LoopStaff
 //
 //		Begins a calling loop to the server to get a randomized 
 //		staff to display in the designated canvas
 //
-function startLoopStaff( key, beat, beatcount, iteration, maxIteration ) {
+function loopStaff( difficulty, beat, beatcount ) {
 	
-	var queryString = { 'key' : key, 'beat' : beat, 'beatcount' : beatcount, 'iteration' : iteration,
-		'maxIteration' : maxIteration}; 
-
-    phpcall_buildStaff(queryString);
-	
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-//	loopStaff
-//
-//		continues the calling loop to the server to get a 
-//		randomized staff to display in the designated canvas
-//
-function loopStaff(iteration) {
-
-	var queryString = { 'iteration' : iteration}; 
-
-    phpcall_buildStaff(queryString);
-
+	var queryString = { 'beat' : beat, 'beatcount' : beatcount, 'difficulty' : difficulty}; 
+    
+    var script = 'src/apps/SightReader/php/buildStaff.php';
+    var func = phpcall_buildStaff_callback;
+    ajax(queryString,script,func);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +26,7 @@ function loopStaff(iteration) {
 function phpcall_buildStaff(queryString) {
 	$.ajax( 
         { 
-            type: 'POST', 
+            type: 'GET', 
             url: 'src/apps/SightReader/php/buildStaff.php', 
             data: queryString, 
             success: function(data){ 
@@ -63,23 +48,10 @@ function phpcall_buildStaff(queryString) {
 //
 function phpcall_buildStaff_callback(data) {
 	// put result data into obj
+    //$('.canvas-area').html(data);
 	var obj = jQuery.parseJSON(data); 
 	
-	// Create a staff object from the contents of obj
-	//var staves = parseStaves(obj);
-	
-	// Check if the loop is done
-//	if (staves.checkLoopComplete() /* && user defined quit request */ ) {
-//		// Clean up the canvas
-//		// ....
-//		return;
-//	}
-	
-	// Draw the staff
 	drawStaff(obj);
-	
-	// call the function again, this time with the timestamp we just got from server.php 
-	//loopStaff(staves.iteration); 
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -91,26 +63,28 @@ function phpcall_buildStaff_callback(data) {
 //		**	Utilizes the Vexflow library to accomplish this **
 //
 function drawStaff(staff) {
-
+    
 	var canvas = $("#sightread-canvas")[0];
-	var renderer = new Vex.Flow.Renderer(canvas,
+    var context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+	
+    var renderer = new Vex.Flow.Renderer(canvas,
 	Vex.Flow.Renderer.Backends.CANVAS);
 
 	var ctx = renderer.getContext();
-	var treble = new Vex.Flow.Stave(10, 0, 500);
-	var bass = new Vex.Flow.Stave(10, 150, 500, 'bass');
+	var treble = new Vex.Flow.Stave(10, 50, 500);
+	var bass = new Vex.Flow.Stave(10, 200, 500, 'bass');
 
-	// Add a treble clef
+	// Add clef designators
 	treble.addClef("treble");
 	bass.addClef("bass");
-	
-	console.log("time signature: " + staff['timesignature']);
+    
+    // wipe the canvas clean
+    
+    
+	//console.log("time signature: " + staff['timesignature']);
 	treble.addTimeSignature(staff['timesignature']);
 	bass.addTimeSignature(staff['timesignature']);
-	
-	console.log("key signature: " + staff['keysignature']);
-	treble.addKeySignature(staff['keysignature']);
-	bass.addKeySignature(staff['keysignature']);
 	
 	treble.setContext(ctx).draw();
 	bass.setContext(ctx).draw();
@@ -134,36 +108,3 @@ function drawStaff(staff) {
 	Vex.Flow.Formatter.FormatAndDraw(ctx, bass, bass_notes);
 
 }
-	
-/////////////////////////////////////////////////////////////////////////////////
-//	parseStaves
-//
-//		Parses the data received from the 'buildStaff.php' script into
-//		a javascript Staves object (contains 2 Staff objects).
-//	
-function parseStaves(obj) {
-
-	var staff = JSON.parse(obj);
-	
-	return staff;
-}
-
-/*	
-/////////////////////////////////////////////////////////////////////////////////
-//	checkLoopComplete
-//
-//		Checks if the user has requested to quit or if the maximum
-//		iteration limit has been reached
-//	
-function checkLoopComplete(iteration, maxIteration) {
-	if ( iteration >= maxIteration ) {
-		return true;
-	}
-	//else if (user input to quit loop) {
-	// do something
-	//}
-	else {
-		return false;
-	}
-}
-*/
