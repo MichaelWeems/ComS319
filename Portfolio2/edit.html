@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+	<title>Library</title>
+
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Portfolio 2</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="index.html">Login</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <h1 class="header center orange-text">Edit info</h1>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="section">
+      <!--   Contains main functionality   -->
+		<div class="signup_form">
+            
+            <div class="mat-div">
+                <label for="address" class="mat-label">Address</label>
+                <input type="text" name="address" id="address" class="mat-input">
+            </div>
+            <div class="mat-div">
+                <label for="email "class="mat-label">Email</label>
+                <input type="text" name="email" id="email" class="mat-input">
+            </div>
+            <div class="mat-div">
+                <label for="school "class="mat-label">School</label>
+                <input type="text" name="school" id="school" class="mat-input">
+            </div>
+            <br>
+            <div class="mat-div">
+                <label for="work "class="mat-label">Work</label>
+                <input type="text" name="work" id="work" class="mat-input">
+            </div>
+            <br>
+            
+            <br><br>
+            <a id="editBTN" class="btn-large waves-effect waves-light orange">Edit Info</a>
+            <a id="delete" class="btn-large waves-effect waves-light orange">Delete Account</a>
+	   </div>
+    </div>
+    <br>
+  </div>
+
+  <footer class="page-footer orange">
+    <div class="footer-copyright">
+      <div class="container">
+      Made by <a class="orange-text text-lighten-3">Michael Weems and Zach Wild</a>
+      </div>
+    </div>
+  </footer>
+
+
+	<!--  Scripts-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./src/js/materialize.js"></script>
+    <script type="text/javascript" src="./src/js/ajax.js"></script>
+	<script type="text/javascript" src="./src/js/signup_handlers.js"></script>
+
+  </body>
+</html>

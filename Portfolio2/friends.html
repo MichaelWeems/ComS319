@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+	<title>Portfolio 2</title>
+
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+    <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container">
+            <ul class="left hide-on-med-and-down">
+                <li><a id="appselect">Apps</a></li>
+            </ul>
+            <ul class="right hide-on-med-and-down">
+                <li><a id="username" href="profile.html"></a></li>
+                <li><a id="logout">logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="height:1000px; max-width:1500px">
+            <!--   Contains main functionality   -->
+            <div class="wall"></div>
+        <br>
+    </div>
+
+    <footer class="page-footer orange">
+        <div class="footer-copyright">
+            <div class="container">
+                Made by <a class="orange-text text-lighten-3">Michael Weems & Zach Wild</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!--  Scripts-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./src/js/materialize.js"></script>
+    <script type="text/javascript" src="./src/js/ajax.js"></script>
+    <script type="text/javascript" src="./src/js/wall_handlers.js"></script>
+    
+    
+    <!--
+    <script>
+                                var canvas = document.createElement("canvas");
+                                canvas.width = 40;
+                                canvas.height = 40;
+                                var context = canvas.getContext("2d");
+                                var deferred = $.Deferred();
+                                $("<img/>").attr("src", "data:image/gif;base64," + base64).load(function() {
+                                    context.scale(width/this.width,  height/this.height);
+                                    context.drawImage(this, 0, 0); 
+                                    deferred.resolve($("<img/>").attr("src", canvas.toDataURL()));               
+                                 });
+                                 return deferred.promise();   
+                            </script> -->
+
+</body>
+</html>
