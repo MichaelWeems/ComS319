@@ -4,6 +4,37 @@ include 'class_post.php';
 include 'class_user.php';
 include 'class_applist.php';
 
+
+
+/********************************************************************************************************
+ *  Build the create post input
+ */
+
+/*
+ *  Builds the HTML to house a create post input to add a new post. 
+ */
+function build_createPost(&$html){
+    
+    $html .= '<a class="btn-floating btn-large waves-effect waves-light red fab"><i class="material-icons">add</i></a>';
+    
+    $html .= '<div id="create-post" class="card create-post hidden z-depth-5">';
+    $html .=    '<div class="card-content">';
+    $html .=        '<h4>New Post</h4>';
+    $html .=        '<div class="mat-div">';
+    $html .=            '<label for="post-title" class="mat-label indigo-text">Title</label>';
+    $html .=            '<input type="text" name="post-title" id="post-title" class="mat-input">';
+    $html .=        '</div>';
+    $html .=        '<div class="mat-div">';
+    $html .=            '<label for="post-text "class="mat-label indigo-text">Text</label>';
+    $html .=            '<input type="text" name="post-text" id="post-text" class="mat-input">';
+    $html .=        '</div>';
+    $html .=            '<a id="submit-post" class="btn-large waves-effect waves-light indigo">Submit</a>';
+    $html .=    '</div>';
+    $html .= '</div>';
+                    
+}
+
+
 /********************************************************************************************************
  *  Build app select html
  */
@@ -20,7 +51,7 @@ function build_appSelectors($apps){
         $html .= '<div class="card-app-wrapper">';
         $html .=    '<div class="card app-card" id="card'.$app->get_name().'">';
         $html .=        '<div class="card-image waves-effect waves-block waves-light">';
-        $html .=            '<div class="img-container"><img src=src/img/sightreader.jpg></div>';
+        $html .=            '<div class="img-container"><img src=src/img/'.$app->get_name().'.jpg></div>';
         $html .=        '</div>';
         $html .=        '<div class="card-content">';
         $html .=            '<span class="card-title activator grey-text text-darken-4">'.$app->get_name();
@@ -80,63 +111,77 @@ function build_comments(&$html, $comments, $postId){
 }
 
 /*
+ *Builds the html for an individual post
+ */
+function build_post(&$html, $post, $user){
+    $html .= '<div class="card-wall-wrapper">';
+    $html .=    '<div class="card wall-card z-depth-2" id="card'.$post->get_postId().'">';
+    $html .=        '<div class="card-image waves-effect waves-block waves-light">';
+    $html .=            '<div class="img-container"></div>';
+    $html .=        '</div>';
+    $html .=        '<div class="card-content">';
+    $html .=            '<div></div>';
+    $html .=            '<span class="card-title activator indigo-text text-darken-4"><div style="width:70%; overflow:hidden" class="expander left"><h6 class="" style="margin-bottom:0px;">'.$post->get_username().'</h6><h5 style="margin-top:1%">'.$post->get_title().'</h5></div>';
+    $html .=                '<i class="material-icons right">more_vert</i></span><br>';
+    $html .=            '<span style="float:right"><a class="likebutton" onclick="like('.$post->get_postId().')">';
+    $html .=                '<img src=src/img/like.png alt="like" style="width:16px;height:16px;"></a>';
+    $html .=                '<a id="likecount'.$post->get_postId().'" style="font-size:20px" class="grey-text text-darken-4">'.count($post->get_likes()).'</a></span>';
+    $html .=            '<span style="float:right"><div id="like'.$post->get_postId().'" style="font-size:10px">';
+    if (isset($post->get_likes()[$user])) {
+        $html .= 'You like this';
+    }
+    $html .=            '</div></span>';
+    $html .=            '<div style="clear:both"></div>';
+    $html .=            '<span style="clear:both">'.$post->get_text().'</span>';
+    $html .=        '</div>';
+    $html .=        '<div class="card-reveal" id="reveal'.$post->get_postId().'">';
+    $html .=            '<span class="card-title grey-text text-darken-4"><h6 class="expander left">Comments</h6><i class="material-icons right">close</i></span>';
+
+    $comments = $post->get_comments();
+    build_comments($html, $comments, $post->get_postId());
+
+    $html .= '</div></div></div></div>';
+}
+
+/*
  *  Builds the HTML to house a list of posts. Will be appended to
  *  a div when received by the javascript handler.
  *  Creates a card container to host the title, text, and comments
  *  of each given post.
  */
 function build_posts($posts, $user){
-    $html  = '';
+    $html  = '<div id="posts" style="height:100%; width:100%">';
     foreach($posts as $post){
-        $html .= '<div class="card-wall-wrapper">';
-        $html .=    '<div class="card wall-card" id="card'.$post->get_postId().'">';
-        $html .=        '<div class="card-image waves-effect waves-block waves-light">';
-        $html .=            '<div class="img-container"></div>';
-        $html .=        '</div>';
-        $html .=        '<div class="card-content">';
-        $html .=            '<span class="card-title activator grey-text text-darken-4"><div style="width:50%" class="expander left">'.$post->get_title().'</div>';
-        $html .=            '<i class="material-icons right">more_vert</i></span><br>';
-        $html .=            '<span style="float:right"><a class="likebutton" onclick="like('.$post->get_postId().')">';
-        $html .=            '<img src=src/img/like.png alt="like" style="width:16px;height:16px;"></a>';
-        $html .=            '<a id="likecount'.$post->get_postId().'" style="font-size:20px" class="grey-text text-darken-4">'.count($post->get_likes()).'</a></span>';
-        $html .=            '<span style="float:right"><div id="like'.$post->get_postId().'" style="font-size:10px">';
-        if (isset($post->get_likes()[$user])) {
-            $html .= 'You like this';
-        }
-        $html .=            '</div></span>';
-        $html .=            '<div style="clear:both"></div>';
-        $html .=            '<span style="clear:both">'.$post->get_text().'</span>';
-        $html .=        '</div>';
-        $html .=        '<div class="card-reveal" id="reveal'.$post->get_postId().'">';
-        $html .=            '<span class="card-title grey-text text-darken-4"><h6 class="expander left">Comments</h6><i class="material-icons right">close</i></span>';
-        
-        $comments = $post->get_comments();
-        build_comments($html, $comments, $post->get_postId());
-        
-        $html .= '</div></div></div></div>';
+        build_post($html, $post, $user);
     }
+    $html .= '</div>';
     return $html;
 }
 
 $user = new User($_SESSION['username']);
 
 $op = $_GET['op'];
-if ($op == "create post"){
-    // needs username
-	$user->createPost($_GET['title'], $_GET['text'], $_GET['data']);
-    
+if ($op == "create post"){  // creates a post
+    // needs post title and text
+	$post = $user->createPost($_GET['title'], $_GET['text']);
+    $html = '';
+    build_post($html, $post, $user->get_username());
+    $json = array('html' => $html);
+    echo json_encode($json);
 }
-else if ($op == "get all posts") {
+else if ($op == "get all posts") {  // gets the current user and their friends posts
     // needs username
     $posts = $user->get_allPosts();
-    echo json_encode(build_posts($posts, $user->get_username()));
+    $html = build_posts($posts, $user->get_username());
+    build_createPost($html);
+    echo json_encode($html);
 }
-else if ($op == "get user posts"){
+else if ($op == "get user posts"){  // gets only the current user's posts
     // needs username
     $posts = $user->get_posts();
 	echo json_encode(build_posts($posts,$user->get_username()));
 }
-else if ($op == "write comment"){
+else if ($op == "write comment"){   // adds a comment to a post
 	// need postId, text
     $postId = $_GET['postId'];
     $text = $_GET['text'];
@@ -150,7 +195,7 @@ else if ($op == "write comment"){
                  'username' => $user->get_username());
     echo json_encode($ret);
 }
-else if ($op == "like"){
+else if ($op == "like"){    // adds a like from the current user to the post
     $postId = $_GET['postId'];
     $post = new Post($postId);
     $ret = array();
@@ -159,17 +204,16 @@ else if ($op == "like"){
     $ret['likecount'] = count($post->get_likes());
     echo json_encode($ret);
 }
-else if ($op == "get all apps") {
+else if ($op == "get all apps") {   // get the html for selecting each app
     $applist = new AppList();
     echo json_encode(build_appSelectors($applist->get_applist()));
 }
-else if ($op == "open app"){
+else if ($op == "open app"){    // saves the requested app info in the session
     $app = new App($_GET['appname']);
     $_SESSION['html'] = file_get_contents($app->get_html_location());
     $_SESSION['scripts'] = file_get_contents($app->get_htmlscripts_location());
-    var_dump($_SESSION);
 }
-else if ($op == "get app") {
+else if ($op == "get app") {    // Gets the requested app from the session
     $json = array();
     $json['html'] = $_SESSION['html'];
     $json['scripts'] = $_SESSION['scripts'];

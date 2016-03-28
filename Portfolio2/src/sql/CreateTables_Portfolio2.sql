@@ -28,7 +28,7 @@ values('mdweems', 'ztwild'),
 create table if not exists Group8_posts(
 title varchar(50),
 text varchar(4000),
-data varchar(250),    
+data varchar(250),
 postId int(4) not null AUTO_INCREMENT,
 username varchar(10),
 primary key(postId),

@@ -9,162 +9,36 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-    <style>
-        div.container1{margin-left: 6cm;}
-        div.cards{margin-left: 6cm;}
-        div.posting{margin-left: 5.4cm}
-    </style>
 </head>
 <body>
-    <!--that header and left side bar-->
-    <header>
-        <nav class="top-nav blue z-depth-1">
-            <div class="container">
-                <ul class="right hide-on-med-and-down">
-                    
-                    <li><a id="logout">logout</a></li>
-                </ul>
-            </div>
-        </nav>
-        <nav id="side-bar" class="side-nav fixed grey lighten-3" style="width:200px">
-            <li class="user-tag red lighten-1 z-depth-2" id="username">
-                <img src="src/img/ztwild_pic.jpg" alt class="circle responsive-img valign profile-image" width="50" height="50"></img>
-            </li>
-            <li class="bold">
-                <a href="edit.html">Edit</a>
-            </li>
-            <li class="bold">
-                <a href="friends.html">Friends</a>
-            </li>
-            <li class="bold">
-                <a href="wall.html">Wall</a>
-            </li>
-            <li class="bold">
-                <a href="appselect.html">Apps</a>
-            </li>
-        </nav>
-    </header>
-    <!--that main part of the page-->
-    <main>
-        
-        <div id="post-image-creater" class="row posting card">
-            <div clas="col s3">
-                <ul class="tabs tab-profile yellow" style="width:100%;">
-                    <li class="tab">
-                        <a href="#post" class="waves-effect waves-dark white-text">Create Post</a>
-                    </li>
-                    <li class="tab">
-                        <a href="#image" class="waves-effect waves-dark white-text">Add Image</a>
-                    </li>
-                </ul>
-                <div id="updatePost" class="tab-content">
-                    <div class="input-field">
-                        <textarea id="textarea" class="materialize-textarea"></textarea>
-                        <label for="textarea" class="active">Make a Post</label>
-                        <a class="btn">Submit</a>
-                        <a class="btn" type="file" id="image">Browse Files</a>
-                    </div>
-                </div>
-            </div>
+    <nav class="blue" role="navigation">
+        <div class="nav-wrapper container">
+            <ul class="left hide-on-med-and-down">
+                <li><a href="appselect.html">Apps</a></li>
+                <li><a href="wall.html"></a></li>
+            </ul>
+            <ul class="right hide-on-med-and-down">
+                <li><a id="username"></a></li>
+                <li><a id="logout">logout</a></li>
+            </ul>
         </div>
-        <div class="container">
-            <div class="wall"></div>
-        </div>
-        
-        <div id="user-wall" class="row cards">
-            <!--card 1-->
-            <div class="col s4 m3">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="src/img/test.jpg" width="280" height="180">
-                        <span class="card-title">Card Title</span>
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <!--card 2-->
-            <div class="col s4 m3">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="src/img/test2.jpg" width="280" height="180">
-                        <span class="card-title">Card Title</span>
-                    </div>
-                    <div class="card-content">
-                        <p>Description</p>
-                    </div>
-                    <div class="card-action">
-                        <a href="#">This is a link</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!--card 3-->
-             <div class="col s4 m3">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="src/img/test3.jpg" width="280" height="180">
-                        <span class="card-title">Card Title</span>
-                    </div>
-                    <div class="card-content">
-                        <p>Description</p>
-                    </div>
-                    <div class="card-action">
-                        <a href="#">This is a link</a>
-                    </div>
-                </div>
-            </div>
-             
-            <!--card 4-->
-             <div class="col s4 m3">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="src/img/test4.jpg" width="280" height="180">
-                        <span class="card-title">Card Title</span>
-                    </div>
-                    <div class="card-content">
-                        <p>Description</p>
-                    </div>
-                    <div class="card-action">
-                        <a href="#">This is a link</a>
-                    </div>
-                </div>
-            </div>
-            
-             <!--card 5-->
-             <div class="col s4 m3">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="src/img/test5.jpg" width="280" height="180">
-                        <span class="card-title">Card Title</span>
-                    </div>
-                    <div class="card-content">
-                        <p>Description</p>
-                    </div>
-                    <div class="card-action">
-                        <a href="#">This is a link</a>
-                    </div>
-                </div>
-            </div>
-            <!--   -->
-            
+    </nav>
+    
+    <div class="mainbody container">
+        <div class="container" style="height:1000px; max-width:1500px">
+                <!--   Contains main functionality   -->
+                <div class="wall"></div>
+            <br>
         </div>
     </div>
 
-    </main>
-    <footer class="page-footer orange">
+    <footer class="page-footer blue">
         <div class="footer-copyright">
-            <div class="container1">
-            Made by <a class="orange-text text-lighten-3">Michael Weems and Zach Wild</a>
+            <div class="container">
+                Made by <a class="orange-text text-lighten-3">Michael Weems & Zach Wild</a>
             </div>
         </div>
     </footer>
-            
-            
-    <br>
-</div>
-
-
     
     <!--  Scripts-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>

@@ -73,7 +73,7 @@ class User {
 	public function getFriends_array() {
         include 'connection.php';
 		$sql = "select friend from Group8_friends where username = '".$this->username."';";
-		$res = $con->query($sql);
+		$res = $conn->query($sql);
 		$arr = array();
 		while($row = $res->fetch_assoc()){
             array_push($arr, $row["friend"]);
@@ -92,13 +92,24 @@ class User {
 		include 'connection_close.php';
 	}
     
-    public function createPost($title, $text, $data) {
+    public function createPost($title, $text) {
 		include 'connection.php';
         
-        $sql = "insert into Group8_posts(title, text, data, username)values('".$title."', '".$text."', '".$data."', '".$this->get_username()."');";
+        $sql = "insert into Group8_posts(title, text, username)values('".$title."', '".$text."', '".$this->get_username()."');";
 		if ($conn->query($sql) === false){
 			die('Invalid query: '.$conn->error);
 		}
+        
+        $sql = "select max(postId) from Group8_posts where username = '".$this->username."' and title = '".$title."';";
+		$res = $conn->query($sql);
+        $postId = '';
+		while($row = $res->fetch_assoc()){
+            $postId = $row['max(postId)'];
+            $this->posts[$postId] = new Post($postId);
+            
+		};
+        
+        return $this->posts[$postId];
         
 		include 'connection_close.php';
 	}
