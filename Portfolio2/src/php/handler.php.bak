@@ -3,7 +3,6 @@ session_start();
 include 'class_post.php';
 include 'class_user.php';
 include 'class_applist.php';
-include 'class_image.php';
 
 
 
@@ -159,26 +158,7 @@ function build_posts($posts, $user){
     return $html;
 }
 
-function build_image_post($images, $user){
-    $html = '';
-    var_dump($images);
-    foreach($images as $image){
-        $html .= '<div class="col s4 m3">';
-        $html .= '<div class="card">';
-        $html .= '<div class="card-image">';
-        $html .= '<img src="'.$image->get_path().'" width="280" height="180">';
-        $html .= '<span class="card-title">'.$image->get_title().'</span>';
-        $html .= '</div>';
-        $html .= '</div>';
-        $html .= '</div>';
-    }
-    return $html;
-}
 
-function build_profilePic($pic, $user){
-    $html = '<img src="src/img/ztwild_pic.jpg" alt class="circle responsive-img';
-    $html .= 'valign profile-image" width="50" height="50"></img>';
-}
 
 $user = new User($_SESSION['username']);
 
@@ -194,20 +174,7 @@ if ($op == "create post"){  // creates a post
                   'replyid' => 'reply'.$post->get_postId());
     echo json_encode($json);
 }
-else if($op == "get user images"){
-    $images = $user->get_images();
-    var_dump($images);
-    echo json_encode(build_image_post($images, $user->get_username()));
-}
-else if($op == "get all images"){
-    $images = $user->get_allImages();
-    echo json_encode(build_image_post($images, $user->get_username()));
-}
-else if($op == "get profile pic"){
-    $pic = $user->get_pic();
-    echo json_encode(build_profilePic($pic, $user->get_username()));
-}
-else if ($op == "get all posts") {
+else if ($op == "get all posts") {  // gets the current user and their friends posts
     // needs username
     $posts = $user->get_allPosts();
     $html = build_posts($posts, $user->get_username());

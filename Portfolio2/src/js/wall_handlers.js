@@ -1,6 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Handlers
 
+/**************************************************************************************************************
+ *  On page load Functions
+ */
+
+/////////////////////////////////////////////////////////////////////////////////
+//	document.ready
+//
+//		queries the server for info/html and sets handlers for the returned data
+//
 $(document).ready(function() {
     
     get_user();
@@ -15,9 +24,6 @@ $(document).ready(function() {
     });
 
 }); // end of document ready function
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//// Functions
 
 /////////////////////////////////////////////////////////////////////////////////
 //	appselect
@@ -42,43 +48,155 @@ function get_wallPosts(){
     ajax(data,script,func);
 }
 
+
+/*********************************************************************************************
+ *  set post handlers
+ */
+
+/////////////////////////////////////////////////////////////////////////////////
+//	set_createPostHandlers
+//
+//		Sets all handlers needed by the create post elements
+//
+function set_createPostHandlers(){
+    
+    $('.fab').click(function(){
+        
+        if ($('#create-post').hasClass("hidden")){
+            $('#create-post').removeClass('hidden');
+            $('#create-post').addClass('unhidden');
+        }
+        else if ($('#create-post').hasClass("unhidden")){
+            $('#create-post').removeClass('unhidden');
+            $('#create-post').addClass('hidden');
+        }
+        
+    });
+    
+    // create post inputs
+    $(".mat-input").focus(function() {
+      $(this).parent().addClass("is-active is-completed");
+    });
+
+    $(".mat-input").focusout(function() {
+      if ($(this).val() === "")
+        $(this).parent().removeClass("is-completed");
+      $(this).parent().removeClass("is-active");
+    });
+    
+    $('#post-text').keypress(function(e) {
+        if(e.which == 13) {
+            submitPost();
+            $("#fab").trigger( "click" );
+        }
+    });
+    
+    $("#submit-post").click(function () {
+        submitPost();
+        $("#fab").trigger( "click" );
+	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//	set_postHandlers
+//
+//		Sets all handlers needed by the given post ids.
+//      Called after a user submits a post
+//
+function set_postHandlers(expanderid, commentexpanderid, replyid){
+    
+    $('#' + expanderid).click(function(){
+         set_expanderHandler($(this));
+    });
+    
+    $('#' + commentexpanderid).click(function(){
+         set_expanderHandler($(this));
+    });
+    
+    $('#' + replyid).trigger('autoresize');
+    $('#' + replyid).keypress(function(e){
+        set_replyfieldHandler($(this), e);
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//	set_allPostHandlers
+//
+//		Sets all handlers needed by the post elements.
+//      Called after receiving all the current posts from the database
+//
+function set_allPostHandlers(){
+    
+    
+    $('.expander').click(function(){
+        set_expanderHandler($(this));
+    });
+    
+    $('.materialize-textarea').trigger('autoresize');
+    $('.materialize-textarea').keypress(function(e){
+        set_replyfieldHandler($(this), e);
+    });
+}
+
+
+// Helper for setting the post handlers
+function set_expanderHandler(ele){
+    if (ele.parent().parent().parent().attr('class') == 'card wall-card z-depth-2') {
+        $('.expander').each(function(){
+            ele.parent().parent().parent().removeClass('large z-depth-4');
+            ele.parent().parent().parent().addClass('wall-card z-depth-2');
+            ele.parent().parent().parent().parent().css('z-index', '50');
+        });
+        ele.parent().parent().parent().removeClass('wall-card z-depth-2');
+        ele.parent().parent().parent().addClass('large z-depth-4');
+        ele.parent().parent().parent().parent().css('z-index', '100');
+    }
+    else {
+        ele.parent().parent().parent().removeClass('large z-depth-4');
+        ele.parent().parent().parent().addClass('wall-card z-depth-2');
+        ele.parent().parent().parent().parent().css('z-index', '50');
+    }
+}
+
+// Helper for setting the post handlers
+function set_replyfieldHandler(ele, e){
+    if (e.which == 13){
+        console.log('here');
+        if (ele.val() != ''){
+            var data = prep_addComment(ele);
+            var script = 'src/php/handler.php';
+            var func = addComment_callback;
+            ajax(data, script, func);
+        }
+    }
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 //	set_wallHandlers
 //
 //		Sets all handlers needed by the wall elements
 //
 function set_wallHandlers(){
-    
-    $('.expander').click(function(){
-        
-        if ($(this).parent().parent().parent().attr('class') == 'card wall-card') {
-            $('.expander').each(function(){
-                $(this).parent().parent().parent().removeClass('large');
-                $(this).parent().parent().parent().addClass('wall-card');
-                $(this).parent().parent().parent().parent().css('z-index', '50');
-            });
-            $(this).parent().parent().parent().removeClass('wall-card');
-            $(this).parent().parent().parent().addClass('large');
-            $(this).parent().parent().parent().parent().css('z-index', '100');
-        }
-        else {
-            $(this).parent().parent().parent().removeClass('large');
-            $(this).parent().parent().parent().addClass('wall-card');
-            $(this).parent().parent().parent().parent().css('z-index', '50');
-        }
-    });
-    
-    $('.materialize-textarea').trigger('autoresize');
-    $('.materialize-textarea').keypress(function(e){
-        if (e.which == 13){
-            if ($(this).val() != ''){
-                var data = prep_addComment($(this));
-                var script = 'src/php/handler.php';
-                var func = addComment_callback;
-                ajax(data, script, func);
-            }
-        }
-    });
+    set_allPostHandlers();
+    set_createPostHandlers();
+}
+
+/*********************************************************************************************
+ *  Sending data to the server
+ */
+
+/////////////////////////////////////////////////////////////////////////////////
+//	submitPost
+//
+//		Submits a new post to the database
+//
+function submitPost(){
+    var data = { 'op': 'create post', 'title': $('#post-title').val(),'text': $('#post-text').val()};
+    var script = "src/php/handler.php";
+    var func = submitPost_callback;
+
+    console.log("Creating a new post");
+    ajax(data, script, func);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +215,6 @@ function prep_addComment(inputfield){
     return data;
 }
 
-
 /////////////////////////////////////////////////////////////////////////////////
 //	like
 //
@@ -111,9 +228,9 @@ function like(postId){
     ajax(data, script, func);
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-/// Callback functions
+/*********************************************************************************************
+ *  Callback functions
+ */
 
 /////////////////////////////////////////////////////////////////////////////////
 //	get_wallPosts_callback
@@ -123,13 +240,35 @@ function like(postId){
 //
 function get_wallPosts_callback(data){
     console.log("Gathered all posts for the wall");
-    $('.wall').append(data);
+    //$('.wall').append(data); // for debugging
     obj = JSON.parse(data);
-    //console.log(data);
+    //console.log(data);    // for debugging
     $('.wall').empty();
     $('.wall').append(obj);
     
     set_wallHandlers();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//	submitPost_callback
+//
+//		adds the post to the wall
+//
+function submitPost_callback(data){
+    console.log("Added a new Post");
+    //$('.wall').html(data);  // for debugging
+    //console.log(data);  // for debugging
+    obj = JSON.parse(data);
+    $('#posts').append(obj.html);
+    
+    var scrollview = $('#posts');
+    var height = scrollview[0].scrollHeight;
+    scrollview.scrollTop(height);
+    
+    $('#post-title').val('');
+    $('#post-text').val('');
+    
+    set_postHandlers(obj.expanderid, obj.commentexpanderid, obj.replyid);
 }
 
 /////////////////////////////////////////////////////////////////////////////////

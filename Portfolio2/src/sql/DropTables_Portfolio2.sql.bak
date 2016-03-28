@@ -12,6 +12,4 @@ drop table Group8_friends;
 
 drop table Group8_likes;
 
-drop table Group8_images;
-
 set FOREIGN_KEY_CHECKS=1;

@@ -4,6 +4,7 @@ include 'class_comment.php';
 class Post {
 
 	private $postId;
+    private $user;
 	private $title;
 	private $text;
 	private $data;
@@ -26,12 +27,13 @@ class Post {
     public function setvars_fromDB(){
         include 'connection.php';
 		
-        $sql = "select title, text, data from Group8_posts where postId = '".$this->postId."';";
+        $sql = "select title, text, data, username from Group8_posts where postId = '".$this->postId."';";
 		$res = $conn->query($sql);
 		while($row = $res->fetch_assoc()){
 			$this->set_title($row["title"]);
 			$this->set_text($row["text"]);
             $this->set_data($row["data"]);
+            $this->set_username($row["username"]);
         }
         
         $sql = "select commentId from Group8_comments where postId = '".$this->postId."';";
@@ -61,6 +63,10 @@ class Post {
 		$this->data = $data;
 	}
     
+    public function set_username($username) {
+		$this->user = $username;
+	}
+    
     public function set_image($image) {
 		$this->image = $image;
 	}
@@ -81,6 +87,10 @@ class Post {
 
 	public function get_data() {
 		return $this->data;
+	}  
+    
+    public function get_username() {
+		return $this->user;
 	}  
 
 	public function get_image() {
