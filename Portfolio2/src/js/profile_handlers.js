@@ -10,9 +10,6 @@ $(document).ready(function() {
     $('#logout').click(function() {
         logout();
     });
-    
-    
-    
 
 }); // end of document ready function
 
@@ -59,6 +56,7 @@ function get_profPic(){
 //
 function get_profilePosts_callback(data){
     console.log("Gathered all posts for the profile");
+    //$('main').html(data);
     obj = JSON.parse(data);
     $('.wall').empty();
     $('.wall').append(obj);
@@ -66,8 +64,9 @@ function get_profilePosts_callback(data){
 
 function get_profileImages_callback(data){
     console.log("Gathered images for profile");
+    //$('main').html(data);
     obj = JSON.parse(data);
-    console.out(obj);
+    console.log(obj);
     $('.prof-wall').empty();
     $('.prof-wall').append(obj);
 }

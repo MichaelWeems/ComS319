@@ -240,7 +240,7 @@ function like(postId){
 //
 function get_wallPosts_callback(data){
     console.log("Gathered all posts for the wall");
-    //$('.wall').append(data); // for debugging
+    $('.wall').append(data); // for debugging
     obj = JSON.parse(data);
     //console.log(data);    // for debugging
     $('.wall').empty();

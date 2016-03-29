@@ -7,8 +7,7 @@ class Post {
     private $user;
 	private $title;
 	private $text;
-	private $data;
-    private $image;
+	private $postPath;
     private $comments;
     private $likes;
 
@@ -16,8 +15,7 @@ class Post {
         $this->postId = $id;
         $this->title = "";
         $this->text = "";
-        $this->data = "";
-        $this->image = "";
+        $this->postPath = "";
         $this->comments = array();
         $this->likes = array();
         
@@ -27,12 +25,12 @@ class Post {
     public function setvars_fromDB(){
         include 'connection.php';
 		
-        $sql = "select title, text, data, username from Group8_posts where postId = '".$this->postId."';";
+        $sql = "select title, text, postPath, username from Group8_posts where postId = '".$this->postId."';";
 		$res = $conn->query($sql);
 		while($row = $res->fetch_assoc()){
 			$this->set_title($row["title"]);
 			$this->set_text($row["text"]);
-            $this->set_data($row["data"]);
+            $this->set_postPath($row["postPath"]);
             $this->set_username($row["username"]);
         }
         
@@ -59,16 +57,12 @@ class Post {
 		$this->text = $text;
 	}
 	
-	public function set_data($data) {
-		$this->data = $data;
+	public function set_postPath($postPath) {
+		$this->postPath = $postPath;
 	}
     
     public function set_username($username) {
 		$this->user = $username;
-	}
-    
-    public function set_image($image) {
-		$this->image = $image;
 	}
     
     
@@ -85,18 +79,14 @@ class Post {
 		return $this->text;
 	}  
 
-	public function get_data() {
-		return $this->data;
+	public function get_postPath() {
+		return $this->postPath;
 	}  
     
     public function get_username() {
 		return $this->user;
 	}  
 
-	public function get_image() {
-		return $this->image;
-	}
-    
     public function get_comments(){
         return $this->comments;
     }

@@ -29,32 +29,21 @@ values('mdweems', 'ztwild'),
 create table if not exists Group8_posts(
 title varchar(50),
 text varchar(4000),
-data varchar(250),
+postPath varchar(250),
 postId int(4) not null AUTO_INCREMENT,
 username varchar(10),
 primary key(postId),
 foreign key(username) references Group8_users(username));
 
-insert into Group8_posts(title, text, username)
-values('Jazz', 'McGee', 'mdweems'),('wooooo hoooooooo', 'Uh Huh...', 'mdweems'),
-('juicy', 'J', 'mdweems'),('its me', 'zach', 'ztwild');
-
-create table if not exists Group8_images(
-imageId int(4) not null AUTO_INCREMENT,
-path varchar(50),
-title varchar(50),
-username varchar(10),
-primary key(imageId),
-unique key(path),
-foreign key(username) references Group8_users(username));
-
-insert into Group8_images(path, title, username)
-values('src/img/test.jpg', 'Panda', 'ztwild'),
-('src/img/test2.jpg', 'test 2', 'ztwild'),
-('src/img/test3.jpg', 'test 3', 'ztwild'),
-('src/img/test4.jpg', 'test 4', 'ztwild'),
-('src/img/test5.jpg', 'test 5', 'ztwild'),
-('src/img/test6.jpg', 'test 6', 'ztwild');
+insert into Group8_posts(title, text, username, postPath)
+values('Jazz', 'McGee', 'mdweems', null),('wooooo hoooooooo', 'Uh Huh...', 'mdweems', null),
+('juicy', 'J', 'mdweems', null),('its me', 'zach', 'ztwild', null),
+('Panda',null, 'ztwild','src/img/test.jpg'),
+('Test 2', null, 'ztwild', 'src/img/test2.jpg'),
+('Test 3', null, 'ztwild', 'src/img/test3.jpg'),
+('Test 4', null, 'ztwild', 'src/img/test4.jpg'),
+('Test 5', null, 'ztwild', 'src/img/test5.jpg'),
+('Test 6', null, 'ztwild', 'src/img/test6.jpg');
 
 
 create table if not exists Group8_comments(

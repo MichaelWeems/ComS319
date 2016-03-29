@@ -172,6 +172,7 @@ input[type='radio'] {
     transition: width 0.3s ease 0.2s, height 0.2s ease 0.1s;
 }
 
+
 .likebutton:hover {
     cursor:pointer;
 }

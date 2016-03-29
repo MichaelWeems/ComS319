@@ -5,14 +5,12 @@ class User {
 	private $username;
     private $friends;
     private $posts;
-    private $images;
     private $pic;
 
 	function __construct($name) {
 		$this->username = $name;
         $this->set_friends();
         $this->set_posts();
-        $this->set_images();
         $this->set_pic();
 	}
     
@@ -29,32 +27,18 @@ class User {
 		include 'connection_close.php';
 	}
     
-    public function set_images(){
-        include 'connection.php';
-        
-        $this->images = array();
-		$sql = "select imageId from Group8_images where username = '".$this->get_username()."';";
-		$res = $conn->query($sql);
-		while($row = $res->fetch_assoc()){
-			$this->images[$row["imageId"]] = new Image($row["imageId"]);
-		};
-        include 'connection_close.php';
-    }
-    
     public function set_pic(){
         include 'connection.php';
 		
 		$sql = "select picPath from Group8_users where username = '".$this->get_username()."';";
 		$res = $conn->query($sql);
-		$row = $res->fetch_assoc();
-        $this->pic = $row["picPath"];
+        while($row = $res->fetch_assoc()){
+			$this->pic = $row["picPath"];
+		};
         
 		include 'connection_close.php';
     }
     
-    public function get_images(){
-        return $this->images;
-    }
     
     public function get_pic(){
         return $this->pic;
@@ -64,7 +48,7 @@ class User {
     }
     
     
-    
+    // returns an array of posts from the user and their friends
     public function get_allPosts() {
 		include 'connection.php';
 		
@@ -87,30 +71,6 @@ class User {
         return $posts;
 		include 'connection_close.php';
 	}
-    
-    public function get_allImages(){
-        include 'connection.php';
-        
-        $images = array();
-        $friends = array();
-		$sql = "select friend from Group8_friends where username = '".$this->get_username()."';";
-		$res = $conn->query($sql);
-		while($row = $res->fetch_assoc()){
-			array_push($friends, $row["friend"]);
-		};
-        
-        foreach ($friends as $friend){
-            $sql = "select imageId from Group8_images where username = '".$this->get_username()."' OR username = '".$friend."';";
-            $res = $conn->query($sql);
-            while($row = $res->fetch_assoc()){
-                $posts[$row["imageId"]] = new Image($row["imageId"]);
-            };
-        }
-        
-        return $images;
-        
-        include 'connection_close.php';
-    }
     
     public function set_friends() {
 		include 'connection.php';

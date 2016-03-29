@@ -153,26 +153,26 @@ function build_post(&$html, $post, $user){
 function build_posts($posts, $user){
     $html  = '<div id="posts" style="height:100%; width:100%">';
     foreach($posts as $post){
-        build_post($html, $post, $user);
+        if ( !is_null($post->get_postPath()) ){
+            build_image_post($html, $post->get_postPath(), $post->get_title());
+        }
+        else {
+            build_post($html, $post, $user);
+        }
     }
     $html .= '</div>';
     return $html;
 }
 
-function build_image_post($images, $user){
-    $html = '';
-    var_dump($images);
-    foreach($images as $image){
-        $html .= '<div class="col s4 m3">';
-        $html .= '<div class="card">';
-        $html .= '<div class="card-image">';
-        $html .= '<img src="'.$image->get_path().'" width="280" height="180">';
-        $html .= '<span class="card-title">'.$image->get_title().'</span>';
-        $html .= '</div>';
-        $html .= '</div>';
-        $html .= '</div>';
-    }
-    return $html;
+function build_image_post(&$html, $image, $title){
+    $html .= '<div class="col s4 m3">';
+    $html .= '<div class="card">';
+    $html .= '<div class="card-image">';
+    $html .= '<img src='.$image.' width="280" height="180">';
+    $html .= '<span class="card-title">'.$title.'</span>';
+    $html .= '</div>';
+    $html .= '</div>';
+    $html .= '</div>';
 }
 
 function build_profilePic($pic, $user){
@@ -194,14 +194,23 @@ if ($op == "create post"){  // creates a post
                   'replyid' => 'reply'.$post->get_postId());
     echo json_encode($json);
 }
-else if($op == "get user images"){
-    $images = $user->get_images();
-    var_dump($images);
-    echo json_encode(build_image_post($images, $user->get_username()));
+else if($op == "get user images"){  // gets all images from users posts
+    $posts = $user->get_allPosts();
+    $html = '';
+    foreach($posts as $post){
+        build_image_post($html, $post->get_postPath(), $post->get_title());
+    }
+    $json = array('html' => $html);
+    echo json_encode($json);
 }
-else if($op == "get all images"){
-    $images = $user->get_allImages();
-    echo json_encode(build_image_post($images, $user->get_username()));
+else if($op == "get all images"){   // gets all images from all friends posts
+    $posts = $user->get_posts();
+    $html = '';
+    foreach($posts as $post){
+        build_image_post($html, $post->get_postPath(), $post->get_title());
+    }
+    $json = array('html' => $html);
+    echo json_encode($json);
 }
 else if($op == "get profile pic"){
     $pic = $user->get_pic();
