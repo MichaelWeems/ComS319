@@ -2,6 +2,10 @@
 // Handlers
 
 $(document).ready(function() {
+    
+    $('#username_box').click(function(){
+        window.location.assign("profile.html"); 
+    });
 
 	$(".mat-input").focus(function() {
       $(this).parent().addClass("is-active is-completed");

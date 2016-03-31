@@ -7,6 +7,10 @@ $(document).ready(function() {
     get_profilePosts();
     get_profileImages();
     
+    $('#username_box').click(function(){
+        window.location.assign("profile.html"); 
+    });
+    
     $('#logout').click(function() {
         logout();
     });

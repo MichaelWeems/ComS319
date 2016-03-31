@@ -15,6 +15,10 @@ $(document).ready(function() {
     get_user();
     get_wallPosts();
     
+    $('#username_box').click(function(){
+        window.location.assign("profile.html"); 
+    });
+    
     $('#appselect').click(function(){
        appselect(); 
     });

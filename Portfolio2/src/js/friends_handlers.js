@@ -15,6 +15,10 @@ $(document).ready(function() {
     get_user();
     get_friends();
     
+    $('#username_box').click(function(){
+        window.location.assign("profile.html"); 
+    });
+    
 	$('#logout').click(function() {
         logout();
     });

@@ -6,6 +6,10 @@ $(document).ready(function() {
     get_user();
     get_app();
     
+    $('#username_box').click(function(){
+        window.location.assign("profile.html"); 
+    });
+    
     $('#wall').click(function(){
        wall(); 
     });

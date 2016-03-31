@@ -14,6 +14,10 @@ $(document).ready(function() {
     
     get_user();
     
+    $('#username_box').click(function(){
+        window.location.assign("profile.html"); 
+    });
+    
     
 	$('#logout').click(function() {
         logout();

@@ -268,3 +268,7 @@ footer {
     z-index: 150;
     transition: width 1s ease 1s, height 1s ease 1s;
 }
+
+.hoverhand:hover {
+    cursor: pointer;
+}
