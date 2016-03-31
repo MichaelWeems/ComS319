@@ -10,6 +10,9 @@
 	<link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
     <style>
+        div.container1{margin-left: 6cm;}
+        div.cards{margin-left: 6cm;}
+        div.posting{margin-left: 5.4cm}
     </style>
 </head>
 <body>
@@ -23,6 +26,7 @@
         </div>
     </nav>
     
+    <div class="mainbody">
     <div class="row">
     <div class="col s3">
     <header>
@@ -70,7 +74,18 @@
                     <textarea id="textarea" class="materialize-textarea"></textarea>
                     <label for="textarea" class="active">Make a Post</label>
                     <a class="btn">Submit</a>
-                    <a class="btn" type="file" id="image">Browse Files</a>
+                    <form action="src/php/upload_image.php">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>File</span>
+                                <input type="file" name="fileToUpload" id="fileToUpload">
+                            </div>
+                            <div class="file-path-wrapper" style="width:20%">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                        <input class="btn" type="submit" value="Upload Image" name="submit">
+                    </form>
                 </div>
             </div>
         </div>
@@ -86,19 +101,9 @@
 
     </main>
     </div></div>
-    <footer class="page-footer orange">
-        <div class="footer-copyright">
-            <div class="container1">
-            Made by <a class="orange-text text-lighten-3">Michael Weems and Zach Wild</a>
-            </div>
-        </div>
-    </footer>
+    </div>
+   
             
-            
-    <br>
-</div>
-
-
     
     <!--  Scripts-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -107,20 +112,5 @@
     <script type="text/javascript" src="./src/js/profile_handlers.js"></script>
     
     
-    <!--
-    <script>
-                                var canvas = document.createElement("canvas");
-                                canvas.width = 40;
-                                canvas.height = 40;
-                                var context = canvas.getContext("2d");
-                                var deferred = $.Deferred();
-                                $("<img/>").attr("src", "data:image/gif;base64," + base64).load(function() {
-                                    context.scale(width/this.width,  height/this.height);
-                                    context.drawImage(this, 0, 0); 
-                                    deferred.resolve($("<img/>").attr("src", canvas.toDataURL()));               
-                                 });
-                                 return deferred.promise();   
-                            </script> -->
-
 </body>
 </html>

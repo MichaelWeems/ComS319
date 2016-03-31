@@ -172,6 +172,11 @@ input[type='radio'] {
     transition: width 0.3s ease 0.2s, height 0.2s ease 0.1s;
 }
 
+.large-image {
+    width:250%;
+    height:300%;
+}
+
 
 .likebutton:hover {
     cursor:pointer;
@@ -236,7 +241,7 @@ footer {
 
 .fab {
     position: fixed;
-    right:12%;
+    right:7%;
     bottom:10%;
 }
 

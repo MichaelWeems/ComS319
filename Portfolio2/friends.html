@@ -14,7 +14,7 @@
     <nav class="blue" role="navigation">
         <div class="nav-wrapper container">
             <ul class="left hide-on-med-and-down">
-                <li><a id="appselect">Friends</a></li>
+                <li><a>Friends</a></li>
             </ul>
             
             <ul class="right hide-on-med-and-down">
@@ -77,14 +77,6 @@
         <br>
     </div>
     </div></div>
-
-    <footer class="page-footer orange">
-        <div class="footer-copyright">
-            <div class="container">
-                Made by <a class="orange-text text-lighten-3">Michael Weems and Zach Wild</a>
-            </div>
-        </div>
-    </footer>
     
     <!--  Scripts-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -93,20 +85,5 @@
     <script type="text/javascript" src="./src/js/friends_handlers.js"></script>
     
     
-    <!--
-    <script>
-                                var canvas = document.createElement("canvas");
-                                canvas.width = 40;
-                                canvas.height = 40;
-                                var context = canvas.getContext("2d");
-                                var deferred = $.Deferred();
-                                $("<img/>").attr("src", "data:image/gif;base64," + base64).load(function() {
-                                    context.scale(width/this.width,  height/this.height);
-                                    context.drawImage(this, 0, 0); 
-                                    deferred.resolve($("<img/>").attr("src", canvas.toDataURL()));               
-                                 });
-                                 return deferred.promise();   
-                            </script> -->
-
 </body>
 </html>

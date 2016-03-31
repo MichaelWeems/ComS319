@@ -60,6 +60,8 @@ function get_wallPosts(){
 //
 function set_createPostHandlers(){
     
+    $('.fab').html('<i class="material-icons">add</i>');
+    
     $('.fab').click(function(){
         
         if ($('#create-post').hasClass("hidden")){
@@ -127,7 +129,6 @@ function set_postHandlers(expanderid, commentexpanderid, replyid){
 //
 function set_allPostHandlers(){
     
-    
     $('.expander').click(function(){
         set_expanderHandler($(this));
     });
@@ -141,20 +142,37 @@ function set_allPostHandlers(){
 
 // Helper for setting the post handlers
 function set_expanderHandler(ele){
+    
+    var img = false;
+    
+    if (ele.attr('id').includes('postimg')){
+        img = true;
+    }
+    
     if (ele.parent().parent().parent().attr('class') == 'card wall-card z-depth-2') {
         $('.expander').each(function(){
-            ele.parent().parent().parent().removeClass('large z-depth-4');
-            ele.parent().parent().parent().addClass('wall-card z-depth-2');
-            ele.parent().parent().parent().parent().css('z-index', '50');
+            $(this).parent().parent().parent().removeClass('large z-depth-4');
+            $(this).parent().parent().parent().addClass('wall-card z-depth-2');
+            $(this).parent().parent().parent().parent().css('z-index', '50');
         });
+        $('img').each(function(){
+            $(this).removeClass('large-image');
+        });
+                               
         ele.parent().parent().parent().removeClass('wall-card z-depth-2');
         ele.parent().parent().parent().addClass('large z-depth-4');
         ele.parent().parent().parent().parent().css('z-index', '100');
+        if (img){
+             ele.addClass('large-image');
+        }
     }
     else {
         ele.parent().parent().parent().removeClass('large z-depth-4');
         ele.parent().parent().parent().addClass('wall-card z-depth-2');
         ele.parent().parent().parent().parent().css('z-index', '50');
+        if (img){
+            ele.removeClass('large-image');
+        }
     }
 }
 
@@ -240,7 +258,8 @@ function like(postId){
 //
 function get_wallPosts_callback(data){
     console.log("Gathered all posts for the wall");
-    $('.wall').append(data); // for debugging
+    //$('.wall').append(data); // for debugging
+    //console.log("data: " + data);
     obj = JSON.parse(data);
     //console.log(data);    // for debugging
     $('.wall').empty();

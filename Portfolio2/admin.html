@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 	<title>Portfolio 2</title>
 
@@ -9,14 +9,23 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <style>
+        div.container1{margin-left: 6cm;}
+        div.cards{margin-left: 6cm;}
+        div.posting{margin-left: 5.4cm}
+    </style>
 </head>
 <body>
-    <nav class="blue" role="navigation">
-        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Portfolio 2</a>
+    <!--that header and left side bar-->
+    <nav class="top-nav blue z-depth-1">
+        <div class="container">
+            <ul class="right hide-on-med-and-down">
+                <li><a id="logout">logout</a></li>
+            </ul>
         </div>
     </nav>
-     <!--user nav bar-->
-  <div class="row">
+    
+    <div class="row">
     <div class="col s3">
     <header>
         
@@ -24,57 +33,44 @@
             <li class="user-details red lighten-1 z-depth-2">
                 <div class="row">
                     <div class="col s6">
-                        <img id="userPic" alt class="circle responsive-img valign profile-image z-depth-2" width="100" height="100">
+                        <img src="src/img/admin_profile.jpg" alt class="circle responsive-img valign profile-image z-depth-2" width="100" height="100">
                     </div>
                     <div class="col s6">
-                        <div id="username" href="profile.html"></div>
+                        <div id="username"></div>
                     </div>
                 </div>
             </li>
             <li class="bold">
-                <a href="friends.html">Friends</a>
+                <a id="users">Users</a>
             </li>
             <li class="bold">
-                <a href="wall.html">Wall</a>
-            </li>
-            <li class="bold">
-                <a href="appselect.html">Apps</a>
-            </li>
-            <li class="bold">
-                <a href="edit.html">Edit</a>
+                <a id="posts">Posts</a>
             </li>
         </nav>
     </header>
+        
     </div>
-  <!--end of nav bar-->
-  
-  
-  
-  <div class="col s10 push-s2">
-
-    
-    <div class="mainbody container">
-        <div class="section no-pad-bot" id="index-banner">
-            <div class="container">
-                <h1 class="header center orange-text">Admin</h1>
-            </div>
-        </div>
-
-        <div class="container" style="height:1000px;"></div>
-    </div>
+    <!--that main part of the page-->
+    <div class="col s10 push-s2">
+    <main>
+        <div id="users-wall"></div>
+        <div id="posts-wall"></div>
+    </main>
     </div></div>
+    
     <footer class="page-footer blue">
         <div class="footer-copyright">
-            <div class="container">
-                Made by <a class="orange-text text-lighten-3">Michael Weems and Zach Wild</a>
+            <div class="container1">
+            Made by <a class="indigo-text text-lighten-3">Michael Weems and Zach Wild</a>
             </div>
         </div>
     </footer>
+            
     <!--  Scripts-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="./src/js/materialize.js"></script>
     <script type="text/javascript" src="./src/js/ajax.js"></script>
-    <script type="text/javascript" src="./src/js/login_handlers.js"></script>
+    <script type="text/javascript" src="./src/js/profile_handlers.js"></script>
 
-  </body>
+</body>
 </html>
