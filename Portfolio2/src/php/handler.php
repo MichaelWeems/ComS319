@@ -256,7 +256,9 @@ else if ($op == "get all posts") {
 else if ($op == "get user posts"){  // gets only the current user's posts
     // needs username
     $posts = $user->get_posts();
-	echo json_encode(build_posts($posts,$user->get_username()));
+    $html = build_posts($posts, $user->get_username());
+    build_createPost($html);
+    echo json_encode($html);
 }
 else if ($op == "write comment"){   // adds a comment to a post
 	// need postId, text

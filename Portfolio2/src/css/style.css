@@ -177,6 +177,19 @@ input[type='radio'] {
     height:300%;
 }
 
+.card.large-profile {
+    z-index: 100;
+    background: #fff;
+    width: 175%;
+    height: 150%;
+    transition: width 0.3s ease 0.2s, height 0.2s ease 0.1s;
+}
+
+.large-image-profile {
+    width:175%;
+    height:150%;
+}
+
 
 .likebutton:hover {
     cursor:pointer;
@@ -212,6 +225,10 @@ body {
     bottom:0px; 
     top:64px; 
     margin-top:2%
+}
+
+.profilebody {
+    
 }
 
 nav {
