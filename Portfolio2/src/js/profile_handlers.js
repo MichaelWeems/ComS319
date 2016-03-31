@@ -30,20 +30,13 @@ function get_profilePosts(){
     ajax(data,script,func);
 }
 
-function get_profileImages(){
-    var data = {'op': 'get user images'};
-    var script = 'src/php/handler.php';
-    var func = get_profileImages_callback;
-    
-    ajax(data,script,func);
-}
-
-function get_profPic(){
-    var data = {'op': 'get profile pic'};
-    var script = 'src/php/handler.php';
-    var func = get_profPic_callback;
-    ajax(data,script,func);
-}
+//function get_profileImages(){
+//    var data = {'op': 'get user images'};
+//    var script = 'src/php/handler.php';
+//    var func = get_profileImages_callback;
+//
+//    ajax(data,script,func);
+//}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Callback functions
@@ -62,17 +55,11 @@ function get_profilePosts_callback(data){
     $('.wall').append(obj);
 }
 
-function get_profileImages_callback(data){
-    console.log("Gathered images for profile");
-    //$('main').html(data);
-    obj = JSON.parse(data);
-    console.log(obj);
-    $('.prof-wall').empty();
-    $('.prof-wall').append(obj);
-}
-
-function get_profPic_callback(data){
-    obj = JSON.parse(data);
-    console.log(obj);
-    $('.user-tag').append(obj);
-}
+//function get_profileImages_callback(data){
+//    console.log("Gathered images for profile");
+//    //$('main').html(data);
+//    obj = JSON.parse(data);
+//   console.log(obj);
+//    $('.prof-wall').empty();
+//    $('.prof-wall').append(obj);
+//}

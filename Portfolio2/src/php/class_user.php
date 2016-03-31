@@ -1,4 +1,5 @@
 <?php
+include 'class_friend.php';
 
 class User {
 
@@ -18,7 +19,7 @@ class User {
 		include 'connection.php';
 		
 		$this->posts = array();
-		$sql = "select postId from Group8_posts where username = '".$this->get_username()."';";
+		$sql = "select postId from Group8_posts where username = '".$this->get_username()."' order by postId desc;";
 		$res = $conn->query($sql);
 		while($row = $res->fetch_assoc()){
 			$this->posts[$row["postId"]] = new Post($row["postId"]);
@@ -61,7 +62,7 @@ class User {
 		};
         
         foreach ($friends as $friend){
-            $sql = "select postId from Group8_posts where username = '".$this->get_username()."' OR username = '".$friend."';";
+            $sql = "select postId from Group8_posts where username = '".$this->get_username()."' OR username = '".$friend."' order by postId desc;";
             $res = $conn->query($sql);
             while($row = $res->fetch_assoc()){
                 $posts[$row["postId"]] = new Post($row["postId"]);
@@ -73,34 +74,37 @@ class User {
 	}
     
     public function set_friends() {
-		include 'connection.php';
-		
-		$this->friends = array();
-		$sql = "select friend from Group8_friends where username = '".$this->get_username()."';";
-		$res = $conn->query($sql);
-		while($row = $res->fetch_assoc()){
-			array_push($this->friends, $row["friend"]);
-		};
-		
-		include 'connection_close.php';
-	}
-
-	public function get_username() {
-		return $this->username;
-	}
-
-	// returns an array of the books loaned out to this student
-	public function getFriends_array() {
         include 'connection.php';
 		$sql = "select friend from Group8_friends where username = '".$this->username."';";
 		$res = $conn->query($sql);
 		$arr = array();
 		while($row = $res->fetch_assoc()){
-            array_push($arr, $row["friend"]);
+            array_push($arr, new Friend($row["friend"]) );
+		};
+        $this->friends = $arr;
+        include 'connection_close.php';
+	}
+
+    public function get_friends() {
+        return $this->friends;
+	}
+
+	public function get_username() {
+		return $this->username;
+	}
+    
+    public function getFriend_pics(){
+        include 'connection.php';
+		$sql = "select picPath from Group8_users where username in (select username from Group8_friends where friend = '".$this->username."');";
+		$res = $conn->query($sql);
+		$arr = array();
+		while($row = $res->fetch_assoc()){
+            array_push($arr, $row["picPath"]);
 		};
         include 'connection_close.php';
 		return $arr;
-	}
+
+    }
 	
 	public function addFriend($friend){
 		include 'connection.php';
@@ -128,10 +132,10 @@ class User {
             $this->posts[$postId] = new Post($postId);
             
 		};
-        
+        include 'connection_close.php';
         return $this->posts[$postId];
         
-		include 'connection_close.php';
+		
 	}
 	
 	public function deletePost(){
@@ -144,5 +148,19 @@ class User {
 		
 		include 'connection_close.php';
 	}
+    
+    public function get_search_users($str){
+        $sql = "select username from Group8_users were username like '".$str."%';";
+        $arr = array();
+        include 'connection.php';
+        
+        $res = $conn->query($sql);
+        while($row = $res->fetch_assoc()){
+            array_push($arr,$row["username"]);
+        }
+        
+        include 'connection_close.php';
+        return $arr;
+    }
 }
 ?>

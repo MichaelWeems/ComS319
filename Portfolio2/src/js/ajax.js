@@ -52,7 +52,7 @@ function get_user(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////
-//	logout_callback
+//
 //
 //		Receives the currently logged in user's username
 //
@@ -60,4 +60,7 @@ function get_user_callback(data){
     console.log("Successfully obtained username");
     obj = JSON.parse(data);
     $('#username').html(obj.username);
+    //this is added to get the profile picture
+    $('#userPic').attr('src', obj.picPath);
 }
+

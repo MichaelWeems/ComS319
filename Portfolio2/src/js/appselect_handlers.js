@@ -4,7 +4,6 @@
 $(document).ready(function() {
     
     get_user();
-    get_appselectors();
     
     $('#wall').click(function(){
        wall(); 

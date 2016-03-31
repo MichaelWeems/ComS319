@@ -17,8 +17,8 @@ while($row = $res->fetch_assoc()){
 }
 
 $pass = md5($_GET["password"]);
-$loginSQL = "insert into Group8_users(username, password, admin)"
-    ."values('".$_GET["username"]."', '".$pass."', '".$_GET["admin"]."');";
+$loginSQL = "insert into Group8_users(username, password, admin, picPath)"
+    ."values('".$_GET["username"]."', '".$pass."', '".$_GET["admin"]."', 'src/img/new_pic.png');";
 
 $conn->query($loginSQL);
 

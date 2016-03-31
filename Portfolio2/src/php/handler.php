@@ -7,6 +7,7 @@ include 'class_image.php';
 
 
 
+
 /********************************************************************************************************
  *  Build the create post input
  */
@@ -175,9 +176,17 @@ function build_image_post(&$html, $image, $title){
     $html .= '</div>';
 }
 
-function build_profilePic($pic, $user){
-    $html = '<img src="src/img/ztwild_pic.jpg" alt class="circle responsive-img';
-    $html .= 'valign profile-image" width="50" height="50"></img>';
+function build_friend_cards($html, $friends){
+    $html = '<div class="cards row">';
+    foreach($friends as $friend){
+        $html .= '<div class="card col s3 blue-grey darken-2">';
+        $html .= '<div class="card-image">';
+        $html .= '<img src="'.$friend->get_pic().'" height="170">';
+        $html .= '<span class="card-title grey-text" href="profile.html">'.$friend->get_username().'</span>';
+        $html .= '</div></div>';
+    }
+    $html .= '</div>';
+    return $html;
 }
 
 $user = new User($_SESSION['username']);
@@ -211,10 +220,6 @@ else if($op == "get all images"){   // gets all images from all friends posts
     }
     $json = array('html' => $html);
     echo json_encode($json);
-}
-else if($op == "get profile pic"){
-    $pic = $user->get_pic();
-    echo json_encode(build_profilePic($pic, $user->get_username()));
 }
 else if ($op == "get all posts") {
     // needs username
@@ -266,4 +271,17 @@ else if ($op == "get app") {    // Gets the requested app from the session
     $json['scripts'] = $_SESSION['scripts'];
     echo json_encode($json);
 }
+else if($op == "get friends"){
+    $html = "";
+    $json = build_friend_cards($html, $user->get_friends());
+    echo json_encode($json);
+}
+else if($op == "search users"){
+    $html = "";
+    var_dump($_GET['string']);
+    $allUsers = get_search_users($_GET['string']);
+    $json = build_friend_cards($html, $allUsers);
+    echo json_encode($json);
+}
+
 ?>
