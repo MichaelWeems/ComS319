@@ -192,10 +192,10 @@ function build_image_post(&$html, $image, $title){
     $html .= '</div>';
 }
 
-function build_profilePic($pic, $user){
-    $html = '<img src="src/img/ztwild_pic.jpg" alt class="circle responsive-img';
-    $html .= 'valign profile-image" width="50" height="50"></img>';
-}
+//function build_profilePic($pic, $user){
+//    $html = '<img src="src/img/ztwild_pic.jpg" alt class="circle responsive-img';
+//    $html .= 'valign profile-image" width="50" height="50"></img>';
+//}
 
 function build_friend_cards($html, $friends){
     $html = '<div class="cards row">';
@@ -203,7 +203,7 @@ function build_friend_cards($html, $friends){
         $html .= '<div class="card col s3 blue-grey darken-2">';
         $html .= '<div class="card-image">';
         $html .= '<img src="'.$friend->get_pic().'" height="170">';
-        $html .= '<span class="card-title grey-text" href="profile.html">'.$friend->get_username().'</span>';
+        $html .= '<div class="card-title grey-text name-tag">'.$friend->get_username().'</div>';
         $html .= '</div></div>';
     }
     $html .= '</div>';
@@ -242,10 +242,10 @@ else if($op == "get all images"){   // gets all images from all friends posts
     $json = array('html' => $html);
     echo json_encode($json);
 }
-else if($op == "get profile pic"){
-    $pic = $user->get_pic();
-    echo json_encode(build_profilePic($pic, $user->get_username()));
-}
+//else if($op == "get profile pic"){
+//    $pic = $user->get_pic();
+//    echo json_encode(build_profilePic($pic, $user->get_username()));
+//}
 else if ($op == "get all posts") {
     // needs username
     $posts = $user->get_allPosts();
@@ -256,9 +256,7 @@ else if ($op == "get all posts") {
 else if ($op == "get user posts"){  // gets only the current user's posts
     // needs username
     $posts = $user->get_posts();
-    $html = build_posts($posts, $user->get_username());
-    build_createPost($html);
-    echo json_encode($html);
+	echo json_encode(build_posts($posts,$user->get_username()));
 }
 else if ($op == "write comment"){   // adds a comment to a post
 	// need postId, text
@@ -310,5 +308,52 @@ else if($op == "search users"){
     $json = build_friend_cards($html, $allUsers);
     echo json_encode($json);
 }
+else if($op == "edit info"){
+    include 'connection.php';
+    if(preg_match('/\w[\w*\s*]\?{0,1}/', $_GET['question'])){
+        $sql = "update Group8_users set securityquestion='".$_GET['question']."' where username = '".$user->get_username()."';";
+        $res = $conn->query($sql);
+        echo "accepted question";
+    }
+    if(preg_match('/\S+/', $_GET['answer'])){
+        $sql = "update Group8_users set securityanswer='".$_GET['answer']."' where username = '".$user->get_username()."';";
+        $res = $conn->query($sql);
+        echo "accepted answer";
+    }
+    if(preg_match('/\S+/', $_GET['profilePic'])){
+        $sql = "update Group8_users set picPath='src/img/".$_GET['profilePic']."' where username = '".$user->get_username()."';";
+        $res = $conn->query($sql);
+        echo "profile picture";
+    }
+    if(preg_match('/[\w\d]+/', $_GET['password']) && $_GET['password'] == $_GET['confirmation']){
+       $pass = md5($_GET['password']);
+       $sql = "update Group8_users set Password='".$pass."' where username = '";
+       $sql .= $user->get_username()."';";
+       $res = $conn->query($sql);
+       echo "password change";
+    }
+    include 'close_connection.php';
+}
+else if($op == "delete account"){
+    $name = $_GET['name'];
+    $start = "SET SQL_SAFE_UPDATES = 0;";
+    $end = "SET SQL_SAFE_UPDATES = 1;";
+    $like = "delete from Group8_likes where username = '".$name."';";
+    $comment = "delete from Group8_comments where username = '".$name."';";
+    $posts = "delete from Group8_posts where username = '".$name."';";
+    $friends = "delete from Group8_friends where username = '".$name."' or friend = '".$name."';";
+    $user = "delete from Group8_users where username = '".$name."';";
+    include 'connection.php';
+    $res = $conn->query($start);
+    $res = $conn->query($like);
+    $res = $conn->query($comment);
+    $res = $conn->query($posts);
+    $res = $conn->query($friends);
+    $res = $conn->query($user);
+    $res = $conn->query($end);
+    include 'close_connection.php';
+    echo "user deleted";
+}
+
 
 ?>
