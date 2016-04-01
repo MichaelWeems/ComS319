@@ -303,10 +303,14 @@ else if($op == "get friends"){
 }
 else if($op == "search users"){
     $html = "";
-    var_dump($_GET['string']);
-    $allUsers = get_search_users($_GET['string']);
-    $json = build_friend_cards($html, $allUsers);
-    echo json_encode($json);
+    if(preg_match('/\w+/', $_GET['string'])){
+        $allUsers = $user->get_search_users($_GET['string']);
+        $json = build_friend_cards($html, $allUsers);
+        echo json_encode($json);
+    }
+    else{
+        echo 'false';
+    }
 }
 else if($op == "edit info"){
     include 'connection.php';

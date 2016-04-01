@@ -15,17 +15,21 @@ $(document).ready(function() {
     get_user();
     get_friends();
     
-    $('#username_box').click(function(){
-        window.location.assign("profile.html"); 
-    });
-    
 	$('#logout').click(function() {
         logout();
     });
     $('#search').keypress(function(e) {
         if(e.which == 13) {
+            e.preventDefault();
             search();
         }
+    });
+    $('.name-tag').click(function(){
+        profile_relocate( $(this).html() );
+    });
+    
+    $('.card-title').click(function(){
+        console.log( $(this).html() );
     });
     
    
@@ -44,14 +48,15 @@ function get_friends(){
     var data = {'op':'get friends'};
     var script = "src/php/handler.php";
     var func = get_friends_callback;
-    
     ajax(data,script,func);
 }
 
 function get_friends_callback(data){
     var obj = JSON.parse(data);
     console.log(data);
-    $('.wall').empty();
-    $('.wall').append(obj);
-    //$('.wall').append('<div class="cards row"><div class="card blue lighten-1 col s3"><div class="card-image"><img src="src/img/new_pic.png" height="170"><span class="card-title black-text" href="profile.html">mdweems</span></div></div></div>');
+    if(obj != false){
+        $('.wall').empty();
+        $('.wall').append(obj);
+    }
 }
+
