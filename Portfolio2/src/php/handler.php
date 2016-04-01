@@ -296,6 +296,9 @@ else if ($op == "get all posts") {
     build_createPost($html);
     echo json_encode($html);
 }
+else if ($op == "load profile"){
+    $_SESSION['name'] = $_GET['name'];
+}
 else if ($op == "get user posts"){  // gets only the current user's posts
     // needs username
     $user_profile = new User($_SESSION['name']);

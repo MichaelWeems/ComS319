@@ -16,6 +16,7 @@ $(document).ready(function() {
     get_friends();
     
     $('#username_box').click(function(){
+        console.log($('#username').html());
         load_profile( $('#username').html() );
     });
     
@@ -38,7 +39,7 @@ $(document).ready(function() {
 
 }); // end of document ready function
 
-/*
+
 function search(){
     var data = {'op':'search users', 'string':$('#search').val()};
     var script = "src/php/handler.php";
@@ -46,7 +47,7 @@ function search(){
     console.log($('#search').val());
     ajax(data,script,func);
 }
-*/
+
 
 function get_friends(){
     var data = {'op':'get friends'};
@@ -60,8 +61,10 @@ function get_friends_callback(data){
     var obj = JSON.parse(data);
     console.log(data);
     //console.log(data);
-    $('.wall').empty();
-    $('.wall').append(obj);
+    if(obj != false){
+        $('.wall').empty();
+        $('.wall').append(obj);
+    }
     
     $('.friend-load').click(function(){
         console.log($(this).html());

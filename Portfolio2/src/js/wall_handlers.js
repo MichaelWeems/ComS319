@@ -219,7 +219,7 @@ function submitPost(){
     }
     else {
         var filename = "src\\img\\"; 
-        filename += $('input[type=file]').val().split('\\').pop();
+        filename = filename + $('input[type=file]').val().split('\\').pop();
         var data = { 'op': 'create post', 'title': $('#post-title').val(),'text': $('#post-text').val(), 'file': filename};
     }
     

@@ -75,7 +75,7 @@ function load_profile(name){
     ajax(data,script,func);
 }
 
-function load_profile_callback(){
+function load_profile_callback(data){
     //$('.wall').html(data);
     window.location.assign('profile.html');
 }

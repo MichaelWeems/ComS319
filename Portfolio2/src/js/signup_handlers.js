@@ -58,10 +58,10 @@ function signup_callback(data){
     
     if (typeof response.user != 'undefined'){
         if ( response.user == 'admin' ){
-            window.location.assign("admin.html");
+            window.location.assign("edit.html");
         }
         else if ( response.user == 'user' ){
-            window.location.assign("wall.html");
+            window.location.assign("edit.html");
         }
         else if ( response.user == 'invalid' ){
             alert("Invalid username or password");
