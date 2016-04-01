@@ -7,8 +7,8 @@ $(document).ready(function() {
     get_profilePosts();
     //get_profileImages();
     
-    $('#username_box').click(function(){
-        window.location.assign("profile.html"); 
+   $('#username_box').click(function(){
+        load_profile($('#username').html());
     });
     
     $('#logout').click(function() {
@@ -25,9 +25,9 @@ $(document).ready(function() {
 //
 //		Sets all handlers needed by the wall elements
 //
-function set_profilePosts_handlers(){
+function set_profilePosts_handlers(loggedin){
     set_allPostHandlers();
-    set_createPostHandlers();
+    set_createPostHandlers(loggedin);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -53,45 +53,51 @@ function get_profilePosts(){
 //
 //		Sets all handlers needed by the create post elements
 //
-function set_createPostHandlers(){
-    
-    $('.fab').html('<i class="material-icons">add</i>');
-    
-    $('.fab').click(function(){
-        
-        if ($('#create-post').hasClass("hidden")){
-            $('#create-post').removeClass('hidden');
-            $('#create-post').addClass('unhidden');
-        }
-        else if ($('#create-post').hasClass("unhidden")){
-            $('#create-post').removeClass('unhidden');
-            $('#create-post').addClass('hidden');
-        }
-        
-    });
-    
-    // create post inputs
-    $(".mat-input").focus(function() {
-      $(this).parent().addClass("is-active is-completed");
-    });
+function set_createPostHandlers(loggedin){
+    console.log("logged in: " + loggedin);
+    if (loggedin) {
+        $('.fab').html('<i class="material-icons">add</i>');
 
-    $(".mat-input").focusout(function() {
-      if ($(this).val() === "")
-        $(this).parent().removeClass("is-completed");
-      $(this).parent().removeClass("is-active");
-    });
-    
-    $('#post-text').keypress(function(e) {
-        if(e.which == 13) {
+        $('.fab').click(function(){
+
+            if ($('#create-post').hasClass("hidden")){
+                $('#create-post').removeClass('hidden');
+                $('#create-post').addClass('unhidden');
+            }
+            else if ($('#create-post').hasClass("unhidden")){
+                $('#create-post').removeClass('unhidden');
+                $('#create-post').addClass('hidden');
+            }
+
+        });
+
+        // create post inputs
+        $(".mat-input").focus(function() {
+          $(this).parent().addClass("is-active is-completed");
+        });
+
+        $(".mat-input").focusout(function() {
+          if ($(this).val() === "")
+            $(this).parent().removeClass("is-completed");
+          $(this).parent().removeClass("is-active");
+        });
+
+        $('#post-text').keypress(function(e) {
+            if(e.which == 13) {
+                submitPost();
+                $("#fab").trigger( "click" );
+            }
+        });
+
+        $("#submit-post").click(function () {
             submitPost();
             $("#fab").trigger( "click" );
-        }
-    });
-    
-    $("#submit-post").click(function () {
-        submitPost();
-        $("#fab").trigger( "click" );
-	});
+        });
+    }
+    else {
+        $('.fab').hide();
+        $('#create-post-container').hide();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -242,11 +248,13 @@ function like(postId){
 //
 function get_profilePosts_callback(data){
     console.log("Gathered all posts for the profile");
-    //$('main').html(data);
+    //$('.wall').html(data);
     obj = JSON.parse(data);
-    $('.wall').html(obj);
+    $('.wall').html(obj.html);
     
-    set_profilePosts_handlers();
+    console.log("returned loggedin: " + obj.loggedin);
+    
+    set_profilePosts_handlers(obj.loggedin);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -259,7 +267,7 @@ function submitPost_callback(data){
     //$('.wall').html(data);  // for debugging
     //console.log(data);  // for debugging
     obj = JSON.parse(data);
-    $('#posts').append(obj.html);
+    $('#posts').prepend(obj.html);
     
     var scrollview = $('#posts');
     var height = scrollview[0].scrollHeight;

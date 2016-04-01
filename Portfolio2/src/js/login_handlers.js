@@ -12,7 +12,7 @@ $(document).ready(function() {
         $(this).parent().removeClass("is-completed");
       $(this).parent().removeClass("is-active");
     });
-    
+        
     $('select').material_select();
     
     $('#password').keypress(function(e) {

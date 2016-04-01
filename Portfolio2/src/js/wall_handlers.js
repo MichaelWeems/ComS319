@@ -16,7 +16,7 @@ $(document).ready(function() {
     get_wallPosts();
     
     $('#username_box').click(function(){
-        window.location.assign("profile.html"); 
+        load_profile($('#username').html());
     });
     
     $('#appselect').click(function(){
@@ -213,10 +213,18 @@ function set_wallHandlers(){
 //		Submits a new post to the database
 //
 function submitPost(){
-    var data = { 'op': 'create post', 'title': $('#post-title').val(),'text': $('#post-text').val()};
+    
+    if ($('#fileToUpload').get(0).files.length === 0) {
+        var data = { 'op': 'create post', 'title': $('#post-title').val(),'text': $('#post-text').val()};
+    }
+    else {
+        var filename = "src\\img\\"; 
+        filename += $('input[type=file]').val().split('\\').pop();
+        var data = { 'op': 'create post', 'title': $('#post-title').val(),'text': $('#post-text').val(), 'file': filename};
+    }
+    
     var script = "src/php/handler.php";
     var func = submitPost_callback;
-
     console.log("Creating a new post");
     ajax(data, script, func);
 }
@@ -282,7 +290,7 @@ function submitPost_callback(data){
     //$('.wall').html(data);  // for debugging
     //console.log(data);  // for debugging
     obj = JSON.parse(data);
-    $('#posts').append(obj.html);
+    $('#posts').prepend(obj.html);
     
     var scrollview = $('#posts');
     var height = scrollview[0].scrollHeight;

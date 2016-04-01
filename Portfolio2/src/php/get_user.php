@@ -2,6 +2,7 @@
 include 'connection.php';
 session_start();
 
+$json = array();
 $json['username'] = $_SESSION["username"];
 $sql = "select picPath from Group8_users where username = '".$_SESSION["username"]."';";
 $res = $conn->query($sql);

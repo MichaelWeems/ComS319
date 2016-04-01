@@ -7,7 +7,7 @@ $(document).ready(function() {
     get_app();
     
     $('#username_box').click(function(){
-        window.location.assign("profile.html"); 
+        load_profile($('#username').html());
     });
     
     $('#wall').click(function(){
