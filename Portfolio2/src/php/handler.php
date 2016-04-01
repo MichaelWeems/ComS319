@@ -17,36 +17,58 @@ include 'class_image.php';
 function build_createPost(&$html){
     $html .= '<a id="fab" class="btn-floating btn-large waves-effect waves-light blue fab z-depth-2"></a>';
     
-    $html .= '<div id="create-post" class="create-post hidden z-depth-5" style="height:40%">';
-    $html .=        '<div id="post-image-creater" class="card" style="width:100%; height:100%;">';
-    $html .=        '<ul class="tabs tab-profile blue" style="width:100%;">';
-    $html .=            '<li class="tab">';
-    $html .=                '<a href="#post" class="waves-effect waves-dark white-text">Create Post</a>';
-    $html .=            '</li>';
-    $html .=        '</ul>';
-    $html .=        '<div id="updatePost" class="tab-content">';
-    $html .=            '<div class="input-field">';
-    $html .=                '<div class="mat-div">';
-    $html .=                    '<textarea id="post-title" class="mat-input"></textarea>';
-    $html .=                    '<label for="post-title" class="mat-label">Title</label>';
-    $html .=                '</div><div class="mat-div">';
-    $html .=                    '<textarea id="post-text" class="mat-input"></textarea>';
-    $html .=                    '<label for="post-text "class="mat-label indigo-text">Text</label>';
-    $html .=                '</div>';
-    $html .=                '<div class="file-field input-field" style="width:30%; float:left">';
-    $html .=                    '<div class="btn-large">';
-    $html .=                        '<span>File</span>';
-    $html .=                        '<input type="file" name="fileToUpload" id="fileToUpload">';
-    $html .=                    '</div>';
-    $html .=                    '<div class="file-path-wrapper" style="width:60%">';
-    $html .=                        '<input class="file-path validate" type="text">';
-    $html .=                    '</div>';
-    $html .=                '</div>';
-    $html .=                '<a id="submit-post" class="btn-large" style="float:left">Submit</a>';
+    $html .= '<div id="create-post" class="create-post hidden z-depth-5" style="height:60%">';
+    $html .=    '<div id="post-image-creater" class="card" style="width:100%; height:100%;">';
+    
+    $html .=    '<ul class="tabs tab-profile blue" style="width:100%;">';
+    $html .=        '<li class="tab">';
+    $html .=            '<a href="#textpost" class="waves-effect waves-dark white-text">Text Post</a>';
+    $html .=        '</li>';
+    $html .=        '<li class="tab">';
+    $html .=            '<a href="#imagepost" class="waves-effect waves-dark white-text">Image Post</a>';
+    $html .=        '</li>';
+    $html .=    '</ul>';
+    
+    $html .=    '<div id="textpost" class="tab-content">';
+    $html .=        '<div class="input-field">';
+    $html .=            '<div class="mat-div">';
+    $html .=                '<textarea id="post-title" class="mat-input"></textarea>';
+    $html .=                '<label for="post-title" class="mat-label">Title</label>';
+    $html .=            '</div><div class="mat-div">';
+    $html .=                '<textarea id="post-text" class="mat-input"></textarea>';
+    $html .=                '<label for="post-text "class="mat-label indigo-text">Text</label>';
     $html .=            '</div>';
+    $html .=            '<a id="submit-post" class="btn-large" style="float:left">Submit</a>';
     $html .=        '</div>';
-    $html .= '</div>';
     $html .=    '</div>';
+    
+    $html .=    '<div id="imagepost" class="tab-content">';
+    $html .=        '<form id="submit-image">';
+    $html .=        '<div class="input-field">';
+    $html .=            '<div class="mat-div">';
+    $html .=                '<input type="text" id="post-title-image" class="mat-input">';
+    $html .=                '<label for="post-title-image" class="mat-label">Title</label>';
+    $html .=            '</div><div class="mat-div">';
+    $html .=                '<input type="text" id="post-text-image" class="mat-input">';
+    $html .=                '<label for="post-text-image" class="mat-label indigo-text">Text</label>';
+    $html .=            '</div>';
+    $html .=            '<div class="file-field input-field" style="width:60%; float:left">';
+    $html .=                '<div class="btn-large">';
+    $html .=                    '<span>File</span>';
+    $html .=                    '<input type="file" name="fileToUpload" id="fileToUpload" required>';
+    $html .=                '</div>';
+    $html .=                '<div class="file-path-wrapper" style="width:60%">';
+    $html .=                    '<input class="file-path validate" type="text">';
+    $html .=                '</div>';
+    $html .=            '</div>';
+    $html .=            '<input id="submit-post-image" class="btn-large" type="submit" style="float:left">';
+    $html .=        '</div>';
+    $html .=        '</form>';
+    $html .=    '</div>';
+    
+    
+    $html .= '</div>';
+    $html .= '</div>';
     
         /*
     $html .= '<div id="create-post" class="card create-post hidden z-depth-5">';
@@ -149,7 +171,7 @@ function build_comments(&$html, $comments, $postId){
 function build_image_wallpost(&$html, $post, $user){
     $html .=    '<div class="card-image waves-effect waves-block waves-light">';
     $html .=        '<div class="img-container">';
-    $html .=            '<img id="postimg'.$post->get_postId().'" class="expander" src='.$post->get_postPath();
+    $html .=            '<img id="imageexpander'.$post->get_postId().'" class="expander" src='.$post->get_postPath();
     $html .=                ' width="280" height="180">';
     $html .=            '<span class="card-title">'.$post->get_title().'</span>';
     $html .=        '</div>';
@@ -253,7 +275,7 @@ $op = $_GET['op'];
 if ($op == "create post"){  // creates a post
     // needs post title and text
     $post;
-    if ( !is_null($_GET['file']) ){
+    if ( isset($_GET['file']) ){
         $post = $user->createPost_image($_GET['title'], $_GET['text'], $_GET['file']);
     }
     else {
@@ -264,6 +286,7 @@ if ($op == "create post"){  // creates a post
     $json = array('html' => $html, 
                   'expanderid' => 'expander'.$post->get_postId(), 
                   'commentexpanderid' => 'commentexpander'.$post->get_postId(),
+                  'imageexpander' => 'imageexpander'.$post->get_postId(),
                   'replyid' => 'reply'.$post->get_postId());
     echo json_encode($json);
 }
@@ -411,5 +434,4 @@ else if($op == "delete account"){
     include 'close_connection.php';
     echo "user deleted";
 }
-
 ?>
