@@ -205,7 +205,7 @@ function build_text_wallpost(&$html, $post, $user){
 function build_post(&$html, $post, $user){
     $html .= '<div class="card-wall-wrapper">';
     $html .=    '<div class="card wall-card z-depth-2" id="card'.$post->get_postId().'">';
-    
+
     if ( !is_null($post->get_postPath()) ){
         build_image_wallpost($html, $post, $user);
     }
@@ -231,6 +231,7 @@ function build_post(&$html, $post, $user){
  */
 function build_posts($posts, $user){
     $html  = '<div id="posts" style="height:100%; width:100%">';
+    
     foreach($posts as $post){
         build_post($html, $post, $user);
     }
@@ -254,16 +255,52 @@ function build_profilePic($pic, $user){
     $html .= 'valign profile-image" width="50" height="50"></img>';
 }
 
+function build_friend_card(&$html, $friend){
+    
+    $html .= '<div id="'.$friend->get_username().'" class="card-wall-wrapper" style="width:200px; height:200px">';
+    $html .= '<div class="card wall-card z-depth-2 indigo lighten-2">';
+    $html .=    '<div class="card-image waves-effect waves-block waves-light" style="height:100%; width:100%">';
+    $html .=        '<div class="img-container" style="height:100%; width:100%">';
+    $html .=            '<img id="imageexpander'.$friend->get_username().'" class="expander" src='.$friend->get_pic();
+    $html .=                ' width="100%" height="100%">';
+    $html .=            '<span class="card-title white-text indigo" style="width:50%; padding-top:0px;';
+    $html .=                ' padding-bottom:0px">'.$friend->get_username().'</span>';
+    $html .=        '</div>';
+    $html .=    '</div>';
+    
+    
+    $html .=        '<div class="card-content">';
+    
+                        // View friend profile field
+    $html .=            '<span id="view'.$friend->get_username().'" class="card-title friend-load';
+    $html .=                    ' hoverhand indigo-text text-darken-4 left" style="height:100%;width:40%;">';
+    $html .=                '<div overflow:hidden">';
+    $html .=                    '<h4 style="margin-bottom:0px;">View Profile</h4>';
+    $html .=                '</div>';
+    $html .=                '</span>';
+    
+    $add = 'add';   // check if the logged in user is friends with this person
+    $currentuser = new User($_SESSION['username']);
+    if ($currentuser->has_friend($friend->get_username())){
+        $add = 'remove';
+    }
+        
+                        // Add friend field
+    $html .=            '<span id="add'.$friend->get_username().'" class="card-title';
+    $html .=                    ' friend-'.$add;
+    $html .=                    ' hoverhand indigo-text text-darken-4 right" style="height:100%;width:40%;>';
+    $html .=                '<div overflow:hidden">';
+    $html .=                    '<h4 style="margin-bottom:0px;">'.$add.' Friend</h4>';
+    $html .=                '</div>';
+    $html .=                '</span>';
+    $html .=        '</div>';
+    $html .= '</div>';
+}
+
 function build_friend_cards($html, $friends){
-    $html = '<div class="cards row">';
+    $html = '<div class="cards row" style="height:100%">';
     foreach($friends as $friend){
-        $html .= '<div class="card-app-wrapper" style="width:25%">';
-        $html .= '<div class="card blue-grey darken-2">';
-        $html .= '<div class="card-image">';
-        $html .= '<img src='.$friend->get_pic().' height="170">';
-        $name = $friend->get_username();
-        $html .= '<span><a class="friend-load card-title grey-text">'.$name.'</a></span>';
-        $html .= '</div></div></div>';
+        build_friend_card($html, $friend);
     }
     $html .= '</div>';
     return $html;
@@ -376,6 +413,14 @@ else if($op == "get friends"){
     $html = "";
     $json = build_friend_cards($html, $user->get_friends());
     echo json_encode($json);
+}
+else if($op == "add friend"){
+    $user->addFriend($_GET['name']);
+    echo json_encode($_GET['name']);
+}
+else if($op == "remove friend"){
+    $user->removeFriend($_GET['name']);
+    echo json_encode($_GET['name']);
 }
 else if($op == "search users"){
     $html = "";

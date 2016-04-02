@@ -190,6 +190,7 @@ function submitPost_image(filename){
     var func = submitPost_callback;
     console.log("Creating a new text post");
     ajax(data, script, func);
+    $("#fab").trigger( "click" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////

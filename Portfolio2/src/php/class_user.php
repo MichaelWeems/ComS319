@@ -73,6 +73,15 @@ class User {
 		include 'connection_close.php';
 	}
     
+    public function has_friend($name){
+        foreach($this->friends as $friend){
+            if ($friend->get_username() == $name){
+                return true;
+            }
+        }
+        return false;
+    }  
+    
     public function set_friends() {
         include 'connection.php';
 		$sql = "select friend from Group8_friends where username = '".$this->username."';";
@@ -88,7 +97,7 @@ class User {
     public function get_friends() {
         return $this->friends;
 	}
-
+    
 	public function get_username() {
 		return $this->username;
 	}
@@ -109,10 +118,21 @@ class User {
 	public function addFriend($friend){
 		include 'connection.php';
 
-        $sql = "insert into Group8_friend(username, friend)values('".$this->username."', '".$friend."');";
+        $sql = "insert into Group8_friends(username, friend)values('".$this->username."', '".$friend."');";
 		if ($conn->query($sql) === false){
 			die('Invalid query: '.$conn->error);
 		}
+		include 'connection_close.php';
+	}
+    
+    public function removeFriend($friend){
+		include 'connection.php';
+
+        $sql = "Delete from Group8_friends where username = '".$this->username."' and friend = '".$friend."';";
+		if ($conn->query($sql) === false){
+			die('Invalid query: '.$conn->error);
+		}
+        
 		include 'connection_close.php';
 	}
     
@@ -172,9 +192,10 @@ class User {
 	}
     
     public function get_search_users($str){
+        include 'connection.php';
+        
         $sql = "select username from Group8_users where username like '".$str."%';";
         $arr = array();
-        include 'connection.php';
         
         $res = $conn->query($sql);
         while($row = $res->fetch_assoc()){
