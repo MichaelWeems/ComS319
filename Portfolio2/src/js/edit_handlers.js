@@ -98,6 +98,6 @@ function delete_account(){
 
 function logging_out(data){
     console.log(data);
-    //logout();
+    logout();
 }
 
