@@ -31,7 +31,7 @@ $(document).ready(function() {
     });
     
     $('#username_box').click(function(){
-        load_profile( $(this).html() );
+        load_profile( $('#username').html() );
     });
     
     $('#editBTN').click(function(){

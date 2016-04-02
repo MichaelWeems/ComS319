@@ -260,10 +260,10 @@ function build_friend_card(&$html, $friend){
     $html .= '<div id="'.$friend->get_username().'" class="card-wall-wrapper" style="width:200px; height:200px">';
     $html .= '<div class="card wall-card z-depth-2 indigo lighten-2">';
     $html .=    '<div class="card-image waves-effect waves-block waves-light" style="height:100%; width:100%">';
-    $html .=        '<div class="img-container" style="height:100%; width:100%">';
+    $html .=        '<div class="img-container">';
     $html .=            '<img id="imageexpander'.$friend->get_username().'" class="expander" src='.$friend->get_pic();
-    $html .=                ' width="100%" height="100%">';
-    $html .=            '<span class="card-title white-text indigo" style="width:50%; padding-top:0px;';
+    $html .=                ' width="280" height="180">';
+    $html .=            '<span class="card-title white-text indigo" style="width:100%; padding-top:0px;';
     $html .=                ' padding-bottom:0px">'.$friend->get_username().'</span>';
     $html .=        '</div>';
     $html .=    '</div>';
@@ -358,6 +358,15 @@ else if ($op == "get all posts") {
 }
 else if ($op == "load profile"){
     $_SESSION['name'] = $_GET['name'];
+}
+else if ($op == "get profile header"){
+    $user = new User($_SESSION['name']);
+    $img = '<img src='.$user->get_pic().' height=64px width=64px>';
+    $name = $user->get_username();
+    $json = array();
+    $json['img'] = $img;
+    $json['username'] = $name;
+    echo json_encode($json);
 }
 else if ($op == "get user posts"){  // gets only the current user's posts
     // needs username

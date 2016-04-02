@@ -4,6 +4,7 @@
 $(document).ready(function() {
     
     get_user();
+    get_profileHeader();
     get_profilePosts();
     //get_profileImages();
     
@@ -31,6 +32,20 @@ function get_profilePosts(){
     var func = get_profilePosts_callback;
     
     console.log('Getting profile post html');
+    ajax(data,script,func);
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//	get_profileHeader
+//
+//		Gets header html from the database to display in the header
+//
+function get_profileHeader(){
+    var data = {'op': 'get profile header'};
+    var script = 'src/php/handler.php';
+    var func = get_profileHeader_callback;
+    
+    console.log('Getting profile header html');
     ajax(data,script,func);
 }
 
@@ -70,4 +85,18 @@ function get_profilePosts_callback(data){
     console.log("returned loggedin: " + obj.loggedin);
     
     set_profilePosts_handlers(obj.loggedin);
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//	get_profileHeader_callback
+//
+//		Receives html containing the header info and adds it to
+//      the header.
+//
+function get_profileHeader_callback(data){
+    console.log("Gathered header info for the profile");
+    //$('.wall').html(data);
+    obj = JSON.parse(data);
+    $('#profile-userpic').html(obj.img);
+    $('#profile-username').html(obj.username);
 }
