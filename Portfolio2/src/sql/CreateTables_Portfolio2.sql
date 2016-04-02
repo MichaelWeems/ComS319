@@ -49,16 +49,6 @@ values('Jazz', 'McGee', 'mdweems', null),
 ('test 6', null, 'ztwild', 'src/img/test6.jpg');
 
 
-create table if not exists Group8_images(
-imageId int(4) not null AUTO_INCREMENT,
-path varchar(50),
-title varchar(50),
-username varchar(10),
-primary key(imageId),
-unique key(path),
-foreign key(username) references Group8_users(username));
-
-
 create table if not exists Group8_comments(
 commentId int not null AUTO_INCREMENT,
 text varchar(250),

@@ -27,11 +27,47 @@ $(document).ready(function() {
         login();
 	});
 
+    $("#forgot").click (function () {
+        forgot_password();
+	});
+    
 }); // end of document ready function
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// Functions
+
+/////////////////////////////////////////////////////////////////////////////////
+//	forgot_password
+//
+//		Prompts for security question and answer
+//
+function forgot_password(){
+    if ($('#username').val() != ""){
+        var data = {'op': 'question', 'username': $('#username').val()};
+        var script = "src/php/forgot_password.php";
+        var func = forgot_password_callback;
+
+        console.log("Sending username to server");
+        ajax(data, script, func);
+    } else {
+        alert("Fill out the username field before hitting 'forgot your password'");
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//	send_answer
+//
+//		sends security answer to server for validation
+//
+function send_answer(ans, username){
+    var data = {'op': 'answer', 'answer': ans, 'username': username};
+    var script = "src/php/forgot_password.php";
+    var func = login_callback;
+
+    console.log("Sending security answer to server");
+    ajax(data, script, func);
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //	login
@@ -51,6 +87,27 @@ function login(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Callback functions
 
+/////////////////////////////////////////////////////////////////////////////////
+//	forgot_password_callback
+//
+//		prompts the user with their security question
+//
+function forgot_password_callback(data){
+    console.log("Received Response from server: forgot password");
+    console.log(data);
+    var response = JSON.parse(data);
+    
+    if (response.question != 'undefined'){
+        if ( response.question == 'invalid'){
+            alert("You do not have a security question set, sorry... :(");
+        }
+        else{
+            var answer = prompt(response.question);
+            send_answer(answer, response.username);
+        }
+    }
+    else {alert("Server error: please try again");}
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //	login_callback
