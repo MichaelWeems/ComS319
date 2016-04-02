@@ -24,9 +24,7 @@ $(document).ready(function() {
     
     $('select').material_select();
 
-    
     get_user();
-    
     
 	$('#logout').click(function() {
         logout();
@@ -47,7 +45,26 @@ $(document).ready(function() {
         }
     });
     
-    
+    var form = document.forms.namedItem("submit-image");
+    form.addEventListener('submit', function(ev) {
+
+      var oOutput = document.querySelector(".wall"),
+          oData = new FormData(form);
+
+      var oReq = new XMLHttpRequest();
+      oReq.open("POST", "src/php/upload_image.php", true);
+      oReq.onload = function(oEvent) {
+        if (oReq.status == 200) {
+            console.log(this.responseText);
+            edit_profilepic(this.responseText);
+        } else {
+          oOutput.innerHTML = "Error " + oReq.status + " occurred when trying to upload your file.<br \/>";
+        }
+      };
+
+      oReq.send(oData);
+      ev.preventDefault();
+    }, false);
 
 }); // end of document ready function
 
@@ -55,6 +72,13 @@ function edit_info(){
     data = {'op':"edit info", 'question':$('#question').val(), 'answer':$('#answer').val(),
     'profilePic':$('#proPic').val(), 'password':$('#pass').val(),
     'confirmation':$('#conPass').val()}
+    script = "src/php/handler.php";
+    func = back_to_wall;
+    ajax(data,script,func);
+}
+
+function edit_profilepic(path){
+    data = {'op':"edit profile pic", 'profilePic':path}
     script = "src/php/handler.php";
     func = back_to_wall;
     ajax(data,script,func);

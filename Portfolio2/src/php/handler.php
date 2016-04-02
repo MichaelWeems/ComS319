@@ -459,6 +459,12 @@ else if($op == "edit info"){
     }
     include 'close_connection.php';
 }
+else if ($op == "edit profile pic"){
+    include 'connection.php';
+    $sql = "update Group8_users set picPath='".$_GET['profilePic']."' where username = '".$user->get_username()."';";
+    $res = $conn->query($sql);
+    include 'connection_close.php';
+}
 else if($op == "delete account"){
     $name = $_GET['name'];
     $start = "SET SQL_SAFE_UPDATES = 0;";

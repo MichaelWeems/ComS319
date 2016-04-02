@@ -77,11 +77,25 @@
                 <label for="answer "class="mat-label">Security Answer</label>
                 <input type="text" name="answer" id="answer" class="mat-input">
             </div>
-            <div class="mat-div">
-                <label for="proPic "class="mat-label">Profile Picture</label>
-                <input type="text" name="proPic" id="proPic" class="mat-input">
-            </div>
+            
+            <form id="submit-image">
+                <div class="input-field">
+                    <div class="file-field input-field" style="width:60%; float:left">
+                        <div class="btn-large">
+                            <span>File</span>
+                            <input type="file" name="fileToUpload" id="fileToUpload" required>
+                        </div>
+                        <div class="file-path-wrapper" style="width:60%">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
+                    <input id="submit-post-image" class="btn-large" type="submit" style="float:left">
+                </div>
+            </form>
             <br>
+            <br>
+            <br>
+        
             <div class="mat-div">
                 <label for="pass "class="mat-label">Password</label>
                 <input type="text" name="pass" id="pass" class="mat-input">
