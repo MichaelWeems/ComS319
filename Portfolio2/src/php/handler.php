@@ -14,6 +14,37 @@ include 'class_image.php';
 /*
  *  Builds the HTML to house a create post input to add a new post. 
  */
+function build_password_change($name){
+    
+    $html = '<div id="change-pass" class="create-post z-depth-5" style="height:60%">';
+    $html .=    '<div id="post-image-creater" class="card" style="width:250px; height:100%;">';
+    
+    $html .=    '<ul class="tabs tab-profile blue" style="width:100%;">';
+    $html .=        '<li class="tab">';
+    $html .=            '<a href="#passChange" class="waves-effect waves-dark white-text">Change Password</a>';
+    $html .=        '</li>';
+    $html .=    '</ul>';
+    
+    $html .=    '<div id="passChange" class="tab-content">';
+    $html .=        '<div class="input-field">';
+    $html .=            '<div class="mat-div">';
+    $html .=                '<textarea id="pass" class="mat-input"></textarea>';
+    $html .=                '<label for="pass" class="mat-label">New Password</label>';
+    $html .=            '</div><div class="mat-div">';
+    $html .=                '<textarea id="conf" class="mat-input"></textarea>';
+    $html .=                '<label for="conf" class="mat-label indigo-text">Confirm Password</label>';
+    $html .=            '</div>';
+    $html .=            '<a id="submit-change" class="btn-large" style="float:left">Submit</a>';
+    $html .=        '</div>';
+    $html .=    '</div>';
+    
+    $html .= '</div>';
+    $html .= '</div>';
+
+    
+    return $html;
+}
+ 
 function build_createPost(&$html){
     $html .= '<a id="fab" class="btn-floating btn-large waves-effect waves-light blue fab z-depth-2"></a>';
     
@@ -205,7 +236,7 @@ function build_text_wallpost(&$html, $post, $user){
 function build_post(&$html, $post, $user){
     $html .= '<div class="card-wall-wrapper">';
     $html .=    '<div class="card wall-card z-depth-2" id="card'.$post->get_postId().'">';
-
+    
     if ( !is_null($post->get_postPath()) ){
         build_image_wallpost($html, $post, $user);
     }
@@ -231,7 +262,6 @@ function build_post(&$html, $post, $user){
  */
 function build_posts($posts, $user){
     $html  = '<div id="posts" style="height:100%; width:100%">';
-    
     foreach($posts as $post){
         build_post($html, $post, $user);
     }
@@ -255,52 +285,16 @@ function build_profilePic($pic, $user){
     $html .= 'valign profile-image" width="50" height="50"></img>';
 }
 
-function build_friend_card(&$html, $friend){
-    
-    $html .= '<div id="'.$friend->get_username().'" class="card-wall-wrapper" style="width:200px; height:200px">';
-    $html .= '<div class="card wall-card z-depth-2 indigo lighten-2">';
-    $html .=    '<div class="card-image waves-effect waves-block waves-light" style="height:100%; width:100%">';
-    $html .=        '<div class="img-container">';
-    $html .=            '<img id="imageexpander'.$friend->get_username().'" class="expander" src='.$friend->get_pic();
-    $html .=                ' width="280" height="180">';
-    $html .=            '<span class="card-title white-text indigo" style="width:100%; padding-top:0px;';
-    $html .=                ' padding-bottom:0px">'.$friend->get_username().'</span>';
-    $html .=        '</div>';
-    $html .=    '</div>';
-    
-    
-    $html .=        '<div class="card-content">';
-    
-                        // View friend profile field
-    $html .=            '<span id="view'.$friend->get_username().'" class="card-title friend-load';
-    $html .=                    ' hoverhand indigo-text text-darken-4 left" style="height:100%;width:40%;">';
-    $html .=                '<div overflow:hidden">';
-    $html .=                    '<h4 style="margin-bottom:0px;">View Profile</h4>';
-    $html .=                '</div>';
-    $html .=                '</span>';
-    
-    $add = 'add';   // check if the logged in user is friends with this person
-    $currentuser = new User($_SESSION['username']);
-    if ($currentuser->has_friend($friend->get_username())){
-        $add = 'remove';
-    }
-        
-                        // Add friend field
-    $html .=            '<span id="add'.$friend->get_username().'" class="card-title';
-    $html .=                    ' friend-'.$add;
-    $html .=                    ' hoverhand indigo-text text-darken-4 right" style="height:100%;width:40%;>';
-    $html .=                '<div overflow:hidden">';
-    $html .=                    '<h4 style="margin-bottom:0px;">'.$add.' Friend</h4>';
-    $html .=                '</div>';
-    $html .=                '</span>';
-    $html .=        '</div>';
-    $html .= '</div>';
-}
-
 function build_friend_cards($html, $friends){
-    $html = '<div class="cards row" style="height:100%">';
+    $html = '<div class="cards row">';
     foreach($friends as $friend){
-        build_friend_card($html, $friend);
+        $html .= '<div class="card-app-wrapper" style="width:25%">';
+        $html .= '<div class="card blue-grey darken-2">';
+        $html .= '<div class="card-image">';
+        $html .= '<img src='.$friend->get_pic().' height="170">';
+        $name = $friend->get_username();
+        $html .= '<span><a class="friend-load card-title grey-text">'.$name.'</a></span>';
+        $html .= '</div></div></div>';
     }
     $html .= '</div>';
     return $html;
@@ -359,15 +353,6 @@ else if ($op == "get all posts") {
 else if ($op == "load profile"){
     $_SESSION['name'] = $_GET['name'];
 }
-else if ($op == "get profile header"){
-    $user = new User($_SESSION['name']);
-    $img = '<img src='.$user->get_pic().' height=64px width=64px>';
-    $name = $user->get_username();
-    $json = array();
-    $json['img'] = $img;
-    $json['username'] = $name;
-    echo json_encode($json);
-}
 else if ($op == "get user posts"){  // gets only the current user's posts
     // needs username
     $user_profile = new User($_SESSION['name']);
@@ -423,14 +408,6 @@ else if($op == "get friends"){
     $json = build_friend_cards($html, $user->get_friends());
     echo json_encode($json);
 }
-else if($op == "add friend"){
-    $user->addFriend($_GET['name']);
-    echo json_encode($_GET['name']);
-}
-else if($op == "remove friend"){
-    $user->removeFriend($_GET['name']);
-    echo json_encode($_GET['name']);
-}
 else if($op == "search users"){
     $html = "";
     if(preg_match('/\w+/', $_GET['string'])){
@@ -466,12 +443,6 @@ else if($op == "edit info"){
        $res = $conn->query($sql);
        echo "password change";
     }
-    include 'close_connection.php';
-}
-else if ($op == "edit profile pic"){
-    include 'connection.php';
-    $sql = "update Group8_users set picPath='".$_GET['profilePic']."' where username = '".$user->get_username()."';";
-    $res = $conn->query($sql);
     include 'connection_close.php';
 }
 else if($op == "delete account"){
@@ -491,7 +462,99 @@ else if($op == "delete account"){
     $res = $conn->query($friends);
     $res = $conn->query($user);
     $res = $conn->query($end);
-    include 'close_connection.php';
-    echo "user deleted";
+    include 'connection_close.php';
+    echo $start;
+    echo $like;
+    echo $comment;
+    echo $posts;
+    echo $user;
+    echo $end;
 }
+//Admin handlers
+else if($op == "get all user posts"){
+    $dropbox = "<a class='dropdown-button btn' href='#' data-activates='dropdown1'>Delete Post</a>";
+    $dropbox .= "<ul id='dropdown1' class='dropdown-content'>";
+    include 'connection.php';
+    $sql = "select postId from Group8_posts order by postId desc";
+    $arr = array();
+    $res = $conn->query($sql);
+    while($row = $res->fetch_assoc()){
+        $post = new Post($row["postId"]);
+        $arr[$row["postId"]] = $post;
+        $dropbox .= "<li><a href='#!' onclick='delete_post(".$post->get_postId().")'>";
+        $dropbox .= $post->get_title()."</a></li>";
+    };
+    $dropbox .= "</ul>";
+    $html['dropdown'] = $dropbox;
+    $html['posts'] = build_posts($arr, $user->get_username());
+    build_createPost($html['posts']);
+    include 'connection_close.php';
+    echo json_encode($html);
+    
+}
+else if($op == "get users"){
+    $html = "";
+    $dropbox = "<a class='dropdown-button btn' href='#' data-activates='dropdown1'>Delete User</a>";
+    $dropbox .= "<ul id='dropdown1' class='dropdown-content'>";
+    include 'connection.php';
+    $sql = "select username from Group8_users where admin = 'false'";
+    $arr = array();
+    $res = $conn->query($sql);
+    while($row = $res->fetch_assoc()){
+        $person = new Friend($row["username"]);
+        $arr[$row["username"]] = $person;
+        //$dropbox .= "<li><a href='#!'>";
+        $dropbox .= "<li><a href='#!' class='user-cards'>";
+        $dropbox .= $person->get_username()."</a></li>";
+    };
+    $dropbox .= "</ul>";
+    $html['dropdown'] = $dropbox;
+    $html['cards'] = build_friend_cards($html, $arr);
+    
+    include 'connection_close.php';
+    echo json_encode($html);
+}
+
+else if($op == "delete post"){
+    $postId = $_GET['postId'];
+    $start = "SET SQL_SAFE_UPDATES = 0;";
+    $end = "SET SQL_SAFE_UPDATES = 1;";
+    $like = "delete from Group8_likes where postId = ".$postId.";";
+    $comment = "delete from Group8_comments where postId = ".$postId.";";
+    $posts = "delete from Group8_posts where postId = ".$postId.";";
+    
+    include 'connection.php';
+    $res = $conn->query($start);
+    $res = $conn->query($like);
+    $res = $conn->query($comment);
+    $res = $conn->query($posts);
+    $res = $conn->query($end);
+    include 'connection_close.php';
+    
+}
+
+else if($op == "password prompt"){
+    $html['prompt'] = build_password_change($_GET['name']);
+    $html['name'] = $_GET['name'];
+    echo json_encode($html);
+    
+}
+
+else if($op == "password change"){
+    include 'connection.php';
+    if(preg_match('/[\w\d]+/', $_GET['pass']) && $_GET['pass'] == $_GET['conf']){
+       $pass = md5($_GET['pass']);
+       $sql = "update Group8_users set Password='".$pass."' where username = '";
+       $sql .= $_GET['name']."';";
+       $res = $conn->query($sql);
+       echo "password change";
+    }
+    
+    include 'connection_close.php';
+}
+
+
+
+
+
 ?>
