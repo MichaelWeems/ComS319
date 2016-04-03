@@ -246,6 +246,8 @@ function submitPost_callback(data){
     $('#post-text').val('');
     $('#post-title-image').val('');
     $('#post-text-image').val('');
+    $('#fileToUplad').val('');
+    $('#file-validator').val('');
     
     console.log('expid: ' + obj.expanderid);
     console.log('comment: ' + obj.commentexpanderid);

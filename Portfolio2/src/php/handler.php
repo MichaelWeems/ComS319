@@ -89,7 +89,7 @@ function build_createPost(&$html){
     $html .=                    '<input type="file" name="fileToUpload" id="fileToUpload" required>';
     $html .=                '</div>';
     $html .=                '<div class="file-path-wrapper" style="width:60%">';
-    $html .=                    '<input class="file-path validate" type="text">';
+    $html .=                    '<input id="file-validator" class="file-path validate" type="text">';
     $html .=                '</div>';
     $html .=            '</div>';
     $html .=            '<input id="submit-post-image" class="btn-large" type="submit" style="float:left">';

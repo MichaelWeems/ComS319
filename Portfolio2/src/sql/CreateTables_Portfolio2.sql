@@ -10,10 +10,10 @@ primary key(username)
 
 insert into Group8_users(username, password, admin, picPath)
 values('ztwild', '48fa4c38043122c03a61b1fb03d378ee', 'false', 'src/img/ztwild_pic.jpg'),
-('mdweems', '079e5b13ca51e122c5588b5913a78367', 'false', 'src/img/new_pic.png'),
+('mdweems', '079e5b13ca51e122c5588b5913a78367', 'false', 'src/img/Michael_profile.jpg'),
 ('user', '0cc175b9c0f1b6a831c399e269772661', 'false', 'src/img/new_pic.png'),
-('admin', '0cc175b9c0f1b6a831c399e269772661', 'true', 'src/img/new_pic.png'),
-('jazz', '0cc175b9c0f1b6a831c399e269772661', 'false', 'src/img/new_pic.png');
+('admin', '0cc175b9c0f1b6a831c399e269772661', 'true', 'src/img/admin_profile.png'),
+('jazz', '0cc175b9c0f1b6a831c399e269772661', 'false', 'src/img/drumming.jpg');
 
 
 create table if not exists Group8_friends(
@@ -37,9 +37,9 @@ primary key(postId),
 foreign key(username) references Group8_users(username));
 
 insert into Group8_posts(title, text, username, postPath)
-values('Jazz', 'McGee', 'mdweems', null),
-('wooooo hoooooooo', 'Uh Huh...', 'mdweems', null),
-('juicy', 'J', 'mdweems', null),
+values('Jazz', 'McGee', 'mdweems', 'src/img/drumming.jpg'),
+('wooooo hoooooooo!', 'lorem ipsum..........', 'mdweems', 'src/img/test.jpg'),
+('hi', 'whats up', 'mdweems', null),
 ('its me', 'zach', 'ztwild', null),
 ('Panda', null, 'mdweems', 'src/img/test.jpg'),
 ('test 2', null, 'ztwild', 'src/img/test2.jpg'),
