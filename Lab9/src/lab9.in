@@ -1,0 +1,44 @@
+<email>smitra@iastate.edu</email>
+<date>20/01/2015</date>
+<phone>(800) 515-3463</phone>
+<creditcard>4321-1111-2222-3333</creditcard>
+
+<creditcard>4321-1111-2222-3333</creditcard>
+<creditcard>4321-1111-2222-3333</creditcard>
+<creditcard>4321-1111-2222-3333</creditcard>
+<creditcard>4321-1111-2222-3333</creditcard>
+<xmlcredit>4321-1111-2222-3333</credit>
+
+<phone>111-111-111f1</phone>
+<phone>222 22w2 2222</phone>
+<phone>2221.222.2222</phone>
+<phone>(222) 222-2222</phone>
+<phone>(222).222-2222</phone>
+<phone>(222)-222 2222</phone>
+<phone>222.222 2222</phone>
+<phone>222 222-2222</phone>
+<phone>222-222.2222</phone>
+<xmlphone>222-222.2222</xmlphone>
+
+<email>aaaa@bbbb</email>
+<email>.aaaa@bbbb</email>
+<email>aaaa.@bbbb.</email>
+<email>aaaa@bb.b-b</email>
+<email>a'a$-aa@bbbb</email>
+<email>aa.aa@bbbb</email>
+<email>aa..aa@bbbb</email>
+<xmlemail>aa..aa@bbbb</xmlemail>
+
+<bb>01/01/2000</bb>
+<date>31/03/2100</date>
+<date>00/01/2020</date>
+<date>02/00/2020</date>
+<date>02/02/1999</date>
+<date>a/00/0000</date>
+<date>01/b1/2000</date>
+<date>10/10/dfgc</date>
+<date>12/2001</date>
+<date>12/2000/21</date>
+<date>12/234/2020</date>
+<date>40/2/2020</date>
+<xmldate>40/2/2020</xmldate>
