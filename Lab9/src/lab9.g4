@@ -1,119 +1,60 @@
 lexer grammar lab9;
 
-// GENERAL
-fragment DIGIT: [0123456789];
-fragment TWO_DIGITS : DIGIT DIGIT ;
-fragment THREE_DIGITS : DIGIT DIGIT DIGIT ;
-fragment FOUR_DIGITS : DIGIT DIGIT DIGIT DIGIT ;
+Email_xml:'<email>'Email'</email>'{System.out.println("Accepted: "+getText());};
+Date_xml:'<date>'Date'</date>'{System.out.println("Accepted: "+getText());};
+Card_xml:'<creditcard>'Card'</creditcard>'{System.out.println("Accepted: "+getText());};
+Phone_xml:'<phone>'Phone'</phone>'{System.out.println("Accepted: "+getText());};
 
-fragment ALPHA: [a-zA-Z] ;
-fragment X_EXCLUDE: [a-wy-zA-WY-Z] ;
+fragment X: 'X'|'x';
+fragment M: 'M'|'m';
+fragment L: 'L'|'l';
 
-///////////////////////////////////
-// NAME
+fragment Not_XML: [a-wyzA-WYZ]|[xX]([a-ln-zA-LN-Z]|[mM][a-km-zA-KM-Z]);
+fragment Name: ('_'|Not_XML)(Letter|Digit|[-_.])*;
+Reg_xml: '<'Name'>'.*?'</'Name'>'{System.out.println("Accepted: "+getText());};
 
-fragment TAG_OPEN : '<' ;
-fragment TAG_CLOSE : '>' ;
-fragment TAG_END : '</' ;
+fragment Letter: [a-zA-Z];
+fragment Digit: [0-9];
+fragment AlphaNum: (Letter | Digit);
+fragment Char: [-_~$!&'()*+,;=:];
 
-fragment NAME_SPECIALS : DIGIT | '-' | '_' | '.' ;
+fragment Local: (AlphaNum | Char)+;
+fragment Domain: (AlphaNum | '-')+('.'AlphaNum+)+;
+fragment Email: (Local '@' Domain);
 
-fragment NAME_CHARS : ALPHA | NAME_SPECIALS ;
+fragment Day: ('0'[1-9]|[1-2][0-9]|'3'[0-1]);
+fragment Month: ('0'[1-9]|'1'[0-2]);
+fragment Year: '2'('0' Digit Digit|'100');
+fragment Date: Day '/' Month '/' Year;
 
-fragment NAME_START : ('_' | X_EXCLUDE ) ;
+fragment Digit_Two: Digit Digit;
+fragment Digit_Three: Digit_Two Digit;
+fragment Digit_Four: Digit_Three Digit;
 
-fragment NAME: NAME_START (NAME_CHARS)*? ;
+fragment One: Digit_Three'-'Digit_Three'-'Digit_Four;
+fragment Two: '(' Digit_Three ') ' Digit_Three'-'Digit_Four;
+fragment Three: Digit_Three ' ' Digit_Three ' ' Digit_Four;
+fragment Four: Digit_Three'.'Digit_Three'.'Digit_Four;
+fragment Phone: (One|Two|Three|Four);
 
+fragment Eleven: Digit_Four Digit_Four Digit_Three;
+fragment Twelve: Eleven Digit;
+fragment Thirteen: Twelve Digit;
+fragment Fourteen: Thirteen Digit;
+fragment Fifteen: Fourteen Digit;
 
-TAG: ( TAG_OPEN | TAG_END ) NAME TAG_CLOSE  
-	{ System.out.println("Name: " + getText()); }
-        ;
-		
-///////////////////////////////////
-// Email
+fragment Visa_Old: Digit_Two'-'Digit_Three'-'Digit_Three'-'Digit_Four; 
+fragment Visa_New: Digit_Three'-'Digit_Four'-'Digit_Four'-'Digit_Four;
+fragment Visa:'4'(Visa_Old|Visa_New);
+fragment Master: '5'[1-5]Digit_Two'-'Digit_Four'-'Digit_Four'-'Digit_Four;
+fragment Express: '3'('4'|'7')Digit_Two'-'Digit_Four'-'Digit_Four'-'Digit_Four;
+fragment Diners_Short: '3'('0'[0-5] | ('6'|'8')Digit)'-'Digit_Three'-'Digit_Four'-'Digit_Four;
+fragment Diners_Long: '5'Digit_Three'-'Digit_Four'-'Digit_Four'-'Digit_Four;
+fragment Diners: (Diners_Long|Diners_Short);
+fragment Discover: ('6011'Twelve|'65'Fourteen);
+fragment JCB_Short: ('2131'|'1800')'-'Digit_Four'-'Digit_Four'-'Digit_Three;
+fragment JCB_Long: '35'Digit_Two'-'Digit_Four'-'Digit_Four'-'Digit_Four;
+fragment JCB: JCB_Long|JCB_Short;
+fragment Card: Visa|Master|Express|Diners|Discover|JCB;
 
-// localpart
-fragment LOCALPART :  (ALPHA | LOCALPART_CHARS)+ (PERIOD? (ALPHA | LOCALPART_CHARS)+)*;
-fragment LOCALPART_CHARS : [-_~!$&'()*+,;=:] ;
-fragment PERIOD : '.' ;
-
-
-// domainpart
-fragment DOMAINPART : DOMAINPART_CHARS+ ;
-fragment DOMAINPART_CHARS : ALPHA | DIGIT | '-' | '.' ;
-
-fragment EMAIL : LOCALPART '@' DOMAINPART;
-
-EMAIL_BLOCK: EMAIL
-             { System.out.println("Email: " + getText()); }
-        ;
-
-///////////////////////////////////
-// Date
-
-fragment DAY_ONE : '0' [1-9] ;
-fragment DAY_TENS : [1-2] [0-9] ;
-fragment DAY_MAX : '3' [0-1] ;
-
-fragment DAY : DAY_ONE | DAY_TENS | DAY_MAX ;
-
-fragment MONTH_ONE :  '0' [1-9];
-fragment MONTH_TEN :  '1' [0-2];
-
-fragment MONTH : MONTH_ONE | MONTH_TEN ;
-
-fragment YEAR_START :  '20' [0-9] [0-9] ;
-fragment YEAR_MAX : '2100' ;
-
-fragment YEAR : YEAR_START | YEAR_MAX ;
-
-
-fragment DATE : DAY '/' MONTH '/' YEAR;
-
-DATE_BLOCK: DATE
-             { System.out.println("Date: " + getText()); }
-        ;
-	
-///////////////////////////////////
-// Phone
-
-fragment PHONE_DASHED : THREE_DIGITS '-' THREE_DIGITS '-' FOUR_DIGITS ;
-fragment PHONE_BRACKETED : '(' THREE_DIGITS ') ' THREE_DIGITS '-' FOUR_DIGITS ;
-fragment PHONE_SPACED : THREE_DIGITS ' ' THREE_DIGITS ' ' FOUR_DIGITS ;
-fragment PHONE_DOTTED : THREE_DIGITS '.' THREE_DIGITS '.' FOUR_DIGITS ;
-
-fragment PHONE : PHONE_BRACKETED | PHONE_DASHED | PHONE_DOTTED | PHONE_SPACED ;
-
-PHONE_BLOCK: PHONE
-             { System.out.println("PHONE: " + getText()); }
-        ;
-			
-			
-///////////////////////////////////
-// Credit Card
-
-fragment VISA : '4' (VISA_NEW | VISA_OLD) ;
-fragment VISA_NEW : THREE_DIGITS '-' FOUR_DIGITS '-' FOUR_DIGITS '-' FOUR_DIGITS ;
-fragment VISA_OLD : TWO_DIGITS '-' THREE_DIGITS '-' THREE_DIGITS '-' FOUR_DIGITS;
-
-fragment MASTERCARD: [51-55] TWO_DIGITS '-' FOUR_DIGITS '-' FOUR_DIGITS '-' FOUR_DIGITS;
-
-fragment AMERICAN_EXPRESS:  ('34' | '37') TWO_DIGITS '-' FOUR_DIGITS '-' FOUR_DIGITS '-' THREE_DIGITS;
-
-fragment DINERS_CLUB : ( [300-305] | (('36' | '38')  DIGIT )) '-' THREE_DIGITS '-' FOUR_DIGITS '-' FOUR_DIGITS;
-
-fragment DISCOVER : ('6011' | '65' TWO_DIGITS) '-' FOUR_DIGITS '-' FOUR_DIGITS '-' FOUR_DIGITS;
-
-fragment JCB_15 : ( '2131' | '1800' ) '-' FOUR_DIGITS '-' FOUR_DIGITS '-' THREE_DIGITS ;
-fragment JCB_16 : '35' TWO_DIGITS '-' FOUR_DIGITS '-' FOUR_DIGITS '-' FOUR_DIGITS ;
-fragment JCB : JCB_15 | JCB_16 ;
-
-fragment CREDIT_CARD : VISA | MASTERCARD | AMERICAN_EXPRESS | DINERS_CLUB | DISCOVER | JCB ;
-
-JCB_BLOCK: CREDIT_CARD
-             { System.out.println("Credit Card: " + getText()); }
-        ;		
-
-		
-		
-WS: [ \r\n\t]+         {skip();} ;   
+WS: [ \r\n\t]+ {skip();} ;   
