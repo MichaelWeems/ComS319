@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+	<title>Library</title>
+
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+  <nav class="blue" role="navigation">
+    <div class="nav-wrapper container">
+        <ul class="left hide-on-med-and-down">
+            <li><a>Edit Profile</a></li>
+        </ul>
+      <ul class="right hide-on-med-and-down">
+        <li><a id="logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <!--user nav bar-->
+  <div class="row">
+    <div class="col s3">
+    <header>
+        
+        <nav id="side-bar" class="side-nav fixed grey lighten-3 z-depth-2" style="width:200px">
+            <li id="username_box" class="user-details purple z-depth-3 hoverhand">
+                <div class="row">
+                    <div class="col s6">
+                        <img id="userPic" alt class="circle responsive-img valign profile-image z-depth-3" width="100" height="100">
+                    </div>
+                    <div class="col s6">
+                        <div id="username" class="name-tag"></div>
+                    </div>
+                </div>
+            </li>
+            <li class="bold">
+                <a href="friends.html">Friends</a>
+            </li>
+            <li class="bold">
+                <a href="wall.html">Wall</a>
+            </li>
+            <li class="bold">
+                <a href="appselect.html">Apps</a>
+            </li>
+            <li class="bold">
+                <a href="edit.html">Edit</a>
+            </li>
+        </nav>
+    </header>
+    </div>
+  <!--end of nav bar-->
+  
+  
+  
+  <div class="col s10 push-s2">
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <h1 class="header center indigo-text">Edit info</h1>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="section">
+      <!--   Contains main functionality   -->
+		<div class="signup_form">
+            
+            <div class="mat-div">
+                <label for="question" class="mat-label">Security Question</label>
+                <input type="text" name="question" id="question" class="mat-input">
+            </div>
+            <div class="mat-div">
+                <label for="answer "class="mat-label">Security Answer</label>
+                <input type="text" name="answer" id="answer" class="mat-input">
+            </div>
+            
+            <form id="submit-image">
+                <div class="input-field">
+                    <div class="file-field input-field" style="width:60%; float:left">
+                        <div class="btn-large">
+                            <span>File</span>
+                            <input type="file" name="fileToUpload" id="fileToUpload" required>
+                        </div>
+                        <div class="file-path-wrapper" style="width:60%">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
+                    <input id="submit-post-image" class="btn-large" type="submit" style="float:left">
+                </div>
+            </form>
+            <br>
+            <br>
+            <br>
+        
+            <div class="mat-div">
+                <label for="pass "class="mat-label">Password</label>
+                <input type="text" name="pass" id="pass" class="mat-input">
+            </div>
+            <br>
+            <div class="mat-div">
+                <label for="conPass "class="mat-label">Confirm Password</label>
+                <input type="text" name="conPass" id="conPass" class="mat-input">
+            </div>
+            
+            <br><br>
+            <a id="editBTN" class="btn-large waves-effect waves-light indigo">Edit Info</a>
+            <a id="delete" class="btn-large waves-effect waves-light indigo">Delete Account</a>
+	   </div>
+    </div>
+    <br>
+  </div>
+  </div>
+  </div>
+
+	<!--  Scripts-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./src/js/materialize.js"></script>
+    <script type="text/javascript" src="./src/js/ajax.js"></script>
+	<script type="text/javascript" src="./src/js/edit_handlers.js"></script>
+
+  </body>
+</html>

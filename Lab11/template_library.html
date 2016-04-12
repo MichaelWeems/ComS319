@@ -1,0 +1,10 @@
+<style> table, th, td { border: 1px solid black; } </style>
+<h1>Library</h1>
+<table> 
+<th ng-repeat="(key, val) in getLibrary()[1]"> 
+    <h2>Shelf{{key}}</h2>
+</th>
+<tr ng-repeat="row in getLibrary()"> 
+    <td ng-repeat="(key, val) in row" ng-click="bookdetails('/Book', val)">{{val}}</td>
+</tr> 
+</table>

@@ -1,0 +1,64 @@
+.divider,
+.container, 
+.container-display {
+	height: 600px;
+	float: left;
+}
+
+.container, 
+.container-display {
+	background: rgb(208, 215, 217); /* Fall-back for browsers that don't
+                                    support rgba */
+    background: rgba(208, 215, 217, .6);
+}
+
+.divider {
+	width:.5%;
+	background: rgb(180, 180, 180); /* Fall-back for browsers that don't
+                                    support rgba */
+    background: rgba(180, 180, 180, 1);
+}
+
+.container {
+	width: 24%;
+}
+
+.container-small {
+	height:50%;
+	width:24%;
+}
+
+.container-display {
+	width: 50%;
+}
+
+#info,
+.container-wide {
+	height: 100px;
+	width: 1285px;
+	float:left;
+}
+
+.tarea {
+	background: rgb(208, 215, 217); /* Fall-back for browsers that don't
+                                    support rgba */
+    background: rgba(208, 215, 217, .3);
+}
+.user-logout {
+	float:right;
+	cursor:pointer;
+	Color:blue;
+}
+
+.loan-return {
+	background: rgb(208, 215, 217); /* Fall-back for browsers that don't
+                                    support rgba */
+    background: rgba((208, 215, 217, .1);
+	margin-top=40px;
+}
+.loan-return-button {
+	float:right;
+	background: rgb(208, 215, 217); /* Fall-back for browsers that don't
+                                    support rgba */
+    background: rgba(208, 215, 217, 1);
+}

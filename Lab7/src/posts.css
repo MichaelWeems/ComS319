@@ -1,0 +1,33 @@
+.table {
+	border-collapse:collapse; 
+	border-spacing:0em 1em;
+}
+
+.titleRow {
+    background-color: lightblue;
+	margin-left: 20px;
+}
+	
+.postRow td {
+	border-bottom: solid thin;
+    color: navy;
+    margin-left: 20px;
+}
+
+
+.title {
+	background: lightgrey;
+	width: 100px;
+}
+
+.message {
+	width: 500px;
+}
+
+.time {
+	width: 200px;
+}
+
+.edit {
+	width: 50px;
+}

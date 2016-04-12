@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+	<title>Sight Reader</title>
+	
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>  
+	<nav class="blue" role="navigation">
+		<div class="nav-wrapper container">
+			<ul class="left hide-on-med-and-down">
+                <li><h5 id="logo-container" style="padding-right:5px; padding-top:5px"></h5></li>
+                <li><a id="wall">Wall</a></li>
+                <li><a id="appselect">Apps</a></li>
+            </ul>
+            <ul class="right hide-on-med-and-down">
+				<li><a href="profile.html" id="username"></a></li>		<!-- display the username -->
+				<li><a id="logout">Logout</a></li> 	<!-- invalidate session, Log user out-->
+			</ul>
+		</div>	
+	</nav>
+	
+    <div class="mainbody container">
+        <div class="container" style="height:750px">
+            <div class="app"></div>
+        </div>
+    </div>
+	
+	<footer class="page-footer blue">
+		<div class="footer-copyright">
+			<div class="container">
+				Made by <a class="orange-text text-lighten-3">Michael Weems & Zach Wild</a>
+			</div>
+		</div>
+	</footer>
+	<!--  Scripts-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./src/js/materialize.js"></script>
+    <script type="text/javascript" src="./src/js/ajax.js"></script>
+    <script type="text/javascript" src="./src/js/app_handler.js"></script>
+    <div id="append-scripts"></div>
+	
+</body>
+</html>

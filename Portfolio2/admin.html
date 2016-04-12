@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+	<title>Portfolio 2</title>
+
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <style>
+        div.container1{margin-left: 6cm;}
+        div.cards{margin-left: 6cm;}
+        div.posting{margin-left: 5.4cm}
+    </style>
+</head>
+<body>
+    <!--that header and left side bar-->
+    <nav class="top-nav blue z-depth-1">
+        <div class="container">
+            <ul class="right hide-on-med-and-down">
+                <li><a id="logout">logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="row">
+    <div class="col s3">
+    <header>
+        
+        <nav id="side-bar" class="side-nav fixed grey lighten-3 z-depth-2" style="width:200px">
+            <li id="username_box" class="user-details red lighten-1 z-depth-3 hoverhand">
+                <div class="row">
+                    <div class="col s6">
+                        <img src="src/img/admin_profile.jpg" alt class="circle responsive-img valign profile-image z-depth-2" width="100" height="100">
+                    </div>
+                    <div class="col s6">
+                        <div id="username"></div>
+                    </div>
+                </div>
+            </li>
+            <li class="bold hoverhand">
+                <a id="users">Users</a>
+            </li>
+            <li class="bold hoverhand">
+                <a id="posts">Posts</a>
+            </li>
+        </nav>
+    </header>
+        
+    </div>
+    </div>
+    <!--that main part of the page-->
+    <div class="col s12">
+        <div class="wallbody container" >
+            <div class="container" style="height:100%; padding-left:5%">
+                <!--   Contains main functionality   -->
+                <div class="wall"><br>
+            </div>
+        </div>
+    </div>
+    </div>
+
+            
+    <!--  Scripts-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./src/js/materialize.js"></script>
+    <script type="text/javascript" src="./src/js/ajax.js"></script>
+    <script type="text/javascript" src="./src/js/admin_handlers.js"></script>
+    <script type="text/javascript" src="./src/js/post_handlers.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<div style="width=1000px">
+	<div id="add-book" class="container">
+		<h1>Add a Book</h1>
+		<div class="add-book-new">
+			<input id="book-title" type="text" placeholder="book title"/>&nbsp
+			<label for="book-title">Book Title</label><br>
+			<input id="author" type="text" placeholder="author"/>
+			<label for="author">Author</label><br><br>
+			<input id="submit-add-book" type="button" value="Add Book"/>
+		</div>
+		<br>
+		<div id="existing-books" style="overflow-y: scroll; height:70%"></div>
+	</div>
+	<div class="divider"></div>
+	<div id="shelves-view" class="container-display">
+		<input type='button' id='shelves-btn' value='Show Shelves'>
+		<div id="shelves"></div>
+	</div>
+	<div class="divider"></div>
+	<div id="view-loans" class="container">
+		<a class="user-logout"></a><br><br><br><br>
+		<label for="view-loans-user">View the current loans for a user</label>
+		<input id="view-loans-user" type="text" placeholder="Which User?"/>
+		<input id="submit-view-loans" type="button" value="View Loans"/>
+		<div id="return-book" style="width:100%; height:93.5%"></div>
+	</div>
+	<div id="info-section" class="container-wide">
+		<textarea id="info" class="tarea"></textarea>
+	</div>
+</div>

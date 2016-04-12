@@ -1,1 +1,0 @@
-Place the finalized src folder of lab7 into this directory.

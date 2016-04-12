@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<HTML>
+<!-- 
+– use'ajax'call'to'/checkLogin.php'file'to'check'user/password
+– on'success'go'to'viewPosts.php
+– on'failure'– ask'the'user'to'correct'the'username'and'password 
+-->
+<HEAD>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="posts.css">
+</HEAD>
+<BODY>
+
+<div class="loginDiv">
+username <input type="text" name="username" id="username"/> <br>
+password <input type="text" name="password" id="password"/> <br>
+<input type="button" value="Login" id="login" style="width:236px"/>
+
+</div>
+
+<div class="app">
+	<div class="createPosts">
+		<label for="Title" id="label">Submit a new Post</label> <br>
+		<input type="text" id="Title" placeholder="Title" /> <br>
+		<input type="text" id="Message" placeholder="Message" size="50"/>
+		<input type="button" id="submit" value="submit" style="background:lightblue"/>
+		<input type="button" id="makepost" value="Make a Post" style="background:lightblue"/>
+		&nbsp&nbsp&nbsp&nbsp&nbsp
+		<input type="button" id="logout" value="logout" />
+	</div>
+	<div class="viewPosts" style="margin-top:20px"></div>
+</div>
+
+</BODY>
+
+<script> 
+$(document).ready(function() {
+
+hideAll();
+
+$("#makepost").click(function() {
+	showCreatePost();
+	$('#Title').focus();
+});
+
+$('#Message').keydown(function (e){
+    if(e.keyCode == 13){
+		submitPost();
+    }
+})
+
+$("#submit").click(function() {
+	submitPost();
+});
+
+$("#login").click (function () {
+  
+  req = "username=" + $("#username").val();
+  req += "&password=" + $("#password").val();
+  
+  var username_var = $("#username").val();
+  
+  console.log("checkLogin.php?" + req);
+  $.get("checkLogin.php?" + req, 
+        function(data,status) {
+			console.log("Login was successful: " + data);
+			if ( data == "true" ) {
+				$(".loginDiv,.app").toggle();
+				$('.createPosts').show();
+				console.log("username: " + username_var);
+				$.post("viewPosts.php", {username: username_var},
+					function (data) {
+						console.log(data);
+						$(".viewPosts").html(data);
+					});
+			}
+			else {
+				alert("Incorrect login information");
+				$("#username").val("");
+				$("#password").val("");
+			}
+   });
+});
+
+$("#logout").click (function () {
+	$.post("logout.php", {}, function(data) {
+			console.log(data);
+		 $("#includedContent").load("login.html"); 
+	});
+});
+
+
+}); // end of document ready function
+
+function edit( ind ) {
+// edit the post at index
+	console.log("Edit function: " + ind);
+	
+	var newPost = prompt("Enter a new message:", "");
+	var i = ind;
+	
+	$.post("updatePosts.php", {index: i, message: newPost},
+		function (data, index) {
+			console.log(data);
+			$.post("viewPosts.php", {},
+					function (data, index) {
+						$(".viewPosts").html(data);
+					});
+		});
+}
+
+function like( ind ) {
+	// like the post at index
+	console.log("Like function: " + ind);
+	var i = ind;
+	
+	$.post("updatePosts.php", {index: i, like: "like"},
+		function (data, index) {
+			console.log("UpdatePosts return value: " + data);
+			$.post("viewPosts.php", {},
+					function (data, index) {
+						$(".viewPosts").html(data);
+					});
+		});
+}
+
+function hideAll() {
+	$(".app").hide();
+	$('.createPosts').hide();
+	$('#Title').hide();
+	$('#Message').hide();
+	$('#label').hide();
+	$('#submit').hide();
+}
+
+function hideCreatePost() {
+	$('#Title').hide();
+	$('#Message').hide();
+	$('#label').hide();
+	$('#submit').hide();
+}
+
+function showCreatePost() {
+	$('#Title').show();
+	$('#Message').show();
+	$('#label').show();
+	$('#submit').show();
+	$('#makepost').hide();
+}
+
+function submitPost() {
+	console.log("Adding post:");
+	console.log("\tTitle: " + $("#Title").val());
+	console.log("\tMessage: " + $("#Message").val());
+	
+	$.post("updatePosts.php", {title: $("#Title").val(), message: $("#Message").val()}, 
+		function(data) {	
+			console.log("data: " + data);
+			console.log("Added a post, now attempting to refresh the page");
+			$.post("viewPosts.php", {}, 
+			function(data) {
+				$('.viewPosts').html(data);
+				$('#Message').val('');
+				$('#Title').val('');
+				console.log("...Refresh Successful!");
+			});
+	});
+}
+
+</script>
+
+</HTML>
