@@ -1,6 +1,14 @@
-<div id="bookdetails">
-    <h1 ng-bind="name"></h1>
-    <h4 ng-bind="author"></h4>
-    <h5 ng-bind="checkedout"></h5>
-    <button ng-click="seeLibrary('/')">Back</button>
-</div>
+<html>
+    <head>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.min.js"></script>
+        <script src="app.js"></script>
+    </head>
+    <body>
+        <div ng-app="libApp" ng-controller="bookController">
+            <h1>{{book.name}} info</h1><br>
+            <h3>{{book.copies}} copies available</h3><br>
+            <button ng-click="back()">View Library</button>
+        </div>
+    </body>
+</html>

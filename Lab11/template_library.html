@@ -1,10 +1,22 @@
-<style> table, th, td { border: 1px solid black; } </style>
-<h1>Library</h1>
-<table> 
-<th ng-repeat="(key, val) in getLibrary()[1]"> 
-    <h2>Shelf{{key}}</h2>
-</th>
-<tr ng-repeat="row in getLibrary()"> 
-    <td ng-repeat="(key, val) in row" ng-click="bookdetails('/Book', val)">{{val}}</td>
-</tr> 
-</table>
+<html>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.min.js"></script>
+    <script src="app.js"></script>
+    <style> table, th { border: 1px solid black; width: 300px; background-color: lightgreen} </style>
+    <style> table, td { border: 1px solid black; width: 300px; background-color: lightyellow} </style>
+    
+<head>
+<title>Library</title>
+</head>
+
+<body>
+<div ng-app="libApp" ng-controller="libController">
+    <table>
+        <th>Shelf 1</th><th>Shelf 2</th><th>Shelf 3</th>
+        <tr ng-repeat="shelf in shelves">
+            <td ng-repeat="book in shelf" ng-click="load(book)"> {{book.name}} </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
