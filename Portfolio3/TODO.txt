@@ -1,1 +1,3 @@
 Place the finalized src folder of Portfolio 3 into this directory.
+
+https://github.com/sethvincent/example-crtrdg-game
