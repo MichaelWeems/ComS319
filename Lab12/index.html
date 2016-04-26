@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <style>
+            table, th, td{ border: 1px solid black;}
+            th {background-color:darksalmon;}
+            table{float:left; padding: 1px;}
+        </style>
+    </head>
+    <body>
+      <div class="login">
+          Username<input type="text" id="user">
+          <input type="button" id="lgn" value="Login">
+      </div>
+      <div class="chat" style="display:none">
+        Title<input type="text" id="title"><br>
+        Message<input type="text" id="mess">
+        <input type="button" id="btn" value="Submit Message"><br>
+<!--        <input type="button" id="out" value="Logout"><br>-->
+        <table class="posts">
+            <tr><th>User</th><th>Title</th><th>Message</th><th>Edit</th></tr>
+        </table>
+        <table class="users"><tr><th>Users Logged In</th></tr></table><br>
+    
+        <div id="msg"></div>
+      </div>
+        <script>
+            var username = "";
+            // connect to WEBSOCKET server
+            var socket = io.connect('http://localhost:5000');
+            
+            $('#lgn').click(function(){
+              username = $('#user').val();
+              $('#user').val("");
+              $('.login').hide();
+              console.log(username);
+              socket.emit('login', username);
+              $('.chat').show();
+            });
+            
+            $('#btn').click(function(){
+                socket.emit('message', {mess:$('#mess').val(), title:$('#title').val(), name:username});
+                $('#mess').val("");
+                $('#title').val("");
+            });
+            
+            socket.on('user', function(name){
+              var post = "<tr><td>"+name+"</td></tr>";
+              $('.users').append(post);
+            });
+
+            socket.on('post', function(data){
+                var post = "";
+                $('.posts td').remove();
+                data.forEach(function(message){
+                  post = "<tr><td>"+message.name+"</td><td>"+message.title+"</td><td>"+message.mess+"</td><td onclick='edit("+message+")'>edit</td><tr>";
+                  $('.posts td').prepend(post);
+                });
+                
+                
+                var edit = function(message){
+                  var txt = $('#mess').val();
+                  var ttl = $('#title').val();
+                  var newPost = {mess:txt , title:ttl, name:message.name, index:message.index}
+                  socket.emit('edit', newPost); 
+                };
+            });
+            
+            socket.on('update', function(data){
+                //var post = "<tr><th>Users Logged In</th></tr>";
+                var post = "";
+                data.forEach(function(name){
+                  post += "<tr><td>"+name+"</td></tr>";
+                });
+                $('.users td').remove();
+                $('.users').append(post);
+            });
+            
+            $('#out').click(function(){
+              $('.chat').hide();
+              $('.login').show();
+              console.log("Closing client...");
+              socket.disconnect();
+            });
+            
+        </script>
+    </body>
+</html>
