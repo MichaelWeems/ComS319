@@ -18,9 +18,9 @@ io.sockets.on('connection', function(socket) {
       clients.push(socket);
       clients.forEach(function(client){
         client.emit('update', users);
-        
       });
-      socket.emit('message', messages);
+      
+      socket.emit('post', messages);
       
       socket.on('disconnect', function(){
         console.log("Closing...");

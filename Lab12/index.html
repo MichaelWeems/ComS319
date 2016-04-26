@@ -18,10 +18,15 @@
         Message<input type="text" id="mess">
         <input type="button" id="btn" value="Submit Message"><br>
 <!--        <input type="button" id="out" value="Logout"><br>-->
-        <table class="posts">
+        <div class="posts"></div>
+        <div class="users"></div>
+<!--
+          
+          <table class="posts">
             <tr><th>User</th><th>Title</th><th>Message</th><th>Edit</th></tr>
         </table>
         <table class="users"><tr><th>Users Logged In</th></tr></table><br>
+-->
     
         <div id="msg"></div>
       </div>
@@ -44,44 +49,37 @@
                 $('#mess').val("");
                 $('#title').val("");
             });
-            
-            socket.on('user', function(name){
-              var post = "<tr><td>"+name+"</td></tr>";
-              $('.users').append(post);
-            });
 
             socket.on('post', function(data){
-                var post = "";
-                $('.posts td').remove();
-                data.forEach(function(message){
-                  post = "<tr><td>"+message.name+"</td><td>"+message.title+"</td><td>"+message.mess+"</td><td onclick='edit("+message+")'>edit</td><tr>";
-                  $('.posts td').prepend(post);
-                });
+              var post = "<table><tr><th>User</th><th>Title</th><th>Message</th><th>Edit</th></tr>";
+              data.reverse();
+              data.forEach(function(message){
+                post += "<tr><td>"+message.name+"</td><td>"+message.title+"</td><td>"+message.mess+"</td>";
+                post += "<td onclick='edit("+message+")'>edit</td><tr>";
+              });
+              post += "</table>";
+              $('.posts table').remove();
+              $('.posts').append(post);
                 
-                
-                var edit = function(message){
-                  var txt = $('#mess').val();
-                  var ttl = $('#title').val();
-                  var newPost = {mess:txt , title:ttl, name:message.name, index:message.index}
-                  socket.emit('edit', newPost); 
-                };
+              var edit = function(message){
+                var txt = $('#mess').val();
+                var ttl = $('#title').val();
+                console.log("Edit message: "+message.title+" "+message.mess);
+                console.log("To: "+ttl+" "+txt);
+              }
             });
+            
             
             socket.on('update', function(data){
-                //var post = "<tr><th>Users Logged In</th></tr>";
-                var post = "";
-                data.forEach(function(name){
-                  post += "<tr><td>"+name+"</td></tr>";
-                });
-                $('.users td').remove();
-                $('.users').append(post);
-            });
-            
-            $('#out').click(function(){
-              $('.chat').hide();
-              $('.login').show();
-              console.log("Closing client...");
-              socket.disconnect();
+              console.log("Getting usernames...");
+              var post = "<table><tr><th>Users Logged In</th></tr>";
+              data.forEach(function(name){
+                post += "<tr><td>"+name+"</td></tr>"; 
+              });
+              post += "</table>";
+              console.log(post);
+              $('.users table').remove();
+              $('.users').append(post);
             });
             
         </script>
