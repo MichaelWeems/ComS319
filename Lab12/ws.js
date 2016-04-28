@@ -33,7 +33,8 @@ io.sockets.on('connection', function(socket) {
       });
         
       socket.on('edit', function(data){
-        messages[data.index] = data;
+        messages[data.index].title = data.title;
+        messages[data.index].mess = data.text;
         socket.emit('post', messages);
       });
     });
