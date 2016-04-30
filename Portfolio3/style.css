@@ -18,6 +18,11 @@ h3#finishMessage {
   text-align: center;
   font-weight: 300;
 }
+h1#Dead {
+  margin: 30px 0px;
+  text-align: center;
+  font-weight: 300;
+}
 
 canvas#game {
   display: block;

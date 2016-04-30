@@ -4,6 +4,7 @@ var Mouse = require('crtrdg-mouse');
 var Player = require('./player');
 var Finish = require('./finish');
 var Platform = require('./platform');
+var Pitfall = require('./pitfall');
 
 var pause = false;
 
@@ -11,7 +12,7 @@ var game = new Game({
   canvasId: 'game',
   width: 800,
   height: 400,
-  backgroundColor: '#ff1f1f'
+  backgroundColor: '#1fff1f'
 });
 
 var keyboard = new Keyboard(game);
@@ -51,30 +52,15 @@ game.on('update', function(interval){
 
       // Check if player is colliding with platforms
       if (player.boundingBox.intersects(platform.boundingBox)){
-
         console.log("player position: x:" + player.position.x + " y:" + player.position.y + "\nplatform position: x:" + platform.position.x + " y:" + platform.position.y);
-    //    if (player.position.y < platform.position.y){
-    //        console.log("ABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\nABOVE\n")
-    //        player.position.y = platform.position.y - player.size.y;
-    //        player.velocity.y = player.speed;
-    //        player.jump = false;
-    //        player.verticalFlightTime = 0;
-    //        onGround = true;
-    //    }
-    //    else if (player.position.y > platform.position.y){
-    //        console.log("BELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\nBELOW\n")
-    //        player.position.y = platform.position.y + platform.size.y + 3;
-    //        player.velocity.y = 0;
-    //    }
-    //    else if (player.position.x > platform.position.x){
-    //        player.position.x = platform.position.x + platform.size.x + 3;
-    //        player.velocity.x = 0;
-    //    }
-    //    else if (player.position.x < platform.position.x){
-    //        player.position.x = platform.position.x - player.size.x - 3;
-    //        player.velocity.x = 0;
-    //    }
         checkPlayerPlatformCollision(player, platform);
+      }
+      
+      // Check if the player is colliding with pitfalls
+      if (player.boundingBox.intersects(pitfall.boundingBox)){
+        $('#Dead').css('visibility', 'visible');
+        player.position.x = player.startingposition.x;
+        player.position.y = player.startingposition.y;
       }
 
       if (!player.onGround){
@@ -183,6 +169,19 @@ var platform = new Platform({
 platform.addTo(game);
 
 platform.on('draw', function(draw){
+  draw.fillStyle = this.color;
+  draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+});
+
+var pitfall = new Pitfall({
+  position: { x: 600, y: 395 },
+  size: { x: 100, y: 5 },
+  color: '#FF0000'
+});
+
+pitfall.addTo(game);
+
+pitfall.on('draw', function(draw){
   draw.fillStyle = this.color;
   draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
 });

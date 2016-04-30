@@ -11,6 +11,11 @@ function Player(options){
     x: options.position.x, 
     y: options.position.y 
   };
+    
+  this.startingposition = {
+    x: options.position.x,
+    y: options.position.y
+  };
   
   this.onGround = false;
   this.falling = false;
