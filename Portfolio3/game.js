@@ -7,6 +7,9 @@ var Platform = require('./platform');
 var Pitfall = require('./pitfall');
 
 var pause = false;
+var time = 0;
+var scoreTimer = null;
+var deathTimer = null;
 
 var game = new Game({
   canvasId: 'game',
@@ -37,14 +40,24 @@ game.on('resume', function(){
   pause = false;
 })
 
+scoreTimer = setInterval(incrementTimer, 1);
+
+function incrementTimer(){
+    time++;
+    $('#scoreTimer').html(time + " milliseconds");
+}
+
 game.on('update', function(interval){
   console.log('updating.');
     
+
   if (player.exists){
       // check victory condition
       if (player.exists && player.boundingBox.intersects(finish.boundingBox)){
         console.log("Well Done, you've finished the level!");
         $('#finishMessage').css('visibility', 'visible');
+        clearInterval(scoreTimer);
+        $('#scoreTimer').html('Your final time was: ' + time + ' milliseconds');
       }
       
       // check if player is on a platform or the ground
@@ -59,6 +72,8 @@ game.on('update', function(interval){
       // Check if the player is colliding with pitfalls
       if (player.boundingBox.intersects(pitfall.boundingBox)){
         $('#Dead').css('visibility', 'visible');
+        deathTimer = setTimeout(function(){$('#Dead').css('visibility', 'hidden');}, 2000)
+        
         player.position.x = player.startingposition.x;
         player.position.y = player.startingposition.y;
       }
