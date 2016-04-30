@@ -23,7 +23,8 @@ keyboard.on('keydown', function(keyCode){
 });
 
 game.on('pause', function(){
-  console.log('oooooh, paused.')
+  console.log('oooooh, paused.');
+  throw new Error("Something went badly wrong!");
 });
 
 game.on('resume', function(){
@@ -41,9 +42,9 @@ var player = new Player({
   position: { x: 10, y: 10 },
   size: { x: 10, y: 10 },
   velocity: { x: 0, y: 0 },
-  acceleration: 9.8,
   speed: 3,
   friction: 0.9,
+  gravity: 9.8,
   color: '#fff'
 });
 
@@ -51,13 +52,14 @@ player.addTo(game);
 
 player.on('update', function(interval){
   this.keyboardInput(keyboard);
-
+  
   this.move(this.velocity);
   this.velocity.x *= this.friction;
-  this.velocity.y *= this.friction;
-
+  if ( this.verticalFlightTime != 0 ) {
+    console.log("this.gravity* verticalflighttime / 1000: " + this.gravity*(this.verticalFlightTime / 150));
+    this.velocity.y = -this.speed - 1 + this.gravity*(this.verticalFlightTime / 150);
+  }
   this.checkBoundaries();
-  this.checkGround();
 });
 
 player.on('draw', function(draw){
