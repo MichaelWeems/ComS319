@@ -12,7 +12,8 @@ function Player(options){
     y: options.position.y 
   };
   
-  this.jump = false;
+  this.onGround = false;
+  this.falling = false;
 
   this.size = {
     x: options.size.x,
@@ -21,7 +22,8 @@ function Player(options){
 
   this.velocity = {
     x: options.velocity.x,
-    y: options.velocity.y
+    y: options.velocity.y,
+    initialY: options.velocity.y
   };
     
   this.boundingBox = aabb([this.position.x, this.position.y], [this.size.x, this.size.y]);
@@ -54,20 +56,25 @@ Player.prototype.checkBoundaries = function(){
   if (this.position.y <= 0){
     this.position.y = 0;
   }
+  
+  this.checkGround();
+  
+};
 
+Player.prototype.checkGround = function (){
   if (this.position.y >= this.game.height - this.size.y){
-    if (this.jump){
-      this.jump = false;
+    if (!this.onGround){
+      this.onGround = true;
 	  this.verticalFlightTime = 0;
-      this.velocity.y = 0;
+      this.velocity.y = 0.1;
     }
     this.position.y = this.game.height - this.size.y;
   }
-  else if (this.position.y < this.game.height - this.size.y){
-    this.verticalFlightTime++;
-	console.log("verticalflighttime: " + this.verticalFlightTime + "\nposition: " + this.position.y + "\nvelocity: " + this.velocity.y);
-  }
-};
+  else {
+      this.onGround = false;
+  } 
+      
+}
 
 Player.prototype.keyboardInput = function(keyboard){
     
@@ -80,18 +87,15 @@ Player.prototype.keyboardInput = function(keyboard){
   }
 
   if ('W' in keyboard.keysDown){
-	console.log("Jump: " + this.jump);
-    if (!this.jump){
+    if (this.onGround){
       this.velocity.y = -this.speed;
-      this.jump = true;
+      this.velocity.initialY = -this.speed;
+      this.onGround = false;
     }
-	else {
-	  //console.log("jump == true");
-	}
   }
 
   if ('S' in keyboard.keysDown){
-    if (this.jump == false){
+    if (this.onGround){
       this.velocity.y = this.speed;
     }
   }
