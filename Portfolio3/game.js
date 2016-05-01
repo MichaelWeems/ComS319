@@ -150,18 +150,46 @@ function checkXCollision(player, platform){
 
 loadNewLevel("level1");
 
+function removeLevel(){
+  for (i=0; i<game.entities.length; i++){
+    game.entities[i].remove();
+  }
+  player.remove();
+  for (i=0; i<platforms.length; i++){
+      platforms[i].remove();
+  }
+  for (i=0; i<pitfalls.length; i++){
+      pitfalls[i].remove();
+  }
+  for (i=0; i<finishes.length; i++){
+      finishes[i].remove();
+  }
+  for (i=0; i<enemies.length; i++){
+      enemies[i].remove();
+  }
+  clearInterval(inter);
+  clearInterval(scoreTimer);
+  scoreTimer = null;
+  time = 0;
+  
+  player = null;
+  keyboard = null;
+  platforms = [];
+  pitfalls = [];
+  finishes = [];
+  enemies = [];
+  
+  game.context.clearRect(0,0,game.width, game.height);
+  game = null;
+}
+
+function incrementTimer(){
+  time+=5;
+  $('#scoreTimer').html(time + " milliseconds");
+}
+
 function loadNewLevel(level){
-    
-    if (game != null){
-        game.end();
-    }
-            
-    player = null;
-    keyboard = null;
-    platforms = [];
-    pitfalls = [];
-    finishes = [];
-    
+           
     game = new Game({
       canvas: 'game',
       width: 800,
@@ -181,9 +209,11 @@ function loadNewLevel(level){
       }
         
       if (keyCode === '1'){
+        removeLevel();
         loadNewLevel('level1');
       }
       if (keyCode === '2'){
+        removeLevel();
         loadNewLevel('level2');
       }
         
@@ -197,17 +227,7 @@ function loadNewLevel(level){
       console.log('oh, yeah. resuming.')
     })
     
-    game.on('end', function(){
-        game.context.clearRect(0,0,game.width, game.height);
-        delete game;
-    });
-
     scoreTimer = setInterval(incrementTimer, 1);
-
-    function incrementTimer(){
-        time+=5;
-        $('#scoreTimer').html(time + " milliseconds");
-    }
 
     game.on('update', function(interval){
       console.log('updating.');
@@ -215,12 +235,15 @@ function loadNewLevel(level){
       if (player.exists){
           // check victory condition
           for (i=0;i<finishes.length;i++){
-            if (player.boundingBox.intersects(finishes[i].boundingBox)){
-              console.log("Well Done, you've finished the level!");
-              $('#finishMessage').css('visibility', 'visible');
-              clearInterval(scoreTimer);
-              $('#scoreTimer').html('Your final time was: ' + time + ' milliseconds');
-              game.pause();
+            if (finishes[i].exists){
+              if (player.boundingBox.intersects(finishes[i].boundingBox)){
+                console.log("Well Done, you've finished the level!");
+                $('#finishMessage').css('visibility', 'visible');
+                clearInterval(scoreTimer);
+                $('#scoreTimer').html('Your final time was: ' + time + ' milliseconds');
+                player.speed = 0;
+                game.pause();
+              }
             }
           }
 
@@ -230,18 +253,21 @@ function loadNewLevel(level){
 
           // Check if player is colliding with platforms
           for (i=0;i<platforms.length;i++){
-
-            if (player.boundingBox.intersects(platforms[i].boundingBox)){
-              console.log("player position: x:" + player.position.x + " y:" + player.position.y + "\nplatform position: x:" + platforms[i].position.x + " y:" + platforms[i].position.y);
-              checkPlayerPlatformCollision(player, platforms[i]);
+            if (platforms[i].exists){
+              if (player.boundingBox.intersects(platforms[i].boundingBox)){
+                console.log("player position: x:" + player.position.x + " y:" + player.position.y + "\nplatform position: x:" + platforms[i].position.x + " y:" + platforms[i].position.y);
+                checkPlayerPlatformCollision(player, platforms[i]);
+              }
             }
           }
 
           for (i=0;i<pitfalls.length;i++){
-            // Check if the player is colliding with pitfalls
-            if (player.boundingBox.intersects(pitfalls[i].boundingBox)){
-              deathMessage("Get Analed! You fell into a pit!");
+            if (pitfalls[i].exists){
+              // Check if the player is colliding with pitfalls
+              if (player.boundingBox.intersects(pitfalls[i].boundingBox)){
+                deathMessage("Get Analed! You fell into a pit!");
 
+              }
             }
           }
 
@@ -250,8 +276,12 @@ function loadNewLevel(level){
             console.log("verticalflighttime: " + player.verticalFlightTime + "\nposition: " + player.position.y + "\nvelocity: " + player.velocity.y);
           }
 
-          if(player.boundingBox.intersects(enemy.boundingBox)){
-            deathMessage("Get Analed! You got raped by an enemy!");
+          for (i=0; i<enemies.length;i++){
+            if (enemies[i].exists){
+              if(player.boundingBox.intersects(enemies[i].boundingBox)){
+                deathMessage("Get Analed! You got raped by an enemy!");
+              }
+            }
           }
 
       }
@@ -392,6 +422,7 @@ function shoot(){
 
       game.on('update', function(interval){
         if(bullet.boundingBox.intersects(player.boundingBox)){
+          bullet.remove();
           deathMessage("Get Analed! You got shot like a Bitch!");
         }
       });
