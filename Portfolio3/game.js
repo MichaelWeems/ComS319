@@ -8,7 +8,88 @@ var Pitfall = require('./pitfall');
 var Enemy = require('./enemy');
 var Bullet = require('./bullet');
 
+var levels = 
+{
+  level1: {
+    player: {
+      position: { x: 10, y: 390 },
+      size: { x: 10, y: 10 },
+      velocity: { x: 0, y: 0 },
+      speed: 3.5,
+      friction: 0.9,
+      gravity: 12,
+      color: '#fff'
+    },
+    finish: [{
+        position: { x: 700, y: 300 },
+        size: { x: 30, y: 30 },
+        color: '#000'
+    }],
+    platform: [{
+        position: { x: 300, y: 300 },
+        size: { x: 100, y: 75 },
+        color: '#0000FF'
+    }],
+    pitfall: [{
+        position: { x: 600, y: 395 },
+        size: { x: 100, y: 5 },
+        color: '#FF0000'
+    }],
+    enemy : [{
+        position: {x: 100, y: 250},
+        size: {x: 20, y: 20},
+        velocity: {x: 3, y: 3},
+        color: '#3e2470'
+    }]
+  },
+  level2: {
+    player: {
+      position: { x: 10, y: 390 },
+      size: { x: 50, y: 50 },
+      velocity: { x: 0, y: 0 },
+      speed: 3.5,
+      friction: 0.9,
+      gravity: 12,
+      color: '#fff'
+    },
+    finish: [{
+        position: { x: 500, y: 100 },
+        size: { x: 100, y: 100 },
+        color: '#000'
+        },
+        { position: { x: 0, y: 100 },
+          size: { x: 100, y: 150 },
+          color: '#000'
+        }],
+    platform: [{
+        position: { x: 300, y: 300 },
+        size: { x: 100, y: 75 },
+        color: '#0000FF'
+    }],
+    pitfall: [
+        {
+          position: { x: 600, y: 395 },
+          size: { x: 100, y: 5 },
+          color: '#FF0000'
+        },
+        {
+          position: { x: 100, y: 395 },
+          size: { x: 100, y: 5 },
+          color: '#FF0000'
+        }]
+  }    
+};
+
 var pause = false;
+var time = 0;
+var scoreTimer = null;
+var deathTimer = null;
+
+var player = null;
+var platforms = [];
+var finishes = [];
+var pitfalls = [];
+var enemies = [];
 
 var game = new Game({
   canvasId: 'game',
@@ -18,7 +99,6 @@ var game = new Game({
 });
 
 var keyboard = new Keyboard(game);
-
 
 keyboard.on('keydown', function(keyCode){
   if (keyCode === 'P'){
@@ -40,31 +120,55 @@ game.on('resume', function(){
   pause = false;
 })
 
+scoreTimer = setInterval(incrementTimer, 1);
+
+function incrementTimer(){
+    time+=5;
+    $('#scoreTimer').html(time + " milliseconds");
+}
 
 game.on('update', function(interval){
   console.log('updating.');
     
+  $('#level1').on('click', function(){
+   loadNewLevel("level1"); 
+    });
+
+    $('#level2').on('click', function(){
+       loadNewLevel("level2"); 
+    });
+    
+
   if (player.exists){
       // check victory condition
-      if (player.exists && player.boundingBox.intersects(finish.boundingBox)){
-        console.log("Well Done, you've finished the level!");
-        $('#finishMessage').css('visibility', 'visible');
+      for (i=0;i<finishes.length;i++){
+        if (player.boundingBox.intersects(finishes[i].boundingBox)){
+          console.log("Well Done, you've finished the level!");
+          $('#finishMessage').css('visibility', 'visible');
+          clearInterval(scoreTimer);
+          $('#scoreTimer').html('Your final time was: ' + time + ' milliseconds');
+        }
       }
+      
       
       // check if player is on a platform or the ground
       player.checkGround();
 
       // Check if player is colliding with platforms
-      if (player.boundingBox.intersects(platform.boundingBox)){
-        console.log("player position: x:" + player.position.x + " y:" + player.position.y + "\nplatform position: x:" + platform.position.x + " y:" + platform.position.y);
-        checkPlayerPlatformCollision(player, platform);
+      for (i=0;i<platforms.length;i++){
+          
+        if (player.boundingBox.intersects(platforms[i].boundingBox)){
+          console.log("player position: x:" + player.position.x + " y:" + player.position.y + "\nplatform position: x:" + platforms[i].position.x + " y:" + platforms[i].position.y);
+          checkPlayerPlatformCollision(player, platforms[i]);
+        }
       }
       
-      // Check if the player is colliding with pitfalls
-      if (player.boundingBox.intersects(pitfall.boundingBox)){
-        $('#Dead').css('visibility', 'visible');
-        player.position.x = player.startingposition.x;
-        player.position.y = player.startingposition.y;
+      for (i=0;i<pitfalls.length;i++){
+        // Check if the player is colliding with pitfalls
+        if (player.boundingBox.intersects(pitfalls[i].boundingBox)){
+          deathMessage("Get Analed! You fell into a pit!");
+          
+        }
       }
 
       if (!player.onGround){
@@ -73,9 +177,7 @@ game.on('update', function(interval){
       }
       
       if(player.boundingBox.intersects(enemy.boundingBox)){
-        $('#Dead').css('visibility', 'visible');
-        player.position.x = player.startingposition.x;
-        player.position.y = player.startingposition.y;
+        deathMessage("Get Analed! You got raped by an enemy!");
       }
     
   }
@@ -126,125 +228,167 @@ function checkXCollision(player, platform){
   return false;
 }
 
-var player = new Player({
-  position: { x: 10, y: 390 },
-  size: { x: 10, y: 10 },
-  velocity: { x: 0, y: 0 },
-  speed: 3.5,
-  friction: 0.9,
-  gravity: 12,
-  color: '#fff'
-});
+loadNewLevel("level1");
 
-player.addTo(game);
 
-player.on('update', function(interval){
-  this.keyboardInput(keyboard);
-  
-  this.move(this.velocity);
-  this.velocity.x *= this.friction;
-  if ( this.verticalFlightTime != 0 ) {
-    console.log("this.gravity* verticalflighttime / 1000: " + this.gravity*(this.verticalFlightTime / 150));
-    var speed = -this.speed;
-    if (this.velocity.initialY != -this.speed){speed = this.velocity.initialY;}
-    this.velocity.y = speed - 1 + this.gravity*(this.verticalFlightTime / 150);
-  }
-  this.checkBoundaries();
-  
-  
-});
 
-player.on('draw', function(draw){
-  draw.fillStyle = this.color;
-  draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-});
+function loadNewLevel(level){
+//    delete require.cache[require.resolve('./player.js')];
+//    delete require.cache[require.resolve('./platform.js')];
+//    delete require.cache[require.resolve('./pitfall.js')];
+//    delete require.cache[require.resolve('./finish.js')];
+    
+    player = null;
+    platforms = [];
+    pitfalls = [];
+    finishes = [];
+    
+    
+    if (level in levels){
+        lev = levels[level];
+        
+        player = new Player({
+          position: lev.player.position,
+          size: lev.player.size,
+          velocity: lev.player.velocity,
+          speed: lev.player.speed,
+          friction: lev.player.friction,
+          gravity: lev.player.gravity,
+          color: lev.player.color
+        });
 
-var finish = new Finish({
-  position: { x: 700, y: 300 },
-  size: { x: 30, y: 30 },
-  color: '#000'
-});
+        player.addTo(game);
 
-finish.addTo(game);
+        player.on('update', function(interval){
+          this.keyboardInput(keyboard);
 
-finish.on('draw', function(draw){
-  draw.fillStyle = this.color;
-  draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-});
+          this.move(this.velocity);
+          this.velocity.x *= this.friction;
+          if ( this.verticalFlightTime != 0 ) {
+            console.log("this.gravity* verticalflighttime / 1000: " + this.gravity*(this.verticalFlightTime / 150));
+            var speed = -this.speed;
+            if (this.velocity.initialY != -this.speed){speed = this.velocity.initialY;}
+            this.velocity.y = speed - 1 + this.gravity*(this.verticalFlightTime / 150);
+          }
+          this.checkBoundaries();
+        });
 
-////Platforms
-var platform = new Platform({
-  position: { x: 300, y: 300 },
-  size: { x: 100, y: 75 },
-  color: '#0000FF'
-});
+        player.on('draw', function(draw){
+          draw.fillStyle = this.color;
+          draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+        });
+        
+        for(i=0; i<lev.finish.length; i++){
 
-platform.addTo(game);
+            finish = new Finish({
+              position: lev.finish[i].position,
+              size: lev.finish[i].size,
+              color: lev.finish[i].color
+            });
 
-platform.on('draw', function(draw){
-  draw.fillStyle = this.color;
-  draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-});
+            finish.addTo(game);
 
-//var platform = new Platform({
-//  position: { x: 100, y: 600 },
-//  size: { x: 100, y: 75 },
-//  color: '#0000FF'
-//});
-//
-//platform.addTo(game);
-//
-//platform.on('draw', function(draw){
-//  draw.fillStyle = this.color;
-//  draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-//});
-/////end of platforms
+            finish.on('draw', function(draw){
+              draw.fillStyle = this.color;
+              draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+            });
+            
+            finishes.push(finish);
+        }
 
-var pitfall = new Pitfall({
-  position: { x: 600, y: 395 },
-  size: { x: 100, y: 5 },
-  color: '#FF0000'
-});
+         for(i=0; i<lev.platform.length; i++){
+            
+            platform = new Platform({
+              position: lev.platform[i].position,
+              size: lev.platform[i].size,
+              color: lev.platform[i].color
+            });
 
-pitfall.addTo(game);
+            platform.addTo(game);
 
-pitfall.on('draw', function(draw){
-  draw.fillStyle = this.color;
-  draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-});
+            platform.on('draw', function(draw){
+              draw.fillStyle = this.color;
+              draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+            });
+            
+            platforms.push(platform);
+        }
 
-var enemy = new Enemy({
-  position: {x: 100, y: 250},
-  size: {x: 20, y: 20},
-  velocity: {x: 3, y: 3},
-  color: '#3e2470'
-});
+         for(i=0; i<lev.pitfall.length; i++){
+            pitfall = new Pitfall({
+              position: lev.pitfall[i].position,
+              size: lev.pitfall[i].size,
+              color: lev.pitfall[i].color
+            });
 
-enemy.addTo(game);
+            pitfall.addTo(game);
 
-enemy.on('draw', function(draw){
-  draw.fillStyle = this.color;
-  draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-});
+            pitfall.on('draw', function(draw){
+              draw.fillStyle = this.color;
+              draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+            });
+            
+            pitfalls.push(pitfall);
+        }
+        
+        for (i=0; i<lev.enemy.length; i++){
+            enemy = new Enemy({
+                position: lev.enemy[i].position,
+                size: lev.enemy[i].size,
+                velocity: lev.enemy[i].velocity,
+                color: lev.enemy[i].color
+            });
+
+            enemy.addTo(game);
+
+            enemy.on('draw', function(draw){
+              draw.fillStyle = this.color;
+              draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+            });
+            
+            enemies.push(enemy);
+        }
+    }
+    
+}
 
 var inter = window.setInterval(shoot, 1000);
 
 function shoot(){
-  bullet = new Bullet({
-    target: {x: player.position.x, y: player.position.y},
-    position: {x: enemy.position.x, y: enemy.position.y}
-  });
-  bullet.addTo(game);
-  
-  bullet.on('draw', function(draw){
-    draw.fillStyle = this.color;
-    draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-  });
-  
-  game.on('update', function(interval){
-    if(bullet.boundingBox.intersects(player.boundingBox)){
-      player.position.x = player.startingposition.x;
-      player.position.y = player.startingposition.y;
-    }
-  })
+  for (i=0; i<enemies.length; i++){
+      // randomize bullet spread
+      np = Math.floor((Math.random() * 2) + 1);
+      posneg = 1;
+      if (np == 1){posneg = -1;}
+      
+      rand = Math.floor((Math.random() * 40) + 1);
+      rand *= posneg;
+      
+      bullet = new Bullet({
+        target: {x: player.position.x + rand, y: player.position.y + rand},
+        position: {x: enemies[i].position.x, y: enemies[i].position.y}
+      });
+
+      bullet.addTo(game);
+
+      bullet.on('draw', function(draw){
+        draw.fillStyle = this.color;
+        draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+      });
+
+      game.on('update', function(interval){
+        if(bullet.boundingBox.intersects(player.boundingBox)){
+          deathMessage("Get Analed! You got shot like a Bitch!");
+        }
+      });
+  }
+}
+
+function deathMessage(message){
+  $('#Dead').css('visibility', 'visible');
+  $('#Dead').html(message);
+  deathTimer = setTimeout(function(){$('#Dead').css('visibility', 'hidden');}, 2000)
+
+  player.position.x = player.startingposition.x;
+  player.position.y = player.startingposition.y;
 }

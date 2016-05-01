@@ -39,7 +39,7 @@ function Enemy(options){
     }
     if(count%60 == 0){
       count = 0;
-      this.velocity.x *= -1.1;
+      this.velocity.x *= -1.001;
     }
     this.checkBoundaries();
   });
