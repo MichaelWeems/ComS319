@@ -94,6 +94,11 @@ var levels =
         size: {x: 50, y: 50},
         velocity: {x: 1, y: 1},
         color: '#3e2470'
+    }],
+    token : [{
+      position: {x: 300, y: 150},
+      size: {x: 20, y: 20},
+      type: 2
     }]
   }    
 };
@@ -155,12 +160,16 @@ function checkXCollision(player, platform){
   return false;
 }
 
-loadNewLevel("level1");
+loadNewLevel("level2");
 
 function removeLevel(){
-  for (i=0; i<game.entities.length; i++){
-    game.entities[i].remove();
-  }
+//  for (i=0; i<game.entities.length; i++){
+//    game.entities[i].remove();
+//  }
+  player.velocity.x = 0;
+  player.velocity.y = 0;
+  player.speed = 0;
+  player.acceleration = 0;
   player.remove();
   for (i=0; i<platforms.length; i++){
       platforms[i].remove();
@@ -172,9 +181,15 @@ function removeLevel(){
       finishes[i].remove();
   }
   for (i=0; i<enemies.length; i++){
-      enemies[i].remove();
+    enemies[i].velocity.x = 0;
+    enemies[i].velocity.y = 0;
+    enemies[i].speed = 0;
+    enemies[i].remove();
   }
-  clearInterval(inter);
+  for (i=0; i<tokens.length; i++){
+      tokens[i].remove();
+  }
+  //clearInterval(inter);
   clearInterval(scoreTimer);
   scoreTimer = null;
   time = 0;
@@ -190,7 +205,6 @@ function removeLevel(){
   div = document.getElementById('gameDIV');
   div.removeChild(document.getElementById('game'));
   $('#gameDIV').append("<canvas id='game'></canvas>");
-  
   
 }
 
@@ -226,14 +240,16 @@ function loadNewLevel(level){
       if (keyCode === '1'){
         removeLevel();
         game.pause();
+        game = null;
         loadNewLevel('level1');
-        game.resume();
+//        game.resume();
       }
       if (keyCode === '2'){
         removeLevel();
         game.pause();
+        game = null;
         loadNewLevel('level2');
-        game.resume();
+//        game.resume();
       }
         
     });
@@ -478,7 +494,7 @@ function loadNewLevel(level){
   
 }
 
-var inter = window.setInterval(shoot, 1000);
+//var inter = window.setInterval(shoot, 1000);
 
 function shoot(){
   for (i=0; i<enemies.length; i++){
