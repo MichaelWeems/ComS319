@@ -179,8 +179,8 @@ function removeLevel(){
   finishes = [];
   enemies = [];
   
-  game.context.clearRect(0,0,game.width, game.height);
-  game = null;
+  document.body.removeChild(document.getElementById('game'));
+  
 }
 
 function incrementTimer(){
@@ -189,6 +189,10 @@ function incrementTimer(){
 }
 
 function loadNewLevel(level){
+  
+   if (level in levels){
+      
+        lev = levels[level];
            
     game = new Game({
       canvasId: 'game',
@@ -196,7 +200,7 @@ function loadNewLevel(level){
       height: 400,
       backgroundColor: '#1fff1f'
     });
-
+  
     keyboard = new Keyboard(game);
 
     keyboard.on('keydown', function(keyCode){
@@ -210,11 +214,15 @@ function loadNewLevel(level){
         
       if (keyCode === '1'){
         removeLevel();
+        game.pause();
         loadNewLevel('level1');
+        game.resume();
       }
       if (keyCode === '2'){
         removeLevel();
+        game.pause();
         loadNewLevel('level2');
+        game.resume();
       }
         
     });
@@ -238,6 +246,7 @@ function loadNewLevel(level){
           if(bull.boundingBox.intersects(enemy.boundingBox)){
             bull.remove();
             enemy.remove();
+            
             clearInterval(inter);
           }
         })
@@ -281,7 +290,7 @@ function loadNewLevel(level){
           for (i=0;i<platforms.length;i++){
             if (platforms[i].exists){
               if (player.boundingBox.intersects(platforms[i].boundingBox)){
-                console.log("player position: x:" + player.position.x + " y:" + player.position.y + "\nplatform position: x:" + platforms[i].position.x + " y:" + platforms[i].position.y);
+//                console.log("player position: x:" + player.position.x + " y:" + player.position.y + "\nplatform position: x:" + platforms[i].position.x + " y:" + platforms[i].position.y);
                 checkPlayerPlatformCollision(player, platforms[i]);
               }
             }
@@ -299,7 +308,7 @@ function loadNewLevel(level){
 
           if (!player.onGround){
             player.verticalFlightTime++;
-            console.log("verticalflighttime: " + player.verticalFlightTime + "\nposition: " + player.position.y + "\nvelocity: " + player.velocity.y);
+//            console.log("verticalflighttime: " + player.verticalFlightTime + "\nposition: " + player.position.y + "\nvelocity: " + player.velocity.y);
           }
 
           for (i=0; i<enemies.length;i++){
@@ -309,15 +318,10 @@ function loadNewLevel(level){
               }
             }
           }
-
       }
-
     });
     
-    
-    
-    if (level in levels){
-        lev = levels[level];
+   
         
         player = new Player({
           position: lev.player.position,
@@ -337,7 +341,7 @@ function loadNewLevel(level){
           this.move(this.velocity);
           this.velocity.x *= this.friction;
           if ( this.verticalFlightTime != 0 ) {
-            console.log("this.gravity* verticalflighttime / 1000: " + this.gravity*(this.verticalFlightTime / 150));
+//            console.log("this.gravity* verticalflighttime / 1000: " + this.gravity*(this.verticalFlightTime / 150));
             var speed = -this.speed;
             if (this.velocity.initialY != -this.speed){speed = this.velocity.initialY;}
             this.velocity.y = speed - 1 + this.gravity*(this.verticalFlightTime / 150);
@@ -351,7 +355,8 @@ function loadNewLevel(level){
         });
         
         for(i=0; i<lev.finish.length; i++){
-
+//          console.log(level);
+//          console.log(lev.finish[i]);
             finish = new Finish({
               position: lev.finish[i].position,
               size: lev.finish[i].size,
@@ -421,6 +426,10 @@ function loadNewLevel(level){
             enemies.push(enemy);
         }
     }
+  
+  console.log(level);
+  console.log(game);
+  
 }
 
 var inter = window.setInterval(shoot, 1000);
