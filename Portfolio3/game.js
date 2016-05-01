@@ -7,6 +7,7 @@ var Platform = require('./platform');
 var Pitfall = require('./pitfall');
 var Enemy = require('./enemy');
 var Bullet = require('./bullet');
+var Token = require('./token');
 
 var levels = 
 {
@@ -46,6 +47,11 @@ var levels =
         size: {x: 20, y: 20},
         velocity: {x: 3, y: 3},
         color: '#3e2470'
+    }],
+    token : [{
+      position: {x: 300, y: 150},
+      size: {x: 20, y: 20},
+      type: 2
     }]
   },
   level2: {
@@ -103,6 +109,7 @@ var platforms = [];
 var finishes = [];
 var pitfalls = [];
 var enemies = [];
+var tokens = [];
 
 function checkPlayerPlatformCollision(player, platform){
     
@@ -178,6 +185,7 @@ function removeLevel(){
   pitfalls = [];
   finishes = [];
   enemies = [];
+  tokens = [];
   
   document.body.removeChild(document.getElementById('game'));
   
@@ -247,7 +255,25 @@ function loadNewLevel(level){
             bull.remove();
             enemy.remove();
             
-            clearInterval(inter);
+            enemies.splice(enemies.indexOf(enemy), 1);
+            if(enemies.length == 0){
+              for(i=0; i<lev.finish.length; i++){
+                finish = new Finish({
+                  position: lev.finish[i].position,
+                  size: lev.finish[i].size,
+                  color: lev.finish[i].color
+                });
+
+                finish.addTo(game);
+
+                finish.on('draw', function(draw){
+                  draw.fillStyle = this.color;
+                  draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+                });
+            
+                finishes.push(finish);
+              }
+            }
           }
         })
       })
@@ -424,6 +450,23 @@ function loadNewLevel(level){
             });
             
             enemies.push(enemy);
+        }
+      
+        for (i=0; i<lev.token.length; i++){
+          token = new Token({
+            position: lev.token[i].position,
+            size: lev.token[i].size,
+            type: lev.token[i].type
+          });
+          
+          token.addTo(game);
+          
+          token.on('draw', function(draw){
+            draw.fillStyle = this.color;
+            draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+          });
+          
+          tokens.push(token);
         }
     }
   
