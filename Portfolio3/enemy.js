@@ -35,12 +35,13 @@ function Enemy(options){
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
     if(count%20 == 0){
-      count = 0;
       this.velocity.y *= -1;
     }
+    if(count%60 == 0){
+      count = 0;
+      this.velocity.x *= -1.1;
+    }
     this.checkBoundaries();
-    
-    
   });
   
   Enemy.prototype.checkBoundaries = function(){

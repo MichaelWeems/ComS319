@@ -6,6 +6,7 @@ var Finish = require('./finish');
 var Platform = require('./platform');
 var Pitfall = require('./pitfall');
 var Enemy = require('./enemy');
+var Bullet = require('./bullet');
 
 var pause = false;
 
@@ -17,6 +18,7 @@ var game = new Game({
 });
 
 var keyboard = new Keyboard(game);
+
 
 keyboard.on('keydown', function(keyCode){
   if (keyCode === 'P'){
@@ -37,6 +39,7 @@ game.on('resume', function(){
   console.log('oh, yeah. resuming.')
   pause = false;
 })
+
 
 game.on('update', function(interval){
   console.log('updating.');
@@ -74,8 +77,8 @@ game.on('update', function(interval){
         player.position.x = player.startingposition.x;
         player.position.y = player.startingposition.y;
       }
-  }
     
+  }
   
 });
 
@@ -147,6 +150,8 @@ player.on('update', function(interval){
     this.velocity.y = speed - 1 + this.gravity*(this.verticalFlightTime / 150);
   }
   this.checkBoundaries();
+  
+  
 });
 
 player.on('draw', function(draw){
@@ -221,3 +226,25 @@ enemy.on('draw', function(draw){
   draw.fillStyle = this.color;
   draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
 });
+
+var inter = window.setInterval(shoot, 1000);
+
+function shoot(){
+  bullet = new Bullet({
+    target: {x: player.position.x, y: player.position.y},
+    position: {x: enemy.position.x, y: enemy.position.y}
+  });
+  bullet.addTo(game);
+  
+  bullet.on('draw', function(draw){
+    draw.fillStyle = this.color;
+    draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+  });
+  
+  game.on('update', function(interval){
+    if(bullet.boundingBox.intersects(player.boundingBox)){
+      player.position.x = player.startingposition.x;
+      player.position.y = player.startingposition.y;
+    }
+  })
+}
