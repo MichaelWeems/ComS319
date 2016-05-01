@@ -85,104 +85,13 @@ var time = 0;
 var scoreTimer = null;
 var deathTimer = null;
 
+var game = null;
+var keyboard = null;
 var player = null;
 var platforms = [];
 var finishes = [];
 var pitfalls = [];
 var enemies = [];
-
-var game = new Game({
-  canvasId: 'game',
-  width: 800,
-  height: 400,
-  backgroundColor: '#1fff1f'
-});
-
-var keyboard = new Keyboard(game);
-
-keyboard.on('keydown', function(keyCode){
-  if (keyCode === 'P'){
-    if (game.ticker.paused === true){
-      game.resume();
-    } else {
-      game.pause();
-    }
-  }
-});
-
-game.on('pause', function(){
-  console.log('oooooh, paused.');
-  pause = true;
-});
-
-game.on('resume', function(){
-  console.log('oh, yeah. resuming.')
-  pause = false;
-})
-
-scoreTimer = setInterval(incrementTimer, 1);
-
-function incrementTimer(){
-    time+=5;
-    $('#scoreTimer').html(time + " milliseconds");
-}
-
-game.on('update', function(interval){
-  console.log('updating.');
-    
-  $('#level1').on('click', function(){
-   loadNewLevel("level1"); 
-    });
-
-    $('#level2').on('click', function(){
-       loadNewLevel("level2"); 
-    });
-    
-
-  if (player.exists){
-      // check victory condition
-      for (i=0;i<finishes.length;i++){
-        if (player.boundingBox.intersects(finishes[i].boundingBox)){
-          console.log("Well Done, you've finished the level!");
-          $('#finishMessage').css('visibility', 'visible');
-          clearInterval(scoreTimer);
-          $('#scoreTimer').html('Your final time was: ' + time + ' milliseconds');
-        }
-      }
-      
-      
-      // check if player is on a platform or the ground
-      player.checkGround();
-
-      // Check if player is colliding with platforms
-      for (i=0;i<platforms.length;i++){
-          
-        if (player.boundingBox.intersects(platforms[i].boundingBox)){
-          console.log("player position: x:" + player.position.x + " y:" + player.position.y + "\nplatform position: x:" + platforms[i].position.x + " y:" + platforms[i].position.y);
-          checkPlayerPlatformCollision(player, platforms[i]);
-        }
-      }
-      
-      for (i=0;i<pitfalls.length;i++){
-        // Check if the player is colliding with pitfalls
-        if (player.boundingBox.intersects(pitfalls[i].boundingBox)){
-          deathMessage("Get Analed! You fell into a pit!");
-          
-        }
-      }
-
-      if (!player.onGround){
-        player.verticalFlightTime++;
-        console.log("verticalflighttime: " + player.verticalFlightTime + "\nposition: " + player.position.y + "\nvelocity: " + player.velocity.y);
-      }
-      
-      if(player.boundingBox.intersects(enemy.boundingBox)){
-        deathMessage("Get Analed! You got raped by an enemy!");
-      }
-    
-  }
-  
-});
 
 function checkPlayerPlatformCollision(player, platform){
     
@@ -230,18 +139,104 @@ function checkXCollision(player, platform){
 
 loadNewLevel("level1");
 
-
-
 function loadNewLevel(level){
-//    delete require.cache[require.resolve('./player.js')];
-//    delete require.cache[require.resolve('./platform.js')];
-//    delete require.cache[require.resolve('./pitfall.js')];
-//    delete require.cache[require.resolve('./finish.js')];
     
+    if (game != null){
+        context = game.getContext();
+        context.clearRect(0, 0, game.width, game.height);
+    }
+    
+    game = null;
     player = null;
+    keyboard = null;
     platforms = [];
     pitfalls = [];
     finishes = [];
+    
+    game = new Game({
+      canvasId: 'game',
+      width: 800,
+      height: 400,
+      backgroundColor: '#1fff1f'
+    });
+
+    keyboard = new Keyboard(game);
+
+    keyboard.on('keydown', function(keyCode){
+      if (keyCode === 'P'){
+        if (game.ticker.paused === true){
+          game.resume();
+        } else {
+          game.pause();
+        }
+      }
+    });
+
+    game.on('pause', function(){
+      console.log('oooooh, paused.');
+      pause = true;
+    });
+
+    game.on('resume', function(){
+      console.log('oh, yeah. resuming.')
+      pause = false;
+    })
+
+    scoreTimer = setInterval(incrementTimer, 1);
+
+    function incrementTimer(){
+        time+=5;
+        $('#scoreTimer').html(time + " milliseconds");
+    }
+
+    game.on('update', function(interval){
+      console.log('updating.');
+
+      if (player.exists){
+          // check victory condition
+          for (i=0;i<finishes.length;i++){
+            if (player.boundingBox.intersects(finishes[i].boundingBox)){
+              console.log("Well Done, you've finished the level!");
+              $('#finishMessage').css('visibility', 'visible');
+              clearInterval(scoreTimer);
+              $('#scoreTimer').html('Your final time was: ' + time + ' milliseconds');
+            }
+          }
+
+
+          // check if player is on a platform or the ground
+          player.checkGround();
+
+          // Check if player is colliding with platforms
+          for (i=0;i<platforms.length;i++){
+
+            if (player.boundingBox.intersects(platforms[i].boundingBox)){
+              console.log("player position: x:" + player.position.x + " y:" + player.position.y + "\nplatform position: x:" + platforms[i].position.x + " y:" + platforms[i].position.y);
+              checkPlayerPlatformCollision(player, platforms[i]);
+            }
+          }
+
+          for (i=0;i<pitfalls.length;i++){
+            // Check if the player is colliding with pitfalls
+            if (player.boundingBox.intersects(pitfalls[i].boundingBox)){
+              deathMessage("Get Analed! You fell into a pit!");
+
+            }
+          }
+
+          if (!player.onGround){
+            player.verticalFlightTime++;
+            console.log("verticalflighttime: " + player.verticalFlightTime + "\nposition: " + player.position.y + "\nvelocity: " + player.velocity.y);
+          }
+
+          if(player.boundingBox.intersects(enemy.boundingBox)){
+            deathMessage("Get Analed! You got raped by an enemy!");
+          }
+
+      }
+
+    });
+    
     
     
     if (level in levels){
