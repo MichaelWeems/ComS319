@@ -26,10 +26,16 @@ var levels =
         color: '#000'
     }],
     platform: [{
-        position: { x: 300, y: 300 },
-        size: { x: 100, y: 75 },
-        color: '#0000FF'
-    }],
+          position: { x: 300, y: 300 },
+          size: { x: 100, y: 75 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 200, y: 325 },
+          size: { x: 500, y: 20 },
+          color: '#0000FF'
+        }
+    ],
     pitfall: [{
         position: { x: 600, y: 395 },
         size: { x: 100, y: 5 },
@@ -76,11 +82,16 @@ var levels =
           position: { x: 100, y: 395 },
           size: { x: 100, y: 5 },
           color: '#FF0000'
-        }]
+        }],
+    enemy : [{
+        position: {x: 500, y: 100},
+        size: {x: 50, y: 50},
+        velocity: {x: 1, y: 1},
+        color: '#3e2470'
+    }]
   }    
 };
 
-var pause = false;
 var time = 0;
 var scoreTimer = null;
 var deathTimer = null;
@@ -142,11 +153,9 @@ loadNewLevel("level1");
 function loadNewLevel(level){
     
     if (game != null){
-        context = game.getContext();
-        context.clearRect(0, 0, game.width, game.height);
+        game.end();
     }
-    
-    game = null;
+            
     player = null;
     keyboard = null;
     platforms = [];
@@ -154,7 +163,7 @@ function loadNewLevel(level){
     finishes = [];
     
     game = new Game({
-      canvasId: 'game',
+      canvas: 'game',
       width: 800,
       height: 400,
       backgroundColor: '#1fff1f'
@@ -170,17 +179,28 @@ function loadNewLevel(level){
           game.pause();
         }
       }
+        
+      if (keyCode === '1'){
+        loadNewLevel('level1');
+      }
+      if (keyCode === '2'){
+        loadNewLevel('level2');
+      }
+        
     });
 
     game.on('pause', function(){
       console.log('oooooh, paused.');
-      pause = true;
     });
 
     game.on('resume', function(){
       console.log('oh, yeah. resuming.')
-      pause = false;
     })
+    
+    game.on('end', function(){
+        game.context.clearRect(0,0,game.width, game.height);
+        delete game;
+    });
 
     scoreTimer = setInterval(incrementTimer, 1);
 
@@ -200,6 +220,7 @@ function loadNewLevel(level){
               $('#finishMessage').css('visibility', 'visible');
               clearInterval(scoreTimer);
               $('#scoreTimer').html('Your final time was: ' + time + ' milliseconds');
+              game.pause();
             }
           }
 
@@ -344,7 +365,6 @@ function loadNewLevel(level){
             enemies.push(enemy);
         }
     }
-    
 }
 
 var inter = window.setInterval(shoot, 1000);
@@ -353,11 +373,10 @@ function shoot(){
   for (i=0; i<enemies.length; i++){
       // randomize bullet spread
       np = Math.floor((Math.random() * 2) + 1);
-      posneg = 1;
-      if (np == 1){posneg = -1;}
+      if (np == 2){np = -1;}
       
-      rand = Math.floor((Math.random() * 40) + 1);
-      rand *= posneg;
+      rand = Math.floor((Math.random() * 100) + 1);
+      rand *= np;
       
       bullet = new Bullet({
         target: {x: player.position.x + rand, y: player.position.y + rand},
