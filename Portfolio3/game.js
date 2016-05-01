@@ -8,6 +8,7 @@ var Pitfall = require('./pitfall');
 var Enemy = require('./enemy');
 var Bullet = require('./bullet');
 var Token = require('./token');
+var Boss = require('./boss');
 
 var levels = 
 {
@@ -99,6 +100,12 @@ var levels =
       position: {x: 300, y: 150},
       size: {x: 20, y: 20},
       type: 2
+    }],
+    boss : [{
+      position: {x: 500, y: 100},
+      size: {x: 50, y: 150},
+      velocity: {x: 0, y: 3},
+      color: '#FF00FF'
     }]
   }    
 };
@@ -115,6 +122,7 @@ var finishes = [];
 var pitfalls = [];
 var enemies = [];
 var tokens = [];
+var bosses = [];
 
 function checkPlayerPlatformCollision(player, platform){
     
@@ -186,6 +194,12 @@ function removeLevel(){
     enemies[i].speed = 0;
     enemies[i].remove();
   }
+  for (i=0; i<enemies.length; i++){
+    enemies[i].velocity.x = 0;
+    enemies[i].velocity.y = 0;
+    enemies[i].speed = 0;
+    enemies[i].remove();
+  }
   for (i=0; i<tokens.length; i++){
       tokens[i].remove();
   }
@@ -221,8 +235,8 @@ function loadNewLevel(level){
            
     game = new Game({
       canvasId: 'game',
-      width: 800,
-      height: 400,
+      width: 1200,
+      height: 550,
       backgroundColor: '#1fff1f'
     });
   
@@ -242,14 +256,12 @@ function loadNewLevel(level){
         game.pause();
         game = null;
         loadNewLevel('level1');
-//        game.resume();
       }
       if (keyCode === '2'){
         removeLevel();
         game.pause();
         game = null;
         loadNewLevel('level2');
-//        game.resume();
       }
         
     });
@@ -294,10 +306,23 @@ function loadNewLevel(level){
               }
             }
           }
+        });
+        
+        bosses.forEach(function(boss){
+          if(bull.boundingBox.intersects(enemy.boundingBox)){
+            bull.remove();
+            if (boss.health > 1){
+              boss.remove();            
+              bosses.splice(bosses.indexOf(boss), 1);
+            }
+            else {
+              boss.health-=1;
+            }
+          }
         })
-      })
+      });
       
-    })
+    });
 
     game.on('pause', function(){
       console.log('oooooh, paused.');
@@ -356,6 +381,7 @@ function loadNewLevel(level){
 //            console.log("verticalflighttime: " + player.verticalFlightTime + "\nposition: " + player.position.y + "\nvelocity: " + player.velocity.y);
           }
 
+        
           for (i=0; i<enemies.length;i++){
             if (enemies[i].exists){
               if(player.boundingBox.intersects(enemies[i].boundingBox)){
@@ -363,6 +389,14 @@ function loadNewLevel(level){
               }
             }
           }
+        
+          for (i=0; i<bosses.length;i++){
+              if (bosses[i].exists){
+                if(player.boundingBox.intersects(bosses[i].boundingBox)){
+                  deathMessage("Get Analed! You got raped by the boss!");
+                }
+              }
+            }
       }
     });
     
@@ -487,10 +521,27 @@ function loadNewLevel(level){
           
           tokens.push(token);
         }
+        
+        if ('boss' in lev){
+          for (i=0; i<lev.boss.length; i++){
+            boss = new Boss({
+              position: lev.boss[i].position,
+              size: lev.boss[i].size,
+              velocity: lev.boss[i].velocity,
+              color: lev.boss[i].color
+            });
+
+            boss.addTo(game);
+
+            boss.on('draw', function(draw){
+              draw.fillStyle = this.color;
+              draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+            });
+            
+            bosses.push(boss);
+          }
+        }
     }
-  
-  console.log(level);
-  console.log(game);
   
 }
 
@@ -523,6 +574,44 @@ function shoot(){
           deathMessage("Get Analed! You got shot like a Bitch!");
         }
       });
+  }
+}
+
+//var inter = window.setInterval(shoot, 1000);
+
+function bossShoot(){
+  for (i=0; i<bosses.length; i++){
+    
+    if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
+    
+      for (j=0; j<15; j++){
+        // randomize bullet spread
+        np = Math.floor((Math.random() * 2) + 1);
+        if (np == 2){np = -1;}
+
+        rand = Math.floor((Math.random() * 100) + 1);
+        rand *= np;
+
+        bullet = new Bullet({
+          target: {x: player.position.x + rand, y: player.position.y + rand},
+          position: {x: enemies[i].position.x, y: enemies[i].position.y}
+        });
+
+        bullet.addTo(game);
+
+        bullet.on('draw', function(draw){
+          draw.fillStyle = this.color;
+          draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+        });
+
+        game.on('update', function(interval){
+          if(bullet.boundingBox.intersects(player.boundingBox)){
+            bullet.remove();
+            deathMessage("Get Analed! You got shot like a Bitch by the Boss!");
+          }
+        });
+      }
+    }
   }
 }
 
