@@ -191,7 +191,7 @@ function incrementTimer(){
 function loadNewLevel(level){
            
     game = new Game({
-      canvas: 'game',
+      canvasId: 'game',
       width: 800,
       height: 400,
       backgroundColor: '#1fff1f'
@@ -218,6 +218,32 @@ function loadNewLevel(level){
       }
         
     });
+  
+    mouse = new Mouse(game);
+  
+    mouse.on('click', function(location){
+      var bull = new Bullet({
+        position: { 
+          x: player.position.x, 
+          y: player.position.y
+        },
+        target: { 
+          x: location.x, 
+          y: location.y 
+        }
+      });
+      bull.addTo(game);
+      game.on('update', function(interval){
+        enemies.forEach(function(enemy){
+          if(bull.boundingBox.intersects(enemy.boundingBox)){
+            bull.remove();
+            enemy.remove();
+            clearInterval(inter);
+          }
+        })
+      })
+      
+    })
 
     game.on('pause', function(){
       console.log('oooooh, paused.');
