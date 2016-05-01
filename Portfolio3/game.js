@@ -187,7 +187,10 @@ function removeLevel(){
   enemies = [];
   tokens = [];
   
-  document.body.removeChild(document.getElementById('game'));
+  div = document.getElementById('gameDIV');
+  div.removeChild(document.getElementById('game'));
+  $('#gameDIV').append("<canvas id='game'></canvas>");
+  
   
 }
 
