@@ -707,12 +707,12 @@ function bossShoot(){
     
     //if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
     
-      for (j=0; j<5; j++){
+      for (j=0; j<2; j++){
         // randomize bullet spread
         np = Math.floor((Math.random() * 2) + 1);
         if (np == 2){np = -1;}
 
-        rand = Math.floor((Math.random() * 10) + 1);
+        rand = Math.floor((Math.random() * 15) + 1);
         rand *= np;
 
         bullet = new Bullet({
