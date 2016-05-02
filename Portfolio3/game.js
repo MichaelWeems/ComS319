@@ -377,15 +377,15 @@ function loadNewLevel(level){
               bossbullets[i].forEach(function(b){
                 b.remove();
                 b = null;
-              }
-              break;
+              });
+              
             }
             else {
               bosses[i].health-=1;
             }
           }
-        })
         }
+        
       });
       
     });
