@@ -183,6 +183,10 @@ var bosses = [];
 var bossbullets = [];
 var bullets = [];
 
+var inter;
+var bossTimer;
+var bossTimer2;
+
 function checkPlayerPlatformCollision(player, platform){
     
   if (player.position.y >= platform.position.y - player.size.y && player.position.y < platform.position.y + platform.size.y - player.size.y){
@@ -652,9 +656,9 @@ function loadNewLevel(level){
         }
     }
   
-  var inter = window.setInterval(shoot, 1000);
-var bossTimer = window.setInterval(bossShoot, 2500);
-var bossTimer2 = window.setInterval(bossShoot2, 1000);
+inter = window.setInterval(shoot, 1000);
+bossTimer = window.setInterval(bossShoot, 2500);
+bossTimer2 = window.setInterval(bossShoot2, 1000);
   
 };
 
