@@ -640,6 +640,10 @@ function loadNewLevel(level){
         
         if ('boss' in lev){
           for (i=0; i<lev.boss.length; i++){
+            if ( i== 0 ){
+              bossTimer = window.setInterval(bossShoot, 2500);
+            bossTimer2 = window.setInterval(bossShoot2, 1000);
+            }
             boss = new Boss({
               position: lev.boss[i].position,
               size: lev.boss[i].size,
@@ -657,8 +661,7 @@ function loadNewLevel(level){
             bosses.push(boss);
             
           }
-          bossTimer = window.setInterval(bossShoot, 2500);
-            bossTimer2 = window.setInterval(bossShoot2, 1000);
+          
         }
     }
   
