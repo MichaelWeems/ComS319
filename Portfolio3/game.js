@@ -311,6 +311,7 @@ function loadNewLevel(level){
         bosses.forEach(function(boss){
           if(bull.boundingBox.intersects(enemy.boundingBox)){
             bull.remove();
+            bull = null;
             if (boss.health > 1){
               boss.remove();            
               bosses.splice(bosses.indexOf(boss), 1);
