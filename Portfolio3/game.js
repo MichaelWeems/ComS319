@@ -747,7 +747,7 @@ function bossShoot2(){
     
     //if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
     
-      for (j=0; j<10; j++){
+      for (j=0; j<2; j++){
         // randomize bullet spread
         np = Math.floor((Math.random() * 2) + 1);
         if (np == 2){np = -1;}
@@ -758,7 +758,7 @@ function bossShoot2(){
         bullet = new Bullet({
           target: {x: finishes[1].position.x + rand, y: finishes[1].position.y + rand},
           position: {x: bosses[i].position.x, y: bosses[i].position.y},
-          speed: 4
+          speed: 8
         });
 
         bullet.addTo(game);
