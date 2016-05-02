@@ -267,7 +267,6 @@ var bullets = [];
 
 var inter = null;
 var bossTimer = null;
-var bossTimer2 = null;
 
 function checkPlayerPlatformCollision(player, platform){
     
@@ -374,7 +373,6 @@ function removeLevel(){
   }
   clearInterval(inter);
   clearInterval(bossTimer);
-  clearInterval(bossTimer2);
   clearInterval(scoreTimer);
   scoreTimer = null;
   time = 0;
@@ -724,7 +722,6 @@ function loadNewLevel(level){
           for (i=0; i<lev.boss.length; i++){
             if ( i== 0 ){
               bossTimer = setInterval(bossShoot, 2500);
-            bossTimer2 = setInterval(bossShoot2, 1000);
             }
             boss = new Boss({
               position: lev.boss[i].position,
@@ -789,7 +786,7 @@ function bossShoot(){
     
     //if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
     
-      for (j=0; j<2; j++){
+      for (j=0; j<1; j++){
         // randomize bullet spread
         np = Math.floor((Math.random() * 2) + 1);
         if (np == 2){np = -1;}
