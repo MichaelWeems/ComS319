@@ -440,8 +440,11 @@ function loadNewLevel(level){
 
     game.on('update', function(interval){
       console.log('updating.');
-      checkToken(player, tokens);
+      
       if (player.exists){
+        
+        checkToken(player, tokens);
+        
           // check victory condition
           for (i=0;i<finishes.length;i++){
             if (finishes[i].exists){
