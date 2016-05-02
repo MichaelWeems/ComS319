@@ -26,6 +26,8 @@ function Bullet(options){
     y: 0
   };
   
+  this.solid = options.solid;
+  
   this.dx = (this.target.x - this.position.x);
   this.dy = (this.target.y - this.position.y);
   this.mag = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
