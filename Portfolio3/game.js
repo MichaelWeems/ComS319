@@ -160,8 +160,8 @@ var levels =
     }],
     boss : [{
       position: {x: 500, y: 100},
-      size: {x: 50, y: 150},
-      velocity: {x: 0, y: 3},
+      size: {x: 25, y: 75},
+      velocity: {x: 1, y: 12},
       color: '#FF00FF'
     }]
   }    
@@ -400,7 +400,6 @@ function loadNewLevel(level){
 
             for (i=0; i<bosses.length; i++){
               if(bul.boundingBox.intersects(bosses[i].boundingBox)){
-                console.log('**HIT BOSS**');
                 bul.remove();
                 bul.solid = false;
                 if (bosses[i].health == 1){
@@ -681,25 +680,65 @@ function shoot(){
   }
 }
 
-
-var bossTimer = window.setInterval(bossShoot, 1000);
+var bossTimer = window.setInterval(bossShoot, 2500);
 
 function bossShoot(){
   for (i=0; i<bosses.length; i++){
     
     //if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
     
-      for (j=0; j<20; j++){
+      for (j=0; j<15; j++){
         // randomize bullet spread
         np = Math.floor((Math.random() * 2) + 1);
         if (np == 2){np = -1;}
 
-        rand = Math.floor((Math.random() * 100) + 1);
+        rand = Math.floor((Math.random() * 50) + 1);
         rand *= np;
 
         bullet = new Bullet({
           target: {x: player.position.x + rand, y: player.position.y + rand},
-          position: {x: enemies[i].position.x, y: enemies[i].position.y}
+          position: {x: bosses[i].position.x, y: bosses[i].position.y}
+        });
+
+        bullet.addTo(game);
+
+        bullet.on('draw', function(draw){
+          draw.fillStyle = this.color;
+          draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+        });
+
+        game.on('update', function(interval){
+          if(bullet.boundingBox.intersects(player.boundingBox)){
+            bullet.remove();
+            deathMessage("Get Analed! You got shot like a Bitch by the Boss!");
+          }
+        });
+        bossbullets.push([]);
+        bossbullets[i].push(bullet);
+      }
+//    }
+  }
+}
+
+var bossTimer2 = window.setInterval(bossShoot2, 1000);
+
+function bossShoot2(){
+  for (i=0; i<bosses.length; i++){
+    
+    //if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
+    
+      for (j=0; j<10; j++){
+        // randomize bullet spread
+        np = Math.floor((Math.random() * 2) + 1);
+        if (np == 2){np = -1;}
+
+        rand = Math.floor((Math.random() * 5) + 1);
+        rand *= np;
+
+        bullet = new Bullet({
+          target: {x: finishes[1].position.x + rand, y: finishes[1].position.y + rand},
+          position: {x: bosses[i].position.x, y: bosses[i].position.y},
+          speed: 4
         });
 
         bullet.addTo(game);

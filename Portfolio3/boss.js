@@ -33,8 +33,17 @@ function Boss(options){
     this.boundingBox = aabb([this.position.x, this.position.y], [this.size.x, this.size.y]);
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+    
+    np = Math.floor((Math.random() * 2) + 1);
+    if (np == 2){np = -1;}
+
+    rand = Math.floor((Math.random() * 5
+                      ) + 1);
+    rand *= np;
+
+    
     if(count%20 == 0){
-      this.velocity.y *= -1;
+      this.velocity.y *= rand;
     }
     if(count%60 == 0){
       count = 0;

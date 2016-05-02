@@ -31,7 +31,12 @@ function Bullet(options){
   this.dx = (this.target.x - this.position.x);
   this.dy = (this.target.y - this.position.y);
   this.mag = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-  this.speed = 8;
+  if (!options.speed){
+    this.speed = 8;
+  }
+  else {
+    this.speed = options.speed;
+  }
   this.color = '#fff';
 
   this.boundingBox = aabb([this.position.x, this.position.y], [this.size.x, this.size.y]);
