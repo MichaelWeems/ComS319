@@ -23,7 +23,7 @@ function Boss(options){
     y: options.velocity.y
   };
   
-  this.health = 10;
+  this.health = 30;
   
   this.boundingBox = aabb([this.position.x, this.position.y], [this.size.x, this.size.y]);
   
@@ -43,7 +43,7 @@ function Boss(options){
     this.checkBoundaries();
   });
   
-  Enemy.prototype.checkBoundaries = function(){
+  Boss.prototype.checkBoundaries = function(){
     if(this.position.x <= 0 || this.position.x >= this.game.width - this.size.x){
       this.velocity.x *= -1;
     }

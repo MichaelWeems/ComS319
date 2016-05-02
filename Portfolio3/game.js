@@ -582,7 +582,7 @@ function shoot(){
 function bossShoot(){
   for (i=0; i<bosses.length; i++){
     
-    if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
+    //if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
     
       for (j=0; j<15; j++){
         // randomize bullet spread
@@ -611,7 +611,7 @@ function bossShoot(){
           }
         });
       }
-    }
+//    }
   }
 }
 
