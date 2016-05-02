@@ -288,6 +288,7 @@ function removeLevel(){
   }
   clearInterval(inter);
   clearInterval(bossTimer);
+  clearInterval(bossTimer2);
   clearInterval(scoreTimer);
   scoreTimer = null;
   time = 0;
