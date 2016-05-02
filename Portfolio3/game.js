@@ -369,6 +369,7 @@ function loadNewLevel(level){
         
         for (i=0; i<bosses.length; i++){
           if(bull.boundingBox.intersects(bosses[i].boundingBox)){
+            console.log('**HIT BOSS**');
             bull.remove();
             if (bosses[i].health == 1){
               
@@ -381,7 +382,7 @@ function loadNewLevel(level){
               
             }
             else {
-              bosses[i].health-=1;
+              bosses[i].health -= 1;
             }
           }
         }
