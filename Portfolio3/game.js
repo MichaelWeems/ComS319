@@ -353,7 +353,6 @@ function loadNewLevel(level){
   
     mouse.on('click', function(location){
       if(player.shoot == true){
-
       bul = new Bullet({
         position: { 
           x: player.position.x, 
@@ -371,7 +370,6 @@ function loadNewLevel(level){
       
       game.on('update', function(interval){
         bullets.forEach(function(bul){
-                  
           if (bul.solid){
             enemies.forEach(function(enemy){
               if(bul.boundingBox.intersects(enemy.boundingBox)){
@@ -423,13 +421,12 @@ function loadNewLevel(level){
               }
             }
         }
-        
-      
 
         });
     });
         
       }
+
     });
 
     game.on('pause', function(){
