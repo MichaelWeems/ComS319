@@ -57,32 +57,89 @@ var levels =
   },
   level2: {
     player: {
-      position: { x: 10, y: 390 },
-      size: { x: 50, y: 50 },
+      position: { x: 10, y: 540 },
+      size: { x: 10, y: 10 },
       velocity: { x: 0, y: 0 },
       speed: 3.5,
       friction: 0.9,
-      gravity: 12,
+      gravity:20,
       color: '#fff'
     },
     finish: [{
-        position: { x: 500, y: 100 },
-        size: { x: 100, y: 100 },
-        color: '#000'
+          position: { x: 500, y: 100 },
+          size: { x: 100, y: 100 },
+          color: '#000'
         },
-        { position: { x: 0, y: 100 },
-          size: { x: 100, y: 150 },
+        { 
+          position: { x: 50, y: 150 },
+          size: { x: 50, y: 50 },
           color: '#000'
         }],
     platform: [{
-        position: { x: 300, y: 300 },
-        size: { x: 100, y: 75 },
+        position: { x: 800, y: 480 },
+        size: { x: 150, y: 10 },
         color: '#0000FF'
-    }],
+      },
+      {
+        position: { x: 700, y: 400 },
+        size: { x: 100, y: 10 },
+        color: '#0000FF'
+      },
+      {
+        position: { x: 700, y: 350 },
+        size: { x: 10, y: 60 },
+        color: '#0000FF'
+      },
+      {
+        position: { x: 350, y: 380 },
+        size: { x: 100, y: 10 },
+        color: '#0000FF'
+      },
+      {
+        position: { x: 200, y: 300 },
+        size: { x: 80, y: 30 },
+        color: '#0000FF'
+      },
+      {
+        position: { x: 150, y: 200 },
+        size: { x: 10, y: 60 },
+        color: '#0000FF'
+      },
+      {
+        position: { x: 800, y: 330 },
+        size: { x: 100, y: 10 },
+        color: '#0000FF'
+      },
+      {
+        position: { x: 900, y: 280 },
+        size: { x: 100, y: 10 },
+        color: '#0000FF'
+      },
+      {
+        position: { x: 1000, y: 260 },
+        size: { x: 10, y: 30 },
+        color: '#0000FF'
+      },
+      {
+        position: { x: 850, y: 220 },
+        size: { x: 100, y: 10 },
+        color: '#0000FF'
+      },
+      {
+        position: { x: 720, y: 160 },
+        size: { x: 100, y: 10 },
+        color: '#0000FF'
+      },
+      {
+        position: { x: 600, y: 80 },
+        size: { x: 80, y: 10 },
+        color: '#0000FF'
+      }
+         ],
     pitfall: [
         {
-          position: { x: 600, y: 395 },
-          size: { x: 100, y: 5 },
+          position: { x: 460, y: 395 },
+          size: { x: 230, y: 5 },
           color: '#FF0000'
         },
         {
@@ -204,7 +261,8 @@ function removeLevel(){
   for (i=0; i<tokens.length; i++){
       tokens[i].remove();
   }
-  //clearInterval(inter);
+  clearInterval(inter);
+  clearInterval(bossTimer);
   clearInterval(scoreTimer);
   scoreTimer = null;
   time = 0;
@@ -553,7 +611,7 @@ function loadNewLevel(level){
   
 }
 
-//var inter = window.setInterval(shoot, 1000);
+var inter = window.setInterval(shoot, 1000);
 
 function shoot(){
   for (i=0; i<enemies.length; i++){
@@ -585,7 +643,7 @@ function shoot(){
   }
 }
 
-//var inter = window.setInterval(shoot, 1000);
+var bossTimer = window.setInterval(bossShoot, 1000);
 
 function bossShoot(){
   for (i=0; i<bosses.length; i++){
