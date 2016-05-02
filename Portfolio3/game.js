@@ -77,22 +77,22 @@ var levels =
         }],
     platform: [{
         position: { x: 800, y: 480 },
-        size: { x: 150, y: 10 },
+        size: { x: 150, y: 20 },
         color: '#0000FF'
       },
       {
         position: { x: 700, y: 400 },
-        size: { x: 100, y: 10 },
+        size: { x: 100, y: 20 },
         color: '#0000FF'
       },
       {
         position: { x: 700, y: 350 },
-        size: { x: 10, y: 60 },
+        size: { x: 20, y: 60 },
         color: '#0000FF'
       },
       {
         position: { x: 350, y: 380 },
-        size: { x: 100, y: 10 },
+        size: { x: 100, y: 20 },
         color: '#0000FF'
       },
       {
@@ -102,37 +102,37 @@ var levels =
       },
       {
         position: { x: 150, y: 200 },
-        size: { x: 10, y: 60 },
+        size: { x: 20, y: 60 },
         color: '#0000FF'
       },
       {
         position: { x: 800, y: 330 },
-        size: { x: 100, y: 10 },
+        size: { x: 100, y: 20 },
         color: '#0000FF'
       },
       {
         position: { x: 900, y: 280 },
-        size: { x: 100, y: 10 },
+        size: { x: 100, y: 20 },
         color: '#0000FF'
       },
       {
         position: { x: 1000, y: 260 },
-        size: { x: 10, y: 30 },
+        size: { x: 20, y: 40 },
         color: '#0000FF'
       },
       {
         position: { x: 850, y: 220 },
-        size: { x: 100, y: 10 },
+        size: { x: 100, y: 20 },
         color: '#0000FF'
       },
       {
         position: { x: 720, y: 160 },
-        size: { x: 100, y: 10 },
+        size: { x: 100, y: 20 },
         color: '#0000FF'
       },
       {
         position: { x: 600, y: 80 },
-        size: { x: 80, y: 10 },
+        size: { x: 80, y: 20 },
         color: '#0000FF'
       }
          ],
