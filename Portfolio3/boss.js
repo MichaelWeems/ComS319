@@ -33,7 +33,7 @@ function Boss(options){
     this.boundingBox = aabb([this.position.x, this.position.y], [this.size.x, this.size.y]);
     
     if (this.position.x <= 0) {
-      this.position.x = 25;
+      this.position.x = 100;
     }
     else if (this.position.x >= 1000){
       this.position.x = 975;
