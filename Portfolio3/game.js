@@ -309,19 +309,25 @@ function loadNewLevel(level){
           }
         });
         
-        bosses.forEach(function(boss){
-          if(bull.boundingBox.intersects(boss.boundingBox)){
+        for (i=0; i<bosses.length; i++){
+          if(bull.boundingBox.intersects(bosses[i].boundingBox)){
             bull.remove();
-            bull = null;
-            if (boss.health > 1){
-              boss.remove();            
+            if (bosses[i].health > 1){
+              
+              bosses[i].remove();            
               bosses.splice(bosses.indexOf(boss), 1);
+              bossbullets[i].forEach(function(b){
+                b.remove();
+                b = null;
+              }
+              break;
             }
             else {
-              boss.health-=1;
+              bosses[i].health-=1;
             }
           }
         })
+        }
       });
       
     });
@@ -586,12 +592,12 @@ function bossShoot(){
     
     //if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
     
-      for (j=0; j<15; j++){
+      for (j=0; j<45; j++){
         // randomize bullet spread
         np = Math.floor((Math.random() * 2) + 1);
         if (np == 2){np = -1;}
 
-        rand = Math.floor((Math.random() * 200) + 1);
+        rand = Math.floor((Math.random() * 20) + 1);
         rand *= np;
 
         bullet = new Bullet({
@@ -612,8 +618,8 @@ function bossShoot(){
             deathMessage("Get Analed! You got shot like a Bitch by the Boss!");
           }
         });
-        
-        bossbullets.push(bullet);
+        bossbullets.push([]);
+        bossbullets[i].push(bullet);
       }
 //    }
   }
