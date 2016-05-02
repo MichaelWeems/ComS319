@@ -185,7 +185,6 @@ var bullets = [];
 
 var inter = null;
 var bossTimer = null;
-var bossTimer2 = null;
 
 function checkPlayerPlatformCollision(player, platform){
     
@@ -292,7 +291,6 @@ function removeLevel(){
   }
   clearInterval(inter);
   clearInterval(bossTimer);
-  clearInterval(bossTimer2);
   clearInterval(scoreTimer);
   scoreTimer = null;
   time = 0;
@@ -642,7 +640,6 @@ function loadNewLevel(level){
           for (i=0; i<lev.boss.length; i++){
             if ( i== 0 ){
               bossTimer = setInterval(bossShoot, 2500);
-            bossTimer2 = setInterval(bossShoot2, 1000);
             }
             boss = new Boss({
               position: lev.boss[i].position,
@@ -707,7 +704,7 @@ function bossShoot(){
     
     //if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
     
-      for (j=0; j<2; j++){
+      for (j=0; j<1; j++){
         // randomize bullet spread
         np = Math.floor((Math.random() * 2) + 1);
         if (np == 2){np = -1;}
@@ -718,47 +715,6 @@ function bossShoot(){
         bullet = new Bullet({
           target: {x: player.position.x + rand, y: player.position.y + rand},
           position: {x: bosses[i].position.x, y: bosses[i].position.y}
-        });
-
-        bullet.addTo(game);
-
-        bullet.on('draw', function(draw){
-          draw.fillStyle = this.color;
-          draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-        });
-
-        game.on('update', function(interval){
-          if(bullet.boundingBox.intersects(player.boundingBox)){
-            bullet.remove();
-            deathMessage("Get Analed! You got shot like a Bitch by the Boss!");
-          }
-        });
-        bossbullets.push([]);
-        bossbullets[i].push(bullet);
-      }
-//    }
-  }
-}
-
-
-
-function bossShoot2(){
-  for (i=0; i<bosses.length; i++){
-    
-    //if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
-    
-      for (j=0; j<2; j++){
-        // randomize bullet spread
-        np = Math.floor((Math.random() * 2) + 1);
-        if (np == 2){np = -1;}
-
-        rand = Math.floor((Math.random() * 5) + 1);
-        rand *= np;
-
-        bullet = new Bullet({
-          target: {x: finishes[1].position.x + rand, y: finishes[1].position.y + rand},
-          position: {x: bosses[i].position.x, y: bosses[i].position.y},
-          speed: 8
         });
 
         bullet.addTo(game);
