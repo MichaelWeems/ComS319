@@ -123,6 +123,7 @@ var pitfalls = [];
 var enemies = [];
 var tokens = [];
 var bosses = [];
+var bossbullets = [];
 
 function checkPlayerPlatformCollision(player, platform){
     
@@ -309,7 +310,7 @@ function loadNewLevel(level){
         });
         
         bosses.forEach(function(boss){
-          if(bull.boundingBox.intersects(enemy.boundingBox)){
+          if(bull.boundingBox.intersects(boss.boundingBox)){
             bull.remove();
             bull = null;
             if (boss.health > 1){
@@ -590,7 +591,7 @@ function bossShoot(){
         np = Math.floor((Math.random() * 2) + 1);
         if (np == 2){np = -1;}
 
-        rand = Math.floor((Math.random() * 100) + 1);
+        rand = Math.floor((Math.random() * 200) + 1);
         rand *= np;
 
         bullet = new Bullet({
@@ -611,6 +612,8 @@ function bossShoot(){
             deathMessage("Get Analed! You got shot like a Bitch by the Boss!");
           }
         });
+        
+        bossbullets.push(bullet);
       }
 //    }
   }
