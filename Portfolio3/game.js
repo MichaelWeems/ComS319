@@ -14,7 +14,7 @@ var levels =
 {
   level1: {
     player: {
-      position: { x: 10, y: 390 },
+      position: { x: 10, y: 540 },
       size: { x: 10, y: 10 },
       velocity: { x: 0, y: 0 },
       speed: 3.5,
@@ -23,26 +23,102 @@ var levels =
       color: '#fff'
     },
     finish: [{
-        position: { x: 700, y: 300 },
+        position: { x: 600, y: 50 },
         size: { x: 30, y: 30 },
         color: '#000'
     }],
     platform: [{
-          position: { x: 300, y: 300 },
+          position: { x: 400, y: 400 },
           size: { x: 100, y: 75 },
           color: '#0000FF'
         },
         {
-          position: { x: 200, y: 325 },
+          position: { x: 200, y: 380 },
           size: { x: 500, y: 20 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 250, y: 451 },
+          size: { x: 30, y: 100 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 250, y: 451 },
+          size: { x: 30, y: 100 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 600, y: 450 },
+          size: { x: 50, y: 100 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 800, y: 450 },
+          size: { x: 50, y: 101 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 0, y: 300 },
+          size: { x: 100, y: 50 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 200, y: 200 },
+          size: { x: 100, y: 50 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 0, y: 100 },
+          size: { x: 100, y: 50 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 150, y: 25 },
+          size: { x: 400, y: 10 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 550, y: 25 },
+          size: { x: 10, y: 80 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 550, y: 105 },
+          size: { x: 100, y: 10 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 650, y: 0 },
+          size: { x: 10, y: 115 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 1100, y: 350 },
+          size: { x: 100, y: 30 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 1100, y: 150 },
+          size: { x: 100, y: 30 },
+          color: '#0000FF'
+        },
+        {
+          position: { x: 800, y: 250 },
+          size: { x: 100, y: 30 },
           color: '#0000FF'
         }
     ],
     pitfall: [{
-        position: { x: 600, y: 395 },
-        size: { x: 100, y: 5 },
+        position: { x: 200, y: 400 },
+        size: { x: 200, y: 5 },
         color: '#FF0000'
-    }],
+      },
+      {
+        position: { x: 715, y: 400 },
+        size: { x: 20, y: 100 },
+        color: '#FF0000'
+      }
+             ],
     enemy : [{
         position: {x: 100, y: 250},
         size: {x: 20, y: 20},
@@ -50,11 +126,17 @@ var levels =
         color: '#3e2470'
     }],
     token : [{
-      position: {x: 300, y: 150},
+      position: {x: 815, y: 420},
+      size: {x: 20, y: 20},
+      type: 1
+    },
+    {
+      position: {x: 1150, y: 50},
       size: {x: 20, y: 20},
       type: 2
-    }]
-  },
+    }
+    
+    ]},
   level2: {
     player: {
       position: { x: 10, y: 540 },
@@ -234,28 +316,28 @@ function checkXCollision(player, platform){
 function checkToken(player, tokens){
   for(i=0; i < tokens.length; i++){
     if(player.boundingBox.intersects(tokens[i].boundingBox)){
-      if(token.type == 1){
-        console.log("add armor");
+      if(tokens[i].type == 1){
+        console.log("Check point");
+        player.startingposition.x = tokens[i].position.x;
+        player.startingposition.y = tokens[i].position.y;
+        $('#Dead').css('visibility', 'visible');
+        $('#Dead').html("Check Point Saved!");
+        deathTimer = setTimeout(function(){$('#Dead').css('visibility', 'hidden');}, 2000)
       }
-      else if(token.type == 2){
+      else if(tokens[i].type == 2){
         player.shoot = true;
         console.log("Shooting Activated!");
-        tokens[i].remove();
-        tokens.splice(i, 1);
         $('#Dead').css('visibility', 'visible');
         $('#Dead').html("Shooting Activated! Click to Shoot Enemy!");
         deathTimer = setTimeout(function(){$('#Dead').css('visibility', 'hidden');}, 2000)
       }
-      else if(token.type == 3){
-        player.size.x = 5;
-        player.size.y = 5;
-      }
-      
+      tokens[i].remove();
+      tokens.splice(i, 1);
     };
   };
 }
 
-loadNewLevel("level2");
+loadNewLevel("level1");
 
 function removeLevel(){
 //  for (i=0; i<game.entities.length; i++){
@@ -436,11 +518,11 @@ function loadNewLevel(level){
     });
 
     game.on('pause', function(){
-      console.log('oooooh, paused.');
+      console.log('paused.');
     });
 
     game.on('resume', function(){
-      console.log('oh, yeah. resuming.')
+      console.log('resuming.')
     })
     
     scoreTimer = setInterval(incrementTimer, 1);
@@ -484,7 +566,7 @@ function loadNewLevel(level){
             if (pitfalls[i].exists){
               // Check if the player is colliding with pitfalls
               if (player.boundingBox.intersects(pitfalls[i].boundingBox)){
-                deathMessage("Get Analed! You fell into a pit!");
+                deathMessage("Ooopps! You fell into a pit!");
 
               }
             }
@@ -499,7 +581,7 @@ function loadNewLevel(level){
           for (i=0; i<enemies.length;i++){
             if (enemies[i].exists){
               if(player.boundingBox.intersects(enemies[i].boundingBox)){
-                deathMessage("Get Analed! You got raped by an enemy!");
+                deathMessage("Too Bad! You got killed by an enemy!");
               }
             }
           }
@@ -507,7 +589,7 @@ function loadNewLevel(level){
           for (i=0; i<bosses.length;i++){
               if (bosses[i].exists){
                 if(player.boundingBox.intersects(bosses[i].boundingBox)){
-                  deathMessage("Get Analed! You got raped by the boss!");
+                  deathMessage("DANNGG! You got killed by the boss!");
                 }
               }
             }
@@ -695,7 +777,7 @@ function shoot(){
       game.on('update', function(interval){
         if(bullet.boundingBox.intersects(player.boundingBox)){
           bullet.remove();
-          deathMessage("Get Analed! You got shot like a Bitch!");
+          deathMessage("You got shot!");
         }
       });
   }
@@ -730,7 +812,7 @@ function bossShoot(){
         game.on('update', function(interval){
           if(bullet.boundingBox.intersects(player.boundingBox)){
             bullet.remove();
-            deathMessage("Get Analed! You got shot like a Bitch by the Boss!");
+            deathMessage("You got shot by the Boss!");
           }
         });
         bossbullets.push([]);
@@ -756,7 +838,7 @@ function bossShoot2(){
         rand *= np;
 
         bullet = new Bullet({
-          target: {x: finishes[1].position.x + rand, y: finishes[1].position.y + rand},
+          target: {x: finishes[0].position.x + rand, y: finishes[0].position.y + rand},
           position: {x: bosses[i].position.x, y: bosses[i].position.y},
           speed: 8
         });
@@ -771,7 +853,7 @@ function bossShoot2(){
         game.on('update', function(interval){
           if(bullet.boundingBox.intersects(player.boundingBox)){
             bullet.remove();
-            deathMessage("Get Analed! You got shot like a Bitch by the Boss!");
+            deathMessage("You got shot by the Boss!");
           }
         });
         bossbullets.push([]);

@@ -27,7 +27,7 @@ function Token(options){
   
   
   if(this.type == 1){
-    //Armor
+    //check point
     this.color = '#fff000';
   }
   else if(this.type == 2){
@@ -35,7 +35,7 @@ function Token(options){
     this.color = '#771155';
   }
   else if(this.type == 3){
-    //player size
+    //armor
     this.color = '#00ff00';
   }
   else if(this.type == 3){
