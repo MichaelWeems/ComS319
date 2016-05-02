@@ -370,7 +370,7 @@ function loadNewLevel(level){
         for (i=0; i<bosses.length; i++){
           if(bull.boundingBox.intersects(bosses[i].boundingBox)){
             bull.remove();
-            if (bosses[i].health > 1){
+            if (bosses[i].health == 1){
               
               bosses[i].remove();            
               bosses.splice(bosses.indexOf(boss), 1);
