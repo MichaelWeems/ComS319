@@ -181,6 +181,7 @@ var enemies = [];
 var tokens = [];
 var bosses = [];
 var bossbullets = [];
+var bullets = [];
 
 function checkPlayerPlatformCollision(player, platform){
     
@@ -274,6 +275,7 @@ function removeLevel(){
   finishes = [];
   enemies = [];
   tokens = [];
+  bullets = [];
   
   div = document.getElementById('gameDIV');
   div.removeChild(document.getElementById('game'));
@@ -328,7 +330,7 @@ function loadNewLevel(level){
     mouse = new Mouse(game);
   
     mouse.on('click', function(location){
-      var bull = new Bullet({
+      bul = new Bullet({
         position: { 
           x: player.position.x, 
           y: player.position.y
@@ -336,59 +338,70 @@ function loadNewLevel(level){
         target: { 
           x: location.x, 
           y: location.y 
-        }
+        },
+        solid: true
       });
-      bull.addTo(game);
+      bul.addTo(game);
+      
+      bullets.push(bul);
+      
       game.on('update', function(interval){
-        enemies.forEach(function(enemy){
-          if(bull.boundingBox.intersects(enemy.boundingBox)){
-            bull.remove();
-            enemy.remove();
-            
-            enemies.splice(enemies.indexOf(enemy), 1);
-            if(enemies.length == 0){
-              for(i=0; i<lev.finish.length; i++){
-                finish = new Finish({
-                  position: lev.finish[i].position,
-                  size: lev.finish[i].size,
-                  color: lev.finish[i].color
-                });
+        bullets.forEach(function(bul){
+          
+        
+          if (bul.solid){
+            enemies.forEach(function(enemy){
+              if(bul.boundingBox.intersects(enemy.boundingBox)){
+                bul.remove();
+                enemy.remove();
+                bul.solid = false;
+                enemies.splice(enemies.indexOf(enemy), 1);
+                if(enemies.length == 0){
+                  for(i=0; i<lev.finish.length; i++){
+                    finish = new Finish({
+                      position: lev.finish[i].position,
+                      size: lev.finish[i].size,
+                      color: lev.finish[i].color
+                    });
 
-                finish.addTo(game);
+                    finish.addTo(game);
 
-                finish.on('draw', function(draw){
-                  draw.fillStyle = this.color;
-                  draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-                });
-            
-                finishes.push(finish);
+                    finish.on('draw', function(draw){
+                      draw.fillStyle = this.color;
+                      draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+                    });
+
+                    finishes.push(finish);
+                  }
+                }
+              }
+            });
+
+            for (i=0; i<bosses.length; i++){
+              if(bul.boundingBox.intersects(bosses[i].boundingBox)){
+                console.log('**HIT BOSS**');
+                bul.remove();
+                bul.solid = false;
+                if (bosses[i].health == 1){
+
+                  bosses[i].remove();            
+                  bosses.splice(bosses.indexOf(boss), 1);
+                  bossbullets[i].forEach(function(b){
+                    b.remove();
+                    b = null;
+                  });
+                  bossbullets[i] = [];
+
+                }
+                else {
+                  bosses[i].health -= 1;
+                  console.log("Health: " + bosses[i].health);
+                }
               }
             }
-          }
-        });
-        
-        for (i=0; i<bosses.length; i++){
-          if(bull.boundingBox.intersects(bosses[i].boundingBox)){
-            console.log('**HIT BOSS**');
-            bull.remove();
-            if (bosses[i].health == 1){
-              
-              bosses[i].remove();            
-              bosses.splice(bosses.indexOf(boss), 1);
-              bossbullets[i].forEach(function(b){
-                b.remove();
-                b = null;
-              });
-              
-            }
-            else {
-              bosses[i].health -= 1;
-            }
-          }
         }
-        
+        });
       });
-      
     });
 
     game.on('pause', function(){
@@ -467,7 +480,6 @@ function loadNewLevel(level){
       }
     });
     
-   
         
         player = new Player({
           position: lev.player.position,
@@ -651,12 +663,12 @@ function bossShoot(){
     
     //if (Math.abs(player.position.x - bosses[i].position.x) < 100 || Math.abs(player.position.y - bosses[i].position.y) < 100) {
     
-      for (j=0; j<45; j++){
+      for (j=0; j<20; j++){
         // randomize bullet spread
         np = Math.floor((Math.random() * 2) + 1);
         if (np == 2){np = -1;}
 
-        rand = Math.floor((Math.random() * 20) + 1);
+        rand = Math.floor((Math.random() * 100) + 1);
         rand *= np;
 
         bullet = new Bullet({
