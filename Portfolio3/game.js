@@ -602,7 +602,7 @@ function loadNewLevel(level){
         
         for (i=0; i<lev.enemy.length; i++){
           if ( i == 0 ){
-            inter = window.setInterval(shoot, 1000);
+            inter = setInterval(shoot, 1000);
           }
             enemy = new Enemy({
                 position: lev.enemy[i].position,
@@ -641,8 +641,8 @@ function loadNewLevel(level){
         if ('boss' in lev){
           for (i=0; i<lev.boss.length; i++){
             if ( i== 0 ){
-              bossTimer = window.setInterval(bossShoot, 2500);
-            bossTimer2 = window.setInterval(bossShoot2, 1000);
+              bossTimer = setInterval(bossShoot, 2500);
+            bossTimer2 = setInterval(bossShoot2, 1000);
             }
             boss = new Boss({
               position: lev.boss[i].position,
