@@ -601,6 +601,9 @@ function loadNewLevel(level){
         }
         
         for (i=0; i<lev.enemy.length; i++){
+          if ( i == 0 ){
+            inter = window.setInterval(shoot, 1000);
+          }
             enemy = new Enemy({
                 position: lev.enemy[i].position,
                 size: lev.enemy[i].size,
@@ -652,13 +655,15 @@ function loadNewLevel(level){
             });
             
             bosses.push(boss);
+            
           }
+          bossTimer = window.setInterval(bossShoot, 2500);
+            bossTimer2 = window.setInterval(bossShoot2, 1000);
         }
     }
   
-inter = window.setInterval(shoot, 1000);
-bossTimer = window.setInterval(bossShoot, 2500);
-bossTimer2 = window.setInterval(bossShoot2, 1000);
+
+
   
 };
 
