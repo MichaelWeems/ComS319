@@ -134,6 +134,11 @@ var levels =
       position: {x: 1150, y: 50},
       size: {x: 20, y: 20},
       type: 2
+    },
+    {
+      position: {x: 780, y: 25},
+      size: {x: 20, y: 20},
+      type: 3
     }
     
     ]},
@@ -239,7 +244,18 @@ var levels =
       position: {x: 650, y: 50},
       size: {x: 20, y: 20},
       type: 2
-    }],
+    },
+    {
+      position: {x: 1000, y: 225},
+      size: {x: 20, y: 20},
+      type: 1
+    },
+    {
+      position: {x: 550, y: 250},
+      size: {x: 20, y: 20},
+      type: 3
+    }
+    ],
     boss : [{
       position: {x: 500, y: 100},
       size: {x: 25, y: 75},
@@ -312,7 +328,7 @@ function checkXCollision(player, platform){
   return false;
 }
 
-function checkToken(player, tokens){
+function checkToken(player, tokens, enemies){
   for(i=0; i < tokens.length; i++){
     if(player.boundingBox.intersects(tokens[i].boundingBox)){
       if(tokens[i].type == 1){
@@ -329,6 +345,15 @@ function checkToken(player, tokens){
         $('#Dead').css('visibility', 'visible');
         $('#Dead').html("Shooting Activated! Click to Shoot Enemy!");
         deathTimer = setTimeout(function(){$('#Dead').css('visibility', 'hidden');}, 2000)
+      }
+      else if(tokens[i].type == 3){
+        for(i=0; i<enemies.length; i++){
+          enemies[i].remove();
+          enemies.splice(i, 1);
+          $('#Dead').css('visibility', 'visible');
+          $('#Dead').html("All Enemies Are Gone!");
+          deathTimer = setTimeout(function(){$('#Dead').css('visibility', 'hidden');}, 2000)
+        }
       }
       tokens[i].remove();
       tokens.splice(i, 1);
@@ -530,7 +555,7 @@ function loadNewLevel(level){
       
       if (player.exists){
         
-        checkToken(player, tokens);
+        checkToken(player, tokens, enemies);
         
           // check victory condition
           for (i=0;i<finishes.length;i++){

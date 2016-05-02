@@ -35,11 +35,11 @@ function Token(options){
     this.color = '#771155';
   }
   else if(this.type == 3){
-    //armor
-    this.color = '#00ff00';
+    //remove all enemies
+    this.color = '#f0550f';
   }
   else if(this.type == 3){
-    //kill all enemies
+    
     this.color = '#ff00ff';
   }
   
