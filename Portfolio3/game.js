@@ -148,7 +148,7 @@ var levels =
           color: '#FF0000'
         }],
     enemy : [{
-        position: {x: 500, y: 100},
+        position: {x: 300, y: 150},
         size: {x: 50, y: 50},
         velocity: {x: 1, y: 1},
         color: '#3e2470'
@@ -161,7 +161,7 @@ var levels =
     boss : [{
       position: {x: 500, y: 100},
       size: {x: 25, y: 75},
-      velocity: {x: 1, y: 12},
+      velocity: {x: 1, y: 5},
       color: '#FF00FF'
     }]
   }    
@@ -238,7 +238,9 @@ function checkToken(player, tokens){
         console.log("Shooting Activated!");
         tokens[i].remove();
         tokens.splice(i, 1);
-        deathMessage("Shooting Activated! Click to Shoot Enemy!");
+        $('#Dead').css('visibility', 'visible');
+        $('#Dead').html("Shooting Activated! Click to Shoot Enemy!");
+        deathTimer = setTimeout(function(){$('#Dead').css('visibility', 'hidden');}, 2000)
       }
       else if(token.type == 3){
         player.size.x = 5;

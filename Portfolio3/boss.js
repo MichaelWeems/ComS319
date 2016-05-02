@@ -31,23 +31,40 @@ function Boss(options){
   this.on('update', function(interval){
     count++;
     this.boundingBox = aabb([this.position.x, this.position.y], [this.size.x, this.size.y]);
+    
+    if (this.position.x <= 0) {
+      this.position.x = 25;
+    }
+    else if (this.position.x >= 1000){
+      this.position.x = 975;
+    }
+    
+    if (this.position.y <= 0){
+      this.position.y = 25;
+    }
+    if (this.position.y >= 475){
+      this.position.y = 525;
+    }
+    
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
     
     np = Math.floor((Math.random() * 2) + 1);
     if (np == 2){np = -1;}
 
-    rand = Math.floor((Math.random() * 5
-                      ) + 1);
+    rand = Math.floor((Math.random() * 5) + 1);
     rand *= np;
-
     
     if(count%20 == 0){
       this.velocity.y *= rand;
     }
+    if (count%30 == 0){
+      this.velocity.y = 1;
+    }
     if(count%60 == 0){
       count = 0;
       this.velocity.x *= -1.001;
+      this.velocity.y = -1.5
     }
     this.checkBoundaries();
   });
