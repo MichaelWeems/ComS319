@@ -652,9 +652,12 @@ function loadNewLevel(level){
         }
     }
   
+  var inter = window.setInterval(shoot, 1000);
+var bossTimer = window.setInterval(bossShoot, 2500);
+var bossTimer2 = window.setInterval(bossShoot2, 1000);
+  
 };
 
-var inter = window.setInterval(shoot, 1000);
 
 function shoot(){
   for (i=0; i<enemies.length; i++){
@@ -686,7 +689,6 @@ function shoot(){
   }
 }
 
-var bossTimer = window.setInterval(bossShoot, 2500);
 
 function bossShoot(){
   for (i=0; i<bosses.length; i++){
@@ -726,7 +728,7 @@ function bossShoot(){
   }
 }
 
-var bossTimer2 = window.setInterval(bossShoot2, 1000);
+
 
 function bossShoot2(){
   for (i=0; i<bosses.length; i++){
