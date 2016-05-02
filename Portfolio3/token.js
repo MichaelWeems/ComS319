@@ -31,8 +31,8 @@ function Token(options){
     this.color = '#fff000';
   }
   else if(this.type == 2){
-    //bullet size
-    this.color = '#000fff';
+    //bullet activation
+    this.color = '#771155';
   }
   else if(this.type == 3){
     //player size

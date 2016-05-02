@@ -154,7 +154,7 @@ var levels =
         color: '#3e2470'
     }],
     token : [{
-      position: {x: 300, y: 150},
+      position: {x: 650, y: 50},
       size: {x: 20, y: 20},
       type: 2
     }],
@@ -224,6 +224,28 @@ function checkXCollision(player, platform){
     
         
   return false;
+}
+
+function checkToken(player, tokens){
+  for(i=0; i < tokens.length; i++){
+    if(player.boundingBox.intersects(tokens[i].boundingBox)){
+      if(token.type == 1){
+        console.log("add armor");
+      }
+      else if(token.type == 2){
+        player.shoot = true;
+        console.log("Shooting Activated!");
+        tokens[i].remove();
+        tokens.splice(i, 1);
+        deathMessage("Shooting Activated! Click to Shoot Enemy!");
+      }
+      else if(token.type == 3){
+        player.size.x = 5;
+        player.size.y = 5;
+      }
+      
+    };
+  };
 }
 
 loadNewLevel("level2");
@@ -328,43 +350,45 @@ function loadNewLevel(level){
     mouse = new Mouse(game);
   
     mouse.on('click', function(location){
-      var bull = new Bullet({
-        position: { 
-          x: player.position.x, 
-          y: player.position.y
-        },
-        target: { 
-          x: location.x, 
-          y: location.y 
-        }
-      });
-      bull.addTo(game);
-      game.on('update', function(interval){
-        enemies.forEach(function(enemy){
-          if(bull.boundingBox.intersects(enemy.boundingBox)){
-            bull.remove();
-            enemy.remove();
+      if(player.shoot == true){
+        var bull = new Bullet({
+          position: { 
+            x: player.position.x, 
+            y: player.position.y
+          },
+          target: { 
+            x: location.x, 
+            y: location.y 
+          }
+        });
+        bull.addTo(game);
+        game.on('update', function(interval){
+          enemies.forEach(function(enemy){
+            if(bull.boundingBox.intersects(enemy.boundingBox)){
+              bull.remove();
+              enemy.remove();
             
-            enemies.splice(enemies.indexOf(enemy), 1);
-            if(enemies.length == 0){
-              for(i=0; i<lev.finish.length; i++){
-                finish = new Finish({
-                  position: lev.finish[i].position,
-                  size: lev.finish[i].size,
-                  color: lev.finish[i].color
-                });
+              enemies.splice(enemies.indexOf(enemy), 1);
+              if(enemies.length == 0){
+                for(i=0; i<lev.finish.length; i++){
+                  finish = new Finish({
+                    position: lev.finish[i].position,
+                    size: lev.finish[i].size,
+                    color: lev.finish[i].color
+                  });
 
-                finish.addTo(game);
+                  finish.addTo(game);
 
-                finish.on('draw', function(draw){
-                  draw.fillStyle = this.color;
-                  draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-                });
+                  finish.on('draw', function(draw){
+                    draw.fillStyle = this.color;
+                    draw.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+                  });
             
-                finishes.push(finish);
+                  finishes.push(finish);
+                }
               }
             }
-          }
+          })
         });
         
         for (i=0; i<bosses.length; i++){
@@ -387,7 +411,7 @@ function loadNewLevel(level){
           }
         }
         
-      });
+      };
       
     });
 
@@ -403,7 +427,7 @@ function loadNewLevel(level){
 
     game.on('update', function(interval){
       console.log('updating.');
-
+      checkToken(player, tokens);
       if (player.exists){
           // check victory condition
           for (i=0;i<finishes.length;i++){

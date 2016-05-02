@@ -19,6 +19,7 @@ function Player(options){
   
   this.onGround = false;
   this.falling = false;
+  this.shoot = false;
 
   this.size = {
     x: options.size.x,
