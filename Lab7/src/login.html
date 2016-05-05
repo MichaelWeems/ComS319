@@ -63,11 +63,13 @@ $("#login").click (function () {
   console.log("checkLogin.php?" + req);
   $.get("checkLogin.php?" + req, 
         function(data,status) {
-			console.log("Login was successful: " + data);
+            var split = data.split("\n");
+            data = split[split.length- 1];
+			//console.log("Login was successful: " + data);
 			if ( data == "true" ) {
 				$(".loginDiv,.app").toggle();
 				$('.createPosts').show();
-				console.log("username: " + username_var);
+				//console.log("username: " + username_var);
 				$.post("viewPosts.php", {username: username_var},
 					function (data) {
 						console.log(data);
@@ -75,7 +77,7 @@ $("#login").click (function () {
 					});
 			}
 			else {
-				alert("Incorrect login information");
+				alert("Incorrect login information\n(Try Using username: a, password: a)");
 				$("#username").val("");
 				$("#password").val("");
 			}
@@ -101,7 +103,7 @@ function edit( ind ) {
 	
 	$.post("updatePosts.php", {index: i, message: newPost},
 		function (data, index) {
-			console.log(data);
+			console.log("Edit info: "+data);
 			$.post("viewPosts.php", {},
 					function (data, index) {
 						$(".viewPosts").html(data);
